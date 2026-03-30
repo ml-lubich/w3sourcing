@@ -39,17 +39,17 @@ export function Contact() {
                     {[{ label: "First Name", ph: "John" }, { label: "Last Name", ph: "Smith" }].map((f, i) => (
                       <motion.div key={f.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.6 }}>
                         <label className="block text-sm font-medium text-white/60 mb-1.5">{f.label}</label>
-                        <input type="text" required className="w-full rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue/30 focus:border-blue/30 transition-all backdrop-blur-sm" placeholder={f.ph} />
+                        <input type="text" required className="w-full rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3.5 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue/30 focus:border-blue/30 focus:bg-white/[0.05] transition-all duration-300 backdrop-blur-sm" placeholder={f.ph} />
                       </motion.div>
                     ))}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-white/60 mb-1.5">Email</label>
-                    <input type="email" required className="w-full rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue/30 focus:border-blue/30 transition-all backdrop-blur-sm" placeholder="john@company.com" />
+                    <input type="email" required className="w-full rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue/30 focus:border-blue/30 focus:bg-white/[0.05] transition-all duration-300 backdrop-blur-sm" placeholder="john@company.com" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-white/60 mb-1.5">I&apos;m looking for...</label>
-                    <select className="w-full rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70 focus:outline-none focus:ring-2 focus:ring-blue/30 focus:border-blue/30 transition-all backdrop-blur-sm">
+                    <select className="w-full rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70 focus:outline-none focus:ring-2 focus:ring-blue/30 focus:border-blue/30 focus:bg-white/[0.05] transition-all duration-300 backdrop-blur-sm">
                       <option className="bg-navy">Hiring talent for my team</option>
                       <option className="bg-navy">Exploring career opportunities</option>
                       <option className="bg-navy">Partnership or collaboration</option>

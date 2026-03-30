@@ -12,8 +12,9 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="relative bg-navy border-t border-white/[0.04] overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue/20 to-transparent" />
+    <footer className="relative bg-navy overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue/15 to-transparent" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[200px] bg-blue/[0.02] blur-[80px] rounded-full" />
 
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid md:grid-cols-3 gap-12 items-start">

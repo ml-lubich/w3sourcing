@@ -74,8 +74,10 @@ export function WhyUs() {
               whileInView="visible"
               viewport={{ once: true, margin: "-50px" }}
               whileHover={{ y: -6, transition: { duration: 0.3 } }}
-              className="group glass-card rounded-2xl p-8 hover:border-blue/15 transition-all duration-500 cursor-pointer"
+              className="group glass-card rounded-2xl p-8 hover:border-blue/15 hover:shadow-xl hover:shadow-blue/[0.03] transition-all duration-500 cursor-pointer relative overflow-hidden"
             >
+              {/* Hover glow */}
+              <div className="absolute -top-16 -right-16 w-32 h-32 rounded-full bg-blue/10 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
               <motion.div
                 whileHover={{ rotate: [0, -10, 10, 0] }}
                 transition={{ duration: 0.4 }}

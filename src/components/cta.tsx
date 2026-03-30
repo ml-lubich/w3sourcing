@@ -23,9 +23,15 @@ export function CTA() {
             <span className="text-blue-light text-sm font-medium">Ready to get started?</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white tracking-tight mb-6 leading-tight">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white tracking-tight mb-6 leading-tight"
+          >
             Let&apos;s Build Your <span className="gradient-text">Dream Team</span>
-          </h2>
+          </motion.h2>
 
           <p className="text-lg sm:text-xl text-white/35 max-w-2xl mx-auto leading-relaxed mb-10">
             Whether you&apos;re scaling a team or making a strategic hire, we&apos;re here to deliver exceptional talent.

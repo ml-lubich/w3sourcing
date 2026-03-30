@@ -35,6 +35,12 @@ export function GlobalOffices() {
               <div className="relative flex-shrink-0 w-20 sm:w-40">
                 <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ delay: 0.6, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="h-px bg-gradient-to-r from-blue/50 via-blue to-blue/50 origin-left" />
                 <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }} transition={{ duration: 2, repeat: Infinity }} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-blue shadow-lg shadow-blue/50" />
+                {/* Traveling dot animation */}
+                <motion.div
+                  animate={{ left: ["0%", "100%", "0%"] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-blue-light/60"
+                />
               </div>
               <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.3, duration: 0.8 }} className="flex-1 text-center sm:text-left sm:pl-12">
                 <div className="inline-flex items-center gap-3 mb-3">
