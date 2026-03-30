@@ -108,10 +108,25 @@ body {
   background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 50%, var(--blue) 100%);
   background-size: 200% 100%;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 20%, rgba(255,255,255,0.1) 50%, transparent 80%);
+  background-size: 200% 100%;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.btn-primary:hover::before {
+  opacity: 1;
+  animation: shimmer 1.5s linear infinite;
 }
 .btn-primary:hover {
-  animation: shimmer 2s linear infinite;
   box-shadow: 0 0 30px rgba(59, 130, 246, 0.4), 0 0 60px rgba(59, 130, 246, 0.1);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {

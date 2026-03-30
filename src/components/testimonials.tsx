@@ -45,8 +45,10 @@ export function Testimonials() {
 
   return (
     <section id="testimonials" className="relative py-28 sm:py-36 bg-navy overflow-hidden">
+      <div className="absolute inset-0 bg-dots opacity-10" />
       <div className="absolute inset-0">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-blue/[0.03] blur-[150px] rounded-full" />
+        <div className="absolute top-0 left-0 w-[300px] h-[300px] bg-accent/[0.02] blur-[100px] rounded-full" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-6">

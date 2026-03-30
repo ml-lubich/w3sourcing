@@ -84,7 +84,7 @@ export function Industries() {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.1 + ri * 0.05, duration: 0.5 }}
-                      className="flex items-center gap-3 text-sm text-white/50 hover:text-white/80 transition-colors duration-300 cursor-default"
+                      className="flex items-center gap-3 text-sm text-white/50 hover:text-white/80 hover:translate-x-1 transition-all duration-300 cursor-default"
                     >
                       <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${colors.dot}`} />
                       {role}

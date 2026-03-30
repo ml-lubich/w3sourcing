@@ -15,9 +15,26 @@ const navLinks = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+
+      const sections = navLinks.map((l) => l.href.slice(1));
+      let found = "";
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 120 && rect.bottom > 120) {
+            found = `#${id}`;
+            break;
+          }
+        }
+      }
+      setActiveSection(found);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -53,10 +70,14 @@ export function Header() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * i + 0.3, duration: 0.5 }}
-              className="relative text-sm text-white/60 hover:text-white transition-colors duration-300 font-medium group"
+              className={`relative text-sm hover:text-white transition-colors duration-300 font-medium group ${
+                activeSection === link.href ? "text-white" : "text-white/60"
+              }`}
             >
               {link.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-blue to-blue-light group-hover:w-full transition-all duration-300" />
+              <span className={`absolute -bottom-1 left-0 h-[2px] bg-gradient-to-r from-blue to-blue-light transition-all duration-300 ${
+                activeSection === link.href ? "w-full" : "w-0 group-hover:w-full"
+              }`} />
             </motion.a>
           ))}
           <motion.a

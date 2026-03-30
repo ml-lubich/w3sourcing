@@ -72,7 +72,7 @@ export function Hero() {
           <span className="text-blue-light text-sm font-medium tracking-wide">Global Recruitment Excellence</span>
         </motion.div>
 
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-[1.05] tracking-tight mb-8">
+        <h1 className="text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-[1.08] tracking-tight mb-6 sm:mb-8">
           <span className="flex flex-wrap justify-center gap-x-[0.3em]">
             {headlineWords.map((word, i) => (
               <motion.span
@@ -93,7 +93,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-2xl mx-auto text-lg sm:text-xl text-white/40 leading-relaxed mb-12"
+          className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-white/40 leading-relaxed mb-10 sm:mb-12 px-2 sm:px-0"
         >
           Connecting exceptional talent with world-class organisations across
           the US, UK, EU, UAE, and Asia. Trusted by the world&apos;s most ambitious companies.
