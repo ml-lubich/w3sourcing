@@ -12,7 +12,7 @@ const companies = [
 function LogoItem({ name }: { name: string }) {
   return (
     <div className="flex items-center justify-center px-8 py-4 mx-4 whitespace-nowrap">
-      <span className="text-white/15 font-semibold text-lg tracking-wide hover:text-white/30 transition-colors duration-500">{name}</span>
+      <span className="text-white/[0.12] font-semibold text-lg tracking-wider hover:text-white/25 transition-colors duration-700 select-none">{name}</span>
     </div>
   );
 }

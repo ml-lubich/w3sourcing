@@ -149,6 +149,9 @@ export function Hero() {
         </motion.div>
       </motion.div>
 
+      {/* Radial gradient spotlight */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(59,130,246,0.04) 0%, transparent 70%)" }} />
+
       <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
 
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5, duration: 1 }} className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10">

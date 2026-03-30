@@ -130,12 +130,20 @@ export function Services() {
                   </motion.div>
                   <h3 className="text-xl font-bold text-white mb-3">{service.title}</h3>
                   <p className="text-white/40 leading-relaxed text-sm mb-6">{service.description}</p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 mb-6">
                     {service.tags.map((tag) => (
                       <span key={tag} className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all duration-300 cursor-default ${colors.tag}`}>
                         {tag}
                       </span>
                     ))}
+                  </div>
+
+                  {/* Learn more indicator */}
+                  <div className="flex items-center gap-1.5 text-white/25 group-hover:text-white/50 transition-colors duration-500 text-sm font-medium">
+                    <span>Learn more</span>
+                    <motion.svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path d="M9 5l7 7-7 7" />
+                    </motion.svg>
                   </div>
                 </div>
               </motion.div>

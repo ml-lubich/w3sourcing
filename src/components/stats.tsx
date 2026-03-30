@@ -72,9 +72,15 @@ export function Stats() {
                   >
                     {iconMap[stat.icon]}
                   </motion.div>
-                  <div className="text-3xl sm:text-4xl lg:text-5xl font-bold gradient-text-blue mb-2">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.2 + i * 0.1, duration: 0.6, type: "spring" }}
+                    className="text-3xl sm:text-4xl lg:text-5xl font-bold gradient-text-blue mb-2"
+                  >
                     <AnimatedCounter value={stat.value} suffix={stat.suffix} inView={isInView} />
-                  </div>
+                  </motion.div>
                   <div className="text-white font-semibold text-sm mb-1">{stat.label}</div>
                   <div className="text-white/25 text-xs">{stat.description}</div>
                 </div>

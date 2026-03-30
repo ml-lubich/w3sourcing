@@ -73,8 +73,25 @@ export function HowWeWork() {
                 )}
                 <div className="text-center lg:text-left">
                   <h3 className="text-lg font-bold text-white mb-2 group-hover:text-blue-light transition-colors duration-300">{step.title}</h3>
-                  <p className="text-white/35 text-sm leading-relaxed">{step.description}</p>
+                  <p className="text-white/35 text-sm leading-relaxed group-hover:text-white/45 transition-colors duration-500">{step.description}</p>
                 </div>
+
+                {/* Step connector pulse - desktop */}
+                {i < steps.length - 1 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.8 + i * 0.2, duration: 0.5 }}
+                    className="hidden lg:block absolute top-[28px] -right-3 w-6 h-6"
+                  >
+                    <motion.div
+                      animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
+                      className="w-1.5 h-1.5 rounded-full bg-blue/40 mx-auto"
+                    />
+                  </motion.div>
+                )}
               </motion.div>
             ))}
           </div>
