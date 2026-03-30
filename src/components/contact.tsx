@@ -69,8 +69,13 @@ export function Contact() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="lg:col-span-2 space-y-6">
-            <div className="glass-card rounded-xl p-6 hover:border-blue/15 transition-all duration-500">
-              <h4 className="font-semibold text-white mb-3">Email Us</h4>
+            <div className="glass-card rounded-xl p-6 hover:border-blue/15 transition-all duration-500 group">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-8 rounded-lg bg-blue/8 flex items-center justify-center text-blue/60 group-hover:bg-blue/15 transition-colors">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                </div>
+                <h4 className="font-semibold text-white">Email Us</h4>
+              </div>
               <a href="mailto:info@w3sourcing.com" className="text-blue-light text-sm hover:text-blue transition-colors">info@w3sourcing.com</a>
             </div>
             <div className="glass-card rounded-xl p-6 hover:border-blue/15 transition-all duration-500">

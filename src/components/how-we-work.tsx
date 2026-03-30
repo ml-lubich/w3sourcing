@@ -43,7 +43,7 @@ export function HowWeWork() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white tracking-tight">
             How We <span className="gradient-text-blue">Work</span>
           </h2>
-          <p className="mt-5 text-lg text-white/35 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-5 text-lg text-white/40 max-w-2xl mx-auto leading-relaxed">
             A proven, transparent process built on partnership — not transactions.
           </p>
         </motion.div>
@@ -73,7 +73,7 @@ export function HowWeWork() {
                 )}
                 <div className="text-center lg:text-left">
                   <h3 className="text-lg font-bold text-white mb-2 group-hover:text-blue-light transition-colors duration-300">{step.title}</h3>
-                  <p className="text-white/35 text-sm leading-relaxed group-hover:text-white/45 transition-colors duration-500">{step.description}</p>
+                  <p className="text-white/40 text-sm leading-relaxed group-hover:text-white/45 transition-colors duration-500">{step.description}</p>
                 </div>
 
                 {/* Step connector pulse - desktop */}

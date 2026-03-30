@@ -125,7 +125,7 @@ export function Header() {
                   onClick={() => setMobileOpen(false)}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05, duration: 0.3 }}
+                  transition={{ delay: 0.05 + i * 0.06, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                   className="text-white/80 hover:text-blue-light transition-colors py-3 font-medium border-b border-white/5"
                 >
                   {link.label}

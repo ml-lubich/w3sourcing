@@ -66,7 +66,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="inline-flex items-center gap-2.5 mb-10 px-5 py-2.5 rounded-full border border-blue/20 bg-blue/5 backdrop-blur-sm"
+          className="inline-flex items-center gap-2.5 mb-10 px-5 py-2.5 rounded-full border border-blue/20 bg-blue/5 backdrop-blur-sm shadow-lg shadow-blue/5"
         >
           <motion.div animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} className="w-2 h-2 rounded-full bg-blue shadow-lg shadow-blue/50" />
           <span className="text-blue-light text-sm font-medium tracking-wide">Global Recruitment Excellence</span>

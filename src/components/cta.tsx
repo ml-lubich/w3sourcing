@@ -33,7 +33,7 @@ export function CTA() {
             Let&apos;s Build Your <span className="gradient-text">Dream Team</span>
           </motion.h2>
 
-          <p className="text-lg sm:text-xl text-white/35 max-w-2xl mx-auto leading-relaxed mb-10">
+          <p className="text-lg sm:text-xl text-white/40 max-w-2xl mx-auto leading-relaxed mb-10">
             Whether you&apos;re scaling a team or making a strategic hire, we&apos;re here to deliver exceptional talent.
           </p>
 
