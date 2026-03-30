@@ -8,9 +8,7 @@ export function CTABanner() {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setInView(true);
-      },
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
       { threshold: 0.3 }
     );
     if (ref.current) observer.observe(ref.current);
@@ -18,12 +16,7 @@ export function CTABanner() {
   }, []);
 
   return (
-    <section className="py-20 sm:py-28 bg-gradient-cta relative overflow-hidden">
-      {/* Decorative gradient circles */}
-      <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-purple/10 blur-3xl" />
-      <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-accent/10 blur-3xl" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-cyan/[0.03] blur-3xl" />
-
+    <section className="py-20 sm:py-28 bg-primary relative overflow-hidden">
       <div
         ref={ref}
         className={`relative z-10 mx-auto max-w-4xl px-6 text-center transition-all duration-700 ${
@@ -32,7 +25,7 @@ export function CTABanner() {
       >
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-5">
           Ready to build your{" "}
-          <span className="bg-gradient-to-r from-accent-light to-cyan bg-clip-text text-transparent">dream team?</span>
+          <span className="text-accent">dream team?</span>
         </h2>
         <p className="text-white/50 text-lg max-w-2xl mx-auto mb-10">
           Join 500+ companies who trust W3 Sourcing to find exceptional talent
@@ -41,9 +34,9 @@ export function CTABanner() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
             href="#contact"
-            className="bg-gradient-to-r from-purple to-accent text-white font-semibold text-base py-4 px-8 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-accent/30 hover:-translate-y-0.5 inline-flex items-center gap-2"
+            className="bg-accent text-white font-semibold text-base py-3.5 px-8 rounded-full transition-all duration-200 hover:opacity-90 inline-flex items-center gap-2"
           >
-            <span>Book a Demo</span>
+            Book a Call
             <svg
               className="w-5 h-5"
               fill="none"

@@ -1,7 +1,7 @@
 "use client";
 
 const footerLinks = [
-  { label: "Features", href: "#features" },
+  { label: "Services", href: "#features" },
   { label: "Results", href: "#stats" },
   { label: "Testimonials", href: "#testimonials" },
   { label: "FAQ", href: "#faq" },
@@ -16,17 +16,14 @@ const sectors = [
 
 export function Footer() {
   return (
-    <footer className="bg-gradient-cta text-white overflow-hidden">
+    <footer className="bg-primary text-white overflow-hidden">
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
           {/* Brand */}
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple to-accent flex items-center justify-center shadow-lg shadow-accent/20">
-                <span className="text-white font-bold text-xs">W3</span>
-              </div>
+            <div className="flex items-center gap-2 mb-4">
               <span className="text-white font-bold text-lg tracking-tight">
-                W3Sourcing
+                W3 Sourcing
               </span>
             </div>
             <p className="text-white/40 text-sm leading-relaxed max-w-xs">
@@ -88,7 +85,7 @@ export function Footer() {
             <div className="mt-5 flex gap-4">
               <a
                 href="#"
-                className="w-9 h-9 rounded-xl bg-white/[0.06] hover:bg-accent/80 flex items-center justify-center transition-all duration-200"
+                className="w-9 h-9 rounded-full bg-white/[0.06] hover:bg-accent/80 flex items-center justify-center transition-all duration-200"
                 aria-label="LinkedIn"
               >
                 <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">

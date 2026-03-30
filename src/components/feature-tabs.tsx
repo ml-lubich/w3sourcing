@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface FeatureSection {
   id: string;
@@ -9,6 +9,7 @@ interface FeatureSection {
   badgeColor: string;
   headline: string;
   headlineAccent: string;
+  accentColor: string;
   description: string;
   tabs: {
     label: string;
@@ -22,9 +23,10 @@ const featureSections: FeatureSection[] = [
   {
     id: "source",
     badge: "Source & Outreach",
-    badgeColor: "bg-accent/[0.08] text-accent",
-    headline: "Source top talent",
+    badgeColor: "bg-accent/10 text-accent",
+    headline: "Source top talent ",
     headlineAccent: "before anyone else",
+    accentColor: "text-accent",
     description:
       "Our proprietary network and deep sector expertise let us identify and engage exceptional candidates who aren't actively looking.",
     tabs: [
@@ -53,9 +55,10 @@ const featureSections: FeatureSection[] = [
   {
     id: "screen",
     badge: "Screen & Assess",
-    badgeColor: "bg-green/[0.08] text-green",
-    headline: "Assess candidates",
+    badgeColor: "bg-green/10 text-green",
+    headline: "Assess candidates ",
     headlineAccent: "with confidence",
+    accentColor: "text-green",
     description:
       "Multi-stage screening ensures only the most qualified, culturally aligned candidates reach your interview room.",
     tabs: [
@@ -84,9 +87,10 @@ const featureSections: FeatureSection[] = [
   {
     id: "place",
     badge: "Place & Integrate",
-    badgeColor: "bg-purple/[0.08] text-purple",
-    headline: "Seamless placements",
+    badgeColor: "bg-pink/10 text-pink",
+    headline: "Seamless placements ",
     headlineAccent: "that stick",
+    accentColor: "text-pink",
     description:
       "From offer negotiation to onboarding support, we ensure every placement is set up for long-term success.",
     tabs: [
@@ -115,9 +119,10 @@ const featureSections: FeatureSection[] = [
   {
     id: "tech",
     badge: "Technology",
-    badgeColor: "bg-cyan/[0.08] text-cyan",
-    headline: "VC-backed tech",
+    badgeColor: "bg-cyan/10 text-cyan",
+    headline: "VC-backed tech ",
     headlineAccent: "hiring specialists",
+    accentColor: "text-cyan",
     description:
       "We partner with the world's most ambitious technology companies to build transformative engineering, product, and leadership teams.",
     tabs: [
@@ -146,9 +151,10 @@ const featureSections: FeatureSection[] = [
   {
     id: "legal",
     badge: "Legal",
-    badgeColor: "bg-yellow/[0.08] text-yellow",
-    headline: "Elite legal",
+    badgeColor: "bg-yellow/10 text-yellow",
+    headline: "Elite legal ",
     headlineAccent: "talent placement",
+    accentColor: "text-yellow",
     description:
       "Placing exceptional lawyers at Magic Circle firms, US elite, and top-tier in-house legal teams globally.",
     tabs: [
@@ -177,9 +183,10 @@ const featureSections: FeatureSection[] = [
   {
     id: "finance",
     badge: "Finance",
-    badgeColor: "bg-green/[0.08] text-green",
-    headline: "Banking & finance",
+    badgeColor: "bg-green/10 text-green",
+    headline: "Banking & finance ",
     headlineAccent: "recruitment experts",
+    accentColor: "text-accent",
     description:
       "Connecting elite finance professionals with leading global banks, hedge funds, private equity, and corporate advisory firms.",
     tabs: [
@@ -207,192 +214,6 @@ const featureSections: FeatureSection[] = [
   },
 ];
 
-const mockupLayouts = [
-  // Layout 0: Card grid (Source)
-  (badgeColor: string) => (
-    <div className="w-full h-full bg-white/70 rounded-xl border border-accent/[0.06] p-5 flex flex-col gap-3">
-      <div className="flex items-center gap-3 mb-1">
-        <div className={`w-8 h-8 rounded-lg ${badgeColor}`} />
-        <div className="h-3 bg-gray-border rounded w-1/3" />
-        <div className="ml-auto h-3 bg-accent/10 rounded-full w-16" />
-      </div>
-      <div className="flex-1 grid grid-cols-2 gap-3">
-        {["accent", "green", "purple", "cyan"].map((c, i) => (
-          <div key={i} className="bg-gray-light rounded-lg p-3 space-y-2">
-            <div className="h-2.5 bg-gray-border rounded w-3/4" />
-            <div className="h-2 bg-gray-border/60 rounded w-full" />
-            <div className="h-2 bg-gray-border/60 rounded w-2/3" />
-            <div className={`h-5 bg-${c}/10 rounded-md w-16 mt-1`} />
-          </div>
-        ))}
-      </div>
-    </div>
-  ),
-  // Layout 1: Pipeline/Kanban (Screen)
-  (badgeColor: string) => (
-    <div className="w-full h-full bg-white/70 rounded-xl border border-accent/[0.06] p-5 flex flex-col">
-      <div className="flex items-center gap-3 mb-4">
-        <div className={`w-8 h-8 rounded-lg ${badgeColor}`} />
-        <div className="h-3 bg-gray-border rounded w-1/4" />
-      </div>
-      <div className="flex-1 grid grid-cols-3 gap-3">
-        {["Screening", "Interview", "Offer"].map((stage, i) => (
-          <div key={stage} className="flex flex-col gap-2">
-            <div className="text-[10px] font-semibold text-gray uppercase tracking-wider">{stage}</div>
-            {Array.from({ length: 3 - i }).map((_, j) => (
-              <div key={j} className="bg-gray-light rounded-lg p-2.5 space-y-1.5">
-                <div className="h-2 bg-gray-border rounded w-4/5" />
-                <div className="h-1.5 bg-gray-border/50 rounded w-full" />
-                <div className={`h-4 rounded-md w-12 mt-1 ${i === 0 ? 'bg-yellow/15' : i === 1 ? 'bg-accent/10' : 'bg-green/15'}`} />
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  ),
-  // Layout 2: Profile card (Place)
-  (badgeColor: string) => (
-    <div className="w-full h-full bg-white/70 rounded-xl border border-accent/[0.06] p-5 flex flex-col gap-4">
-      <div className="flex items-center gap-3">
-        <div className={`w-8 h-8 rounded-lg ${badgeColor}`} />
-        <div className="h-3 bg-gray-border rounded w-1/3" />
-        <div className="ml-auto flex gap-2">
-          <div className="h-7 w-7 bg-green/10 rounded-lg" />
-          <div className="h-7 w-7 bg-gray-light rounded-lg" />
-        </div>
-      </div>
-      <div className="flex gap-4 flex-1">
-        <div className="w-1/3 space-y-3">
-          <div className="w-16 h-16 bg-gray-light rounded-full mx-auto" />
-          <div className="h-2.5 bg-gray-border rounded w-2/3 mx-auto" />
-          <div className="h-2 bg-gray-border/50 rounded w-1/2 mx-auto" />
-          <div className="h-6 bg-green/10 rounded-full w-20 mx-auto" />
-        </div>
-        <div className="flex-1 space-y-3">
-          <div className="bg-gray-light rounded-lg p-3 space-y-1.5">
-            <div className="h-2 bg-gray-border rounded w-1/4" />
-            <div className="h-1.5 bg-gray-border/50 rounded w-full" />
-            <div className="h-1.5 bg-gray-border/50 rounded w-3/4" />
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="bg-gray-light rounded-lg p-2 space-y-1">
-              <div className="h-1.5 bg-gray-border/50 rounded w-1/2" />
-              <div className="h-3 bg-accent/10 rounded w-3/4" />
-            </div>
-            <div className="bg-gray-light rounded-lg p-2 space-y-1">
-              <div className="h-1.5 bg-gray-border/50 rounded w-2/3" />
-              <div className="h-3 bg-purple/10 rounded w-1/2" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  ),
-  // Layout 3: Dashboard metrics (Tech)
-  (badgeColor: string) => (
-    <div className="w-full h-full bg-white/70 rounded-xl border border-accent/[0.06] p-5 flex flex-col gap-3">
-      <div className="flex items-center gap-3">
-        <div className={`w-8 h-8 rounded-lg ${badgeColor}`} />
-        <div className="h-3 bg-gray-border rounded w-1/4" />
-        <div className="ml-auto flex gap-1.5">
-          <div className="h-6 w-14 bg-accent/10 rounded-md" />
-          <div className="h-6 w-14 bg-gray-light rounded-md" />
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-2">
-        {[
-          { color: "accent", w: "w-2/3" },
-          { color: "green", w: "w-3/4" },
-          { color: "cyan", w: "w-1/2" },
-        ].map((m, i) => (
-          <div key={i} className="bg-gray-light rounded-lg p-3 text-center space-y-1">
-            <div className={`h-5 bg-${m.color}/15 rounded ${m.w} mx-auto`} />
-            <div className="h-1.5 bg-gray-border/50 rounded w-2/3 mx-auto" />
-          </div>
-        ))}
-      </div>
-      <div className="flex-1 bg-gray-light rounded-lg p-3">
-        <div className="flex items-end gap-1.5 h-full">
-          {[40, 65, 45, 80, 55, 70, 90, 60, 75, 85, 50, 95].map((h, i) => (
-            <div
-              key={i}
-              className="flex-1 bg-gradient-to-t from-accent/20 to-purple/10 rounded-t"
-              style={{ height: `${h}%` }}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  ),
-  // Layout 4: List view (Legal)
-  (badgeColor: string) => (
-    <div className="w-full h-full bg-white/70 rounded-xl border border-accent/[0.06] p-5 flex flex-col gap-3">
-      <div className="flex items-center gap-3 mb-1">
-        <div className={`w-8 h-8 rounded-lg ${badgeColor}`} />
-        <div className="h-3 bg-gray-border rounded w-1/4" />
-        <div className="ml-auto h-7 w-20 bg-gray-light rounded-lg" />
-      </div>
-      <div className="flex-1 space-y-2">
-        {[
-          { status: "bg-green/15", w1: "w-1/3", w2: "w-2/3" },
-          { status: "bg-yellow/15", w1: "w-1/4", w2: "w-3/4" },
-          { status: "bg-accent/10", w1: "w-2/5", w2: "w-1/2" },
-          { status: "bg-green/15", w1: "w-1/3", w2: "w-3/5" },
-          { status: "bg-purple/10", w1: "w-1/4", w2: "w-2/3" },
-        ].map((row, i) => (
-          <div key={i} className="bg-gray-light rounded-lg p-3 flex items-center gap-3">
-            <div className="w-8 h-8 bg-gray-border/40 rounded-full shrink-0" />
-            <div className="flex-1 space-y-1">
-              <div className={`h-2 bg-gray-border rounded ${row.w1}`} />
-              <div className={`h-1.5 bg-gray-border/50 rounded ${row.w2}`} />
-            </div>
-            <div className={`h-5 w-14 ${row.status} rounded-full shrink-0`} />
-          </div>
-        ))}
-      </div>
-    </div>
-  ),
-  // Layout 5: Analytics (Finance)
-  (badgeColor: string) => (
-    <div className="w-full h-full bg-white/70 rounded-xl border border-accent/[0.06] p-5 flex flex-col gap-3">
-      <div className="flex items-center gap-3">
-        <div className={`w-8 h-8 rounded-lg ${badgeColor}`} />
-        <div className="h-3 bg-gray-border rounded w-1/3" />
-      </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div className="bg-gray-light rounded-lg p-3 space-y-1">
-          <div className="h-1.5 bg-gray-border/50 rounded w-1/2" />
-          <div className="h-5 bg-green/15 rounded w-3/4" />
-        </div>
-        <div className="bg-gray-light rounded-lg p-3 space-y-1">
-          <div className="h-1.5 bg-gray-border/50 rounded w-2/3" />
-          <div className="h-5 bg-accent/10 rounded w-2/3" />
-        </div>
-      </div>
-      <div className="flex-1 bg-gray-light rounded-lg p-3 flex flex-col justify-end">
-        <div className="flex items-end gap-2 h-full">
-          {[30, 50, 40, 70, 55, 80, 65, 90, 75, 85].map((h, i) => (
-            <div key={i} className="flex-1 flex flex-col gap-0.5" style={{ height: `${h}%` }}>
-              <div className="flex-1 bg-gradient-to-t from-green/20 to-green/5 rounded-t" />
-              <div className="h-1/3 bg-gradient-to-t from-accent/15 to-accent/5 rounded-b" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  ),
-];
-
-function MockupVariant({ index, badgeColor }: { index: number; badgeColor: string }) {
-  const layoutFn = mockupLayouts[index % mockupLayouts.length];
-  return (
-    <div className="mockup-gradient rounded-2xl aspect-[4/3] mockup-shadow-lg overflow-hidden p-4 sm:p-5 lg:p-6 transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_30px_90px_rgba(79,70,229,0.12)] ring-1 ring-accent/[0.06]">
-      {layoutFn(badgeColor)}
-    </div>
-  );
-}
-
 function FeatureBlock({ section, index }: { section: FeatureSection; index: number }) {
   const [activeTab, setActiveTab] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
@@ -400,9 +221,7 @@ function FeatureBlock({ section, index }: { section: FeatureSection; index: numb
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setInView(true);
-      },
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
       { threshold: 0.15 }
     );
     if (ref.current) observer.observe(ref.current);
@@ -410,12 +229,10 @@ function FeatureBlock({ section, index }: { section: FeatureSection; index: numb
   }, []);
 
   const isReversed = index % 2 === 1;
+  const bgClass = index % 2 === 0 ? "bg-white" : "bg-gray-light";
 
   return (
-    <div
-      ref={ref}
-      className={`section-padding ${index % 2 === 0 ? "bg-white" : "bg-gradient-section"}`}
-    >
+    <div ref={ref} className={`section-padding ${bgClass}`}>
       <div className="mx-auto max-w-7xl px-6">
         <div
           className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-20 ${
@@ -424,20 +241,19 @@ function FeatureBlock({ section, index }: { section: FeatureSection; index: numb
         >
           {/* Text side */}
           <div
-            className={`flex-1 ${
-              inView ? "animate-slideUp" : "opacity-0"
+            className={`flex-1 transition-all duration-700 ${
+              inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
           >
-            {/* Badge */}
             <span
               className={`inline-block text-xs font-bold tracking-[0.15em] uppercase px-3 py-1.5 rounded-full mb-6 ${section.badgeColor}`}
             >
               {section.badge}
             </span>
 
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-primary leading-tight mb-4">
-              {section.headline}{" "}
-              <span className="gradient-text">{section.headlineAccent}</span>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-[2.75rem] font-bold text-primary leading-tight mb-4">
+              {section.headline}
+              <span className={section.accentColor}>{section.headlineAccent}</span>
             </h2>
 
             <p className="text-text-secondary text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 max-w-lg">
@@ -445,12 +261,12 @@ function FeatureBlock({ section, index }: { section: FeatureSection; index: numb
             </p>
 
             {/* Tabs */}
-            <div className="flex gap-0 sm:gap-1 mb-5 sm:mb-6 border-b border-gray-border overflow-x-auto">
+            <div className="flex gap-1 mb-6 border-b border-gray-border">
               {section.tabs.map((tab, i) => (
                 <button
                   key={tab.label}
                   onClick={() => setActiveTab(i)}
-                  className={`px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold transition-all duration-200 border-b-[3px] -mb-px whitespace-nowrap ${
+                  className={`px-4 py-3 text-sm font-semibold transition-all duration-200 border-b-2 -mb-px ${
                     activeTab === i
                       ? "text-accent border-accent"
                       : "text-gray border-transparent hover:text-primary"
@@ -465,10 +281,10 @@ function FeatureBlock({ section, index }: { section: FeatureSection; index: numb
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
               >
                 <h3 className="text-lg font-bold text-primary mb-2">
                   {section.tabs[activeTab].title}
@@ -496,14 +312,43 @@ function FeatureBlock({ section, index }: { section: FeatureSection; index: numb
             </AnimatePresence>
           </div>
 
-          {/* Mockup side */}
+          {/* Card side */}
           <div
-            className={`flex-1 w-full ${
-              inView ? "animate-slideUp" : "opacity-0"
+            className={`flex-1 w-full transition-all duration-700 delay-100 ${
+              inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
-            style={{ animationDelay: "0.2s" }}
           >
-            <MockupVariant index={index} badgeColor={section.badgeColor} />
+            <div className="bg-white rounded-2xl border border-gray-border p-6 shadow-[0_8px_30px_rgba(0,0,64,0.06)]">
+              <div className="space-y-4">
+                {section.tabs.map((tab, i) => (
+                  <div
+                    key={tab.label}
+                    className={`rounded-xl p-4 border transition-all duration-200 cursor-pointer ${
+                      activeTab === i
+                        ? "border-accent/30 bg-accent/[0.03]"
+                        : "border-gray-border bg-gray-light hover:border-gray"
+                    }`}
+                    onClick={() => setActiveTab(i)}
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${section.badgeColor}`}>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          {i === 0 ? (
+                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                          ) : (
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          )}
+                        </svg>
+                      </div>
+                      <span className="font-semibold text-primary text-sm">{tab.label}</span>
+                    </div>
+                    <p className="text-text-secondary text-xs leading-relaxed pl-11">
+                      {tab.body}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

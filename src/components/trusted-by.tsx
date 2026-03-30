@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
 
 const companies = [
   "Goldman Sachs",
@@ -24,7 +24,7 @@ const companies = [
 function LogoItem({ name }: { name: string }) {
   return (
     <div className="flex items-center justify-center px-8 py-3 mx-3 whitespace-nowrap">
-      <span className="text-gray font-semibold text-base tracking-wide hover:text-accent/50 transition-colors duration-300">
+      <span className="text-gray font-semibold text-base tracking-wide">
         {name}
       </span>
     </div>
@@ -32,23 +32,33 @@ function LogoItem({ name }: { name: string }) {
 }
 
 export function TrustedBy() {
-  return (
-    <section className="relative py-16 overflow-hidden bg-white">
-      {/* Gradient fade overlays */}
-      <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
 
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-8"
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      { threshold: 0.3 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section ref={ref} className="relative py-16 overflow-hidden bg-gray-light">
+      {/* Gradient fade overlays */}
+      <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-gray-light to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-gray-light to-transparent z-10 pointer-events-none" />
+
+      <div
+        className={`text-center mb-8 transition-all duration-600 ${
+          visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+        }`}
       >
         <span className="text-gray text-sm font-medium tracking-[0.15em] uppercase">
           Trusted by industry leaders
         </span>
-      </motion.div>
+      </div>
 
       {/* Marquee row 1 */}
       <div className="relative flex overflow-hidden mb-3">

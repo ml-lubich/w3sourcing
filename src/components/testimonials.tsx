@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence, type PanInfo } from "framer-motion";
+import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 
 const testimonials = [
   {
@@ -10,7 +10,7 @@ const testimonials = [
     name: "Sarah Chen",
     title: "CTO, Series B Fintech",
     sector: "Technology",
-    sectorColor: "bg-accent/[0.08] text-accent",
+    sectorColor: "bg-accent/10 text-accent",
   },
   {
     quote:
@@ -18,7 +18,7 @@ const testimonials = [
     name: "James Morrison",
     title: "Managing Partner, Magic Circle Firm",
     sector: "Legal",
-    sectorColor: "bg-yellow/[0.08] text-yellow",
+    sectorColor: "bg-yellow/10 text-yellow",
   },
   {
     quote:
@@ -26,7 +26,7 @@ const testimonials = [
     name: "Priya Sharma",
     title: "Head of Talent, Global Investment Bank",
     sector: "Finance",
-    sectorColor: "bg-green/[0.08] text-green",
+    sectorColor: "bg-green/10 text-green",
   },
   {
     quote:
@@ -34,7 +34,7 @@ const testimonials = [
     name: "David Thompson",
     title: "VP Engineering, AI Startup",
     sector: "Technology",
-    sectorColor: "bg-accent/[0.08] text-accent",
+    sectorColor: "bg-accent/10 text-accent",
   },
   {
     quote:
@@ -42,7 +42,7 @@ const testimonials = [
     name: "Elena Rodriguez",
     title: "CFO, European Challenger Bank",
     sector: "Finance",
-    sectorColor: "bg-green/[0.08] text-green",
+    sectorColor: "bg-green/10 text-green",
   },
 ];
 
@@ -50,6 +50,17 @@ export function Testimonials() {
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
   const timerRef = useRef<ReturnType<typeof setInterval>>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      { threshold: 0.2 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const resetTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -61,9 +72,7 @@ export function Testimonials() {
 
   useEffect(() => {
     resetTimer();
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [resetTimer]);
 
   const goTo = (i: number) => {
@@ -87,22 +96,20 @@ export function Testimonials() {
   };
 
   return (
-    <section id="testimonials" className="section-padding bg-white overflow-hidden">
+    <section id="testimonials" ref={sectionRef} className="section-padding bg-white overflow-hidden">
       <div className="mx-auto max-w-7xl px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7 }}
-          className="text-center mb-12 sm:mb-16"
+        <div
+          className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
+            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
         >
-          <span className="inline-block text-xs font-bold tracking-[0.15em] uppercase px-3 py-1.5 rounded-full bg-purple/[0.08] text-purple mb-6">
+          <span className="inline-block text-xs font-bold tracking-[0.15em] uppercase px-3 py-1.5 rounded-full bg-pink/10 text-pink mb-6">
             Testimonials
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary tracking-tight">
-            Loved by <span className="gradient-text">hiring teams</span> worldwide
+            Loved by <span className="text-accent">hiring teams</span> worldwide
           </h2>
-        </motion.div>
+        </div>
 
         {/* Testimonial Slider */}
         <div className="max-w-3xl mx-auto">
@@ -111,28 +118,26 @@ export function Testimonials() {
               <motion.div
                 key={current}
                 custom={direction}
-                initial={{ opacity: 0, x: direction * 50 }}
+                initial={{ opacity: 0, x: direction * 40 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: direction * -50 }}
-                transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                exit={{ opacity: 0, x: direction * -40 }}
+                transition={{ duration: 0.3 }}
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.1}
                 onDragEnd={handleDragEnd}
-                className="testimonial-card cursor-grab active:cursor-grabbing touch-pan-y"
+                className="bg-white rounded-2xl border border-gray-border p-8 sm:p-10 shadow-[0_4px_20px_rgba(0,0,64,0.04)] cursor-grab active:cursor-grabbing touch-pan-y"
               >
-                {/* Quote mark */}
-                <div className="gradient-text text-5xl sm:text-6xl font-serif leading-none mb-3 select-none opacity-30">
+                <div className="text-accent text-5xl font-serif leading-none mb-3 select-none opacity-30">
                   &ldquo;
                 </div>
                 <p className="text-primary text-base sm:text-lg lg:text-xl leading-relaxed mb-6 sm:mb-8">
                   {testimonials[current].quote}
                 </p>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                  {/* Avatar placeholder */}
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple/10 to-accent/10 flex items-center justify-center shrink-0">
-                      <span className="text-accent font-bold text-xs">
+                    <div className="w-11 h-11 rounded-full bg-gray-light flex items-center justify-center shrink-0">
+                      <span className="text-primary font-bold text-xs">
                         {testimonials[current].name
                           .split(" ")
                           .map((n) => n[0])
@@ -158,7 +163,7 @@ export function Testimonials() {
             </AnimatePresence>
           </div>
 
-          {/* Navigation dots + arrows */}
+          {/* Navigation dots */}
           <div className="flex items-center justify-center gap-3 mt-8">
             <button
               onClick={() => goTo((current - 1 + testimonials.length) % testimonials.length)}
@@ -175,7 +180,7 @@ export function Testimonials() {
                 onClick={() => goTo(i)}
                 className={`transition-all duration-300 rounded-full ${
                   i === current
-                    ? "w-7 h-2.5 bg-gradient-to-r from-purple to-accent"
+                    ? "w-7 h-2.5 bg-accent"
                     : "w-2.5 h-2.5 bg-gray-border hover:bg-gray"
                 }`}
                 aria-label={`Go to testimonial ${i + 1}`}

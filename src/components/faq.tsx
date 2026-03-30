@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 const faqs = [
   {
@@ -87,33 +87,41 @@ function FAQItem({
 
 export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      { threshold: 0.2 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
 
   const leftColumn = faqs.slice(0, 3);
   const rightColumn = faqs.slice(3);
 
   return (
-    <section id="faq" className="section-padding bg-gradient-section overflow-hidden">
-      <div className="mx-auto max-w-7xl px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7 }}
-          className="text-center mb-16"
+    <section id="faq" className="section-padding bg-gray-light overflow-hidden">
+      <div ref={ref} className="mx-auto max-w-7xl px-6">
+        <div
+          className={`text-center mb-16 transition-all duration-700 ${
+            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
         >
-          <span className="inline-block text-xs font-bold tracking-[0.15em] uppercase px-3 py-1.5 rounded-full bg-cyan/[0.08] text-cyan mb-6">
+          <span className="inline-block text-xs font-bold tracking-[0.15em] uppercase px-3 py-1.5 rounded-full bg-cyan/10 text-cyan mb-6">
             FAQ
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary tracking-tight">
-            Frequently asked <span className="gradient-text">questions</span>
+            Frequently asked <span className="text-accent">questions</span>
           </h2>
           <p className="mt-4 text-text-secondary text-lg max-w-2xl mx-auto">
             Everything you need to know about working with W3 Sourcing.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-0 md:gap-12 max-w-5xl mx-auto">
-          {/* Left column */}
           <div>
             {leftColumn.map((faq, i) => (
               <FAQItem
@@ -125,7 +133,6 @@ export function FAQ() {
               />
             ))}
           </div>
-          {/* Right column */}
           <div>
             {rightColumn.map((faq, i) => {
               const idx = i + 3;
