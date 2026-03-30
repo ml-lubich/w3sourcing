@@ -15,26 +15,9 @@ const navLinks = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 40);
-
-      const sections = navLinks.map((l) => l.href.slice(1));
-      let found = "";
-      for (const id of sections) {
-        const el = document.getElementById(id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 120 && rect.bottom > 120) {
-            found = `#${id}`;
-            break;
-          }
-        }
-      }
-      setActiveSection(found);
-    };
+    const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -44,7 +27,7 @@ export function Header() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled ? "header-scrolled py-3" : "py-5 bg-transparent"
       }`}
     >
@@ -70,14 +53,10 @@ export function Header() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * i + 0.3, duration: 0.5 }}
-              className={`relative text-sm hover:text-white transition-colors duration-300 font-medium group ${
-                activeSection === link.href ? "text-white" : "text-white/60"
-              }`}
+              className="relative text-sm text-white/60 hover:text-white transition-colors duration-300 font-medium group"
             >
               {link.label}
-              <span className={`absolute -bottom-1 left-0 h-[2px] bg-gradient-to-r from-blue to-blue-light transition-all duration-300 ${
-                activeSection === link.href ? "w-full" : "w-0 group-hover:w-full"
-              }`} />
+              <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-blue to-blue-light group-hover:w-full transition-all duration-300" />
             </motion.a>
           ))}
           <motion.a
@@ -125,7 +104,7 @@ export function Header() {
                   onClick={() => setMobileOpen(false)}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.05 + i * 0.06, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ delay: i * 0.05, duration: 0.3 }}
                   className="text-white/80 hover:text-blue-light transition-colors py-3 font-medium border-b border-white/5"
                 >
                   {link.label}

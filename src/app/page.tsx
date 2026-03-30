@@ -14,10 +14,6 @@ import { CTA } from "@/components/cta";
 import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
 
-function SectionDivider() {
-  return <div className="section-divider" />;
-}
-
 export default function Home() {
   return (
     <>
@@ -25,22 +21,14 @@ export default function Home() {
       <main>
         <Hero />
         <TrustedBy />
-        <SectionDivider />
         <Services />
-        <SectionDivider />
         <HowWeWork />
         <Stats />
-        <SectionDivider />
         <WhyUs />
-        <SectionDivider />
         <Industries />
-        <SectionDivider />
         <Testimonials />
-        <SectionDivider />
         <GlobalOffices />
-        <SectionDivider />
         <CTA />
-        <SectionDivider />
         <Contact />
       </main>
       <Footer />
