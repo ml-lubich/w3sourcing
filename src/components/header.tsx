@@ -4,80 +4,95 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
-  { label: "Services", href: "#services" },
-  { label: "Process", href: "#process" },
-  { label: "About", href: "#why-us" },
-  { label: "Industries", href: "#industries" },
+  { label: "Features", href: "#features" },
+  { label: "Results", href: "#stats" },
   { label: "Testimonials", href: "#testimonials" },
+  { label: "FAQ", href: "#faq" },
   { label: "Contact", href: "#contact" },
 ];
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+
+      const sections = navLinks.map((l) => l.href.slice(1));
+      let current = "";
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 200) current = id;
+        }
+      }
+      setActiveSection(current);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <motion.header
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "header-scrolled py-3" : "py-5 bg-transparent"
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? "header-scrolled py-3" : "py-5 bg-white/0"
       }`}
     >
       <div className="mx-auto max-w-7xl px-6 flex items-center justify-between">
+        {/* Logo */}
         <a href="#" className="flex items-center gap-2.5 group">
-          <motion.div
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            transition={{ type: "spring", stiffness: 400, damping: 15 }}
-            className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue to-blue-dark flex items-center justify-center shadow-lg shadow-blue/20"
-          >
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple to-accent flex items-center justify-center transition-transform duration-200 group-hover:scale-105 shadow-lg shadow-accent/20">
             <span className="text-white font-bold text-sm">W3</span>
-          </motion.div>
-          <span className="text-white font-semibold text-lg tracking-tight">
-            W3<span className="text-blue-light">Sourcing</span>
+          </div>
+          <span className="text-primary font-bold text-xl tracking-tight">
+            W3Sourcing
           </span>
         </a>
 
+        {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link, i) => (
-            <motion.a
-              key={link.href}
-              href={link.href}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * i + 0.3, duration: 0.5 }}
-              className="relative text-sm text-white/60 hover:text-white transition-colors duration-300 font-medium group"
-            >
-              {link.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-blue to-blue-light group-hover:w-full transition-all duration-300" />
-            </motion.a>
-          ))}
-          <motion.a
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.href.slice(1);
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                className={`text-sm font-medium transition-colors duration-200 ${
+                  isActive
+                    ? "text-accent"
+                    : "text-text-secondary hover:text-primary"
+                }`}
+              >
+                {link.label}
+              </a>
+            );
+          })}
+          <a
             href="#contact"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="btn-primary text-white font-semibold text-sm px-6 py-2.5 rounded-full"
+            className="bg-gradient-to-r from-purple to-accent text-white font-semibold text-sm py-2.5 px-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-accent/25 hover:-translate-y-0.5"
           >
-            Get in Touch
-          </motion.a>
+            Book a Call
+          </a>
         </nav>
 
+        {/* Mobile toggle */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden text-white p-2 relative z-50"
+          className="md:hidden text-primary p-2 relative z-50"
           aria-label="Toggle menu"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="transition-transform duration-200"
+          >
             {mobileOpen ? (
               <path d="M6 6l12 12M6 18L18 6" />
             ) : (
@@ -87,14 +102,15 @@ export function Header() {
         </button>
       </div>
 
+      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden absolute top-full left-0 right-0 bg-navy/95 backdrop-blur-xl border-t border-white/5 overflow-hidden"
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-gray-border overflow-hidden shadow-xl"
           >
             <nav className="flex flex-col p-6 gap-1">
               {navLinks.map((link, i) => (
@@ -102,28 +118,25 @@ export function Header() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05, duration: 0.3 }}
-                  className="text-white/80 hover:text-blue-light transition-colors py-3 font-medium border-b border-white/5"
+                  transition={{ delay: i * 0.04, duration: 0.2 }}
+                  className="text-text-secondary hover:text-accent transition-colors py-3 font-medium border-b border-gray-border/50 last:border-b-0"
                 >
                   {link.label}
                 </motion.a>
               ))}
-              <motion.a
+              <a
                 href="#contact"
                 onClick={() => setMobileOpen(false)}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.3 }}
-                className="btn-primary text-white font-semibold text-center px-5 py-3 rounded-full mt-4"
+                className="btn-primary text-center text-sm mt-4 rounded-xl justify-center"
               >
-                Get in Touch
-              </motion.a>
+                <span>Book a Call</span>
+              </a>
             </nav>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </header>
   );
 }

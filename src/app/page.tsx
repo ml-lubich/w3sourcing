@@ -3,33 +3,29 @@
 import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
 import { TrustedBy } from "@/components/trusted-by";
-import { Services } from "@/components/services";
-import { HowWeWork } from "@/components/how-we-work";
+import { FeatureTabs } from "@/components/feature-tabs";
 import { Stats } from "@/components/stats";
-import { WhyUs } from "@/components/why-us";
-import { Industries } from "@/components/industries";
 import { Testimonials } from "@/components/testimonials";
-import { GlobalOffices } from "@/components/global-offices";
-import { CTA } from "@/components/cta";
+import { FAQ } from "@/components/faq";
 import { Contact } from "@/components/contact";
+import { CTABanner } from "@/components/cta-banner";
 import { Footer } from "@/components/footer";
+import { FloatingCTA } from "@/components/floating-cta";
 
 export default function Home() {
   return (
     <>
       <Header />
+      <FloatingCTA />
       <main>
         <Hero />
         <TrustedBy />
-        <Services />
-        <HowWeWork />
+        <FeatureTabs />
         <Stats />
-        <WhyUs />
-        <Industries />
         <Testimonials />
-        <GlobalOffices />
-        <CTA />
+        <FAQ />
         <Contact />
+        <CTABanner />
       </main>
       <Footer />
     </>

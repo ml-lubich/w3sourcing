@@ -23,8 +23,8 @@ const companies = [
 
 function LogoItem({ name }: { name: string }) {
   return (
-    <div className="flex items-center justify-center px-8 py-4 mx-4 whitespace-nowrap">
-      <span className="text-white/15 font-semibold text-lg tracking-wide hover:text-white/30 transition-colors duration-500">
+    <div className="flex items-center justify-center px-8 py-3 mx-3 whitespace-nowrap">
+      <span className="text-gray font-semibold text-base tracking-wide hover:text-accent/50 transition-colors duration-300">
         {name}
       </span>
     </div>
@@ -33,24 +33,25 @@ function LogoItem({ name }: { name: string }) {
 
 export function TrustedBy() {
   return (
-    <section className="relative py-16 overflow-hidden bg-navy border-y border-white/[0.03]">
-      {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-navy via-transparent to-navy z-10 pointer-events-none" />
+    <section className="relative py-16 overflow-hidden bg-white">
+      {/* Gradient fade overlays */}
+      <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="text-center mb-10"
+        transition={{ duration: 0.6 }}
+        className="text-center mb-8"
       >
-        <span className="text-white/25 text-sm font-medium tracking-[0.2em] uppercase">
+        <span className="text-gray text-sm font-medium tracking-[0.15em] uppercase">
           Trusted by industry leaders
         </span>
       </motion.div>
 
       {/* Marquee row 1 */}
-      <div className="relative flex overflow-hidden mb-4">
+      <div className="relative flex overflow-hidden mb-3">
         <div className="animate-marquee flex shrink-0">
           {companies.map((company) => (
             <LogoItem key={company} name={company} />
@@ -63,7 +64,10 @@ export function TrustedBy() {
 
       {/* Marquee row 2 - reverse */}
       <div className="relative flex overflow-hidden">
-        <div className="animate-marquee flex shrink-0" style={{ animationDirection: "reverse", animationDuration: "35s" }}>
+        <div
+          className="animate-marquee flex shrink-0"
+          style={{ animationDirection: "reverse", animationDuration: "35s" }}
+        >
           {[...companies].reverse().map((company) => (
             <LogoItem key={`rev-${company}`} name={company} />
           ))}

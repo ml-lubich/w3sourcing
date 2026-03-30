@@ -1,87 +1,114 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
 const stats = [
-  { value: 500, suffix: "+", label: "Placements Made", description: "Senior & executive hires" },
-  { value: 98, suffix: "%", label: "Client Retention", description: "Year-over-year partnership" },
-  { value: 45, suffix: "+", label: "Countries Reached", description: "Global talent network" },
-  { value: 12, suffix: "yrs", label: "Average Experience", description: "Per consultant" },
+  { value: 500, suffix: "+", label: "Placements Made", color: "text-accent" },
+  { value: 98, suffix: "%", label: "Client Retention", color: "text-green" },
+  { value: 45, suffix: "+", label: "Countries Reached", color: "text-purple" },
+  { value: 14, suffix: " days", label: "Avg. Time to Shortlist", color: "text-cyan" },
 ];
 
-function AnimatedCounter({ value, suffix, inView }: { value: number; suffix: string; inView: boolean }) {
-  const count = useMotionValue(0);
-  const rounded = useTransform(count, (v) => Math.round(v));
-  const [display, setDisplay] = useState("0");
+function AnimatedCounter({
+  value,
+  suffix,
+  color,
+  label,
+  delay,
+}: {
+  value: number;
+  suffix: string;
+  color: string;
+  label: string;
+  delay: number;
+}) {
+  const [count, setCount] = useState(0);
+  const [popped, setPopped] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const triggered = useRef(false);
 
   useEffect(() => {
-    if (inView) {
-      const controls = animate(count, value, {
-        duration: 2.5,
-        ease: [0.16, 1, 0.3, 1],
-      });
-      return () => controls.stop();
-    }
-  }, [inView, count, value]);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !triggered.current) {
+          triggered.current = true;
+          const duration = 2000;
+          const start = performance.now();
 
-  useEffect(() => {
-    const unsubscribe = rounded.on("change", (v) => {
-      setDisplay(String(v));
-    });
-    return unsubscribe;
-  }, [rounded]);
+          const tick = (now: number) => {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.floor(eased * value));
+
+            if (progress < 1) {
+              requestAnimationFrame(tick);
+            } else {
+              setCount(value);
+              setPopped(true);
+              setTimeout(() => setPopped(false), 500);
+            }
+          };
+
+          setTimeout(() => requestAnimationFrame(tick), delay);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [value, delay]);
 
   return (
-    <span className="tabular-nums">
-      {display}{suffix}
-    </span>
+    <div ref={ref} className="stat-card group">
+      <div
+        className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2 tabular-nums transition-transform duration-300 ${color} ${
+          popped ? "animate-pop-scale" : ""
+        }`}
+      >
+        {count}
+        {suffix}
+      </div>
+      <div className="text-text-secondary text-xs sm:text-sm font-medium">{label}</div>
+    </div>
   );
 }
 
 export function Stats() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   return (
-    <section className="relative py-24 sm:py-32 bg-navy overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-blue/5 blur-[120px] rounded-full" />
-      </div>
+    <section id="stats" className="section-padding bg-gradient-section overflow-hidden">
+      <div className="mx-auto max-w-7xl px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
+        >
+          <span className="inline-block text-xs font-bold tracking-[0.15em] uppercase px-3 py-1.5 rounded-full bg-accent/[0.08] text-accent mb-6">
+            Our Track Record
+          </span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary tracking-tight">
+            Results that <span className="gradient-text">speak for themselves</span>
+          </h2>
+          <p className="mt-4 text-text-secondary text-lg max-w-2xl mx-auto">
+            Trusted by over 500 companies worldwide, our numbers reflect a
+            commitment to excellence in every placement.
+          </p>
+        </motion.div>
 
-      <div className="absolute inset-0 bg-grid opacity-20" />
-
-      <div ref={ref} className="relative z-10 mx-auto max-w-7xl px-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {stats.map((stat, i) => (
-            <motion.div
+            <AnimatedCounter
               key={stat.label}
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{
-                delay: i * 0.15,
-                duration: 0.8,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="text-center group"
-            >
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="glass-card rounded-2xl p-8 hover:border-blue/15 transition-all duration-500"
-              >
-                <div className="text-4xl sm:text-5xl lg:text-6xl font-bold gradient-text-blue mb-3">
-                  <AnimatedCounter value={stat.value} suffix={stat.suffix} inView={isInView} />
-                </div>
-                <div className="text-white font-semibold text-sm mb-1">
-                  {stat.label}
-                </div>
-                <div className="text-white/30 text-xs">
-                  {stat.description}
-                </div>
-              </motion.div>
-            </motion.div>
+              value={stat.value}
+              suffix={stat.suffix}
+              color={stat.color}
+              label={stat.label}
+              delay={i * 200}
+            />
           ))}
         </div>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { motion, AnimatePresence, type PanInfo } from "framer-motion";
 
 const testimonials = [
   {
@@ -10,6 +10,7 @@ const testimonials = [
     name: "Sarah Chen",
     title: "CTO, Series B Fintech",
     sector: "Technology",
+    sectorColor: "bg-accent/[0.08] text-accent",
   },
   {
     quote:
@@ -17,6 +18,7 @@ const testimonials = [
     name: "James Morrison",
     title: "Managing Partner, Magic Circle Firm",
     sector: "Legal",
+    sectorColor: "bg-yellow/[0.08] text-yellow",
   },
   {
     quote:
@@ -24,6 +26,7 @@ const testimonials = [
     name: "Priya Sharma",
     title: "Head of Talent, Global Investment Bank",
     sector: "Finance",
+    sectorColor: "bg-green/[0.08] text-green",
   },
   {
     quote:
@@ -31,97 +34,162 @@ const testimonials = [
     name: "David Thompson",
     title: "VP Engineering, AI Startup",
     sector: "Technology",
+    sectorColor: "bg-accent/[0.08] text-accent",
+  },
+  {
+    quote:
+      "We needed a head of compliance who understood both UK and EU regulatory landscapes. W3 found exactly that person in under three weeks.",
+    name: "Elena Rodriguez",
+    title: "CFO, European Challenger Bank",
+    sector: "Finance",
+    sectorColor: "bg-green/[0.08] text-green",
   },
 ];
 
 export function Testimonials() {
   const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const timerRef = useRef<ReturnType<typeof setInterval>>(null);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
+  const resetTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setDirection(1);
       setCurrent((prev) => (prev + 1) % testimonials.length);
-    }, 6000);
-    return () => clearInterval(timer);
+    }, 5000);
   }, []);
 
-  return (
-    <section id="testimonials" className="relative py-28 sm:py-36 bg-navy overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue/3 blur-[150px] rounded-full" />
-      </div>
+  useEffect(() => {
+    resetTimer();
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [resetTimer]);
 
-      <div className="relative z-10 mx-auto max-w-7xl px-6">
+  const goTo = (i: number) => {
+    setDirection(i > current ? 1 : -1);
+    setCurrent(i);
+    resetTimer();
+  };
+
+  const handleDragEnd = (_: unknown, info: PanInfo) => {
+    const swipe = info.offset.x;
+    if (Math.abs(swipe) > 50) {
+      if (swipe < 0) {
+        setDirection(1);
+        setCurrent((prev) => (prev + 1) % testimonials.length);
+      } else {
+        setDirection(-1);
+        setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+      }
+      resetTimer();
+    }
+  };
+
+  return (
+    <section id="testimonials" className="section-padding bg-white overflow-hidden">
+      <div className="mx-auto max-w-7xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-16"
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-12 sm:mb-16"
         >
-          <span className="text-blue font-semibold text-sm tracking-[0.2em] uppercase mb-4 block">
+          <span className="inline-block text-xs font-bold tracking-[0.15em] uppercase px-3 py-1.5 rounded-full bg-purple/[0.08] text-purple mb-6">
             Testimonials
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white tracking-tight">
-            What Our <span className="gradient-text-blue">Clients</span> Say
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary tracking-tight">
+            Loved by <span className="gradient-text">hiring teams</span> worldwide
           </h2>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto">
-          {/* Quote icon */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-blue/10 text-[120px] leading-none font-serif text-center mb-[-40px] select-none"
-          >
-            &ldquo;
-          </motion.div>
-
-          {/* Carousel */}
-          <div className="relative min-h-[250px] flex items-center justify-center">
-            <AnimatePresence mode="wait">
+        {/* Testimonial Slider */}
+        <div className="max-w-3xl mx-auto">
+          <div className="relative min-h-[320px] sm:min-h-[260px]">
+            <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={current}
-                initial={{ opacity: 0, y: 30, filter: "blur(4px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -30, filter: "blur(4px)" }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="text-center"
+                custom={direction}
+                initial={{ opacity: 0, x: direction * 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: direction * -50 }}
+                transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.1}
+                onDragEnd={handleDragEnd}
+                className="testimonial-card cursor-grab active:cursor-grabbing touch-pan-y"
               >
-                <p className="text-xl sm:text-2xl lg:text-3xl text-white/70 leading-relaxed font-light mb-10 italic">
-                  &ldquo;{testimonials[current].quote}&rdquo;
+                {/* Quote mark */}
+                <div className="gradient-text text-5xl sm:text-6xl font-serif leading-none mb-3 select-none opacity-30">
+                  &ldquo;
+                </div>
+                <p className="text-primary text-base sm:text-lg lg:text-xl leading-relaxed mb-6 sm:mb-8">
+                  {testimonials[current].quote}
                 </p>
-                <div>
-                  <div className="text-white font-semibold text-lg">
-                    {testimonials[current].name}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                  {/* Avatar placeholder */}
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple/10 to-accent/10 flex items-center justify-center shrink-0">
+                      <span className="text-accent font-bold text-xs">
+                        {testimonials[current].name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                      </span>
+                    </div>
+                    <div>
+                      <div className="font-bold text-primary text-sm">
+                        {testimonials[current].name}
+                      </div>
+                      <div className="text-text-secondary text-xs sm:text-sm">
+                        {testimonials[current].title}
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-white/35 text-sm mt-1">
-                    {testimonials[current].title}
-                  </div>
-                  <div className="inline-block mt-3 px-3 py-1 rounded-full bg-blue/10 text-blue-light text-xs font-medium">
+                  <span
+                    className={`text-xs font-semibold px-3 py-1 rounded-full self-start sm:self-auto sm:ml-auto ${testimonials[current].sectorColor}`}
+                  >
                     {testimonials[current].sector}
-                  </div>
+                  </span>
                 </div>
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Dots */}
-          <div className="flex items-center justify-center gap-3 mt-10">
+          {/* Navigation dots + arrows */}
+          <div className="flex items-center justify-center gap-3 mt-8">
+            <button
+              onClick={() => goTo((current - 1 + testimonials.length) % testimonials.length)}
+              className="w-8 h-8 rounded-full bg-gray-light hover:bg-accent/10 flex items-center justify-center transition-colors"
+              aria-label="Previous testimonial"
+            >
+              <svg className="w-4 h-4 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
             {testimonials.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setCurrent(i)}
-                className={`transition-all duration-500 rounded-full ${
+                onClick={() => goTo(i)}
+                className={`transition-all duration-300 rounded-full ${
                   i === current
-                    ? "w-8 h-2 bg-blue"
-                    : "w-2 h-2 bg-white/15 hover:bg-white/25"
+                    ? "w-7 h-2.5 bg-gradient-to-r from-purple to-accent"
+                    : "w-2.5 h-2.5 bg-gray-border hover:bg-gray"
                 }`}
                 aria-label={`Go to testimonial ${i + 1}`}
               />
             ))}
+            <button
+              onClick={() => goTo((current + 1) % testimonials.length)}
+              className="w-8 h-8 rounded-full bg-gray-light hover:bg-accent/10 flex items-center justify-center transition-colors"
+              aria-label="Next testimonial"
+            >
+              <svg className="w-4 h-4 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
