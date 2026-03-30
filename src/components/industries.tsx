@@ -45,7 +45,7 @@ export function Industries() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-20"
         >
@@ -83,7 +83,7 @@ export function Industries() {
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 + ri * 0.05, duration: 0.5 }}
+                      transition={{ delay: i * 0.1 + ri * 0.04, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                       className="flex items-center gap-3 text-sm text-white/50 hover:text-white/80 hover:translate-x-1 transition-all duration-300 cursor-default"
                     >
                       <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${colors.dot}`} />

@@ -52,7 +52,7 @@ export function Testimonials() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-6">
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="text-center mb-16">
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="text-center mb-16">
           <span className="text-blue font-semibold text-sm tracking-[0.2em] uppercase mb-4 block">Testimonials</span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white tracking-tight">
             What Our <span className="gradient-text-blue">Clients</span> Say
@@ -64,9 +64,28 @@ export function Testimonials() {
             &ldquo;
           </motion.div>
 
-          <div className="relative min-h-[280px] sm:min-h-[250px] flex items-center justify-center">
+          <div
+            className="relative min-h-[280px] sm:min-h-[250px] flex items-center justify-center cursor-grab active:cursor-grabbing"
+            onPointerDown={() => {}}
+          >
             <AnimatePresence mode="wait" custom={direction}>
-              <motion.div key={current} custom={direction} variants={variants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className="text-center absolute inset-0 flex flex-col items-center justify-center">
+              <motion.div
+                key={current}
+                custom={direction}
+                variants={variants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.1}
+                onDragEnd={(_, info) => {
+                  if (info.offset.x > 50) goTo((current - 1 + testimonials.length) % testimonials.length);
+                  else if (info.offset.x < -50) goTo((current + 1) % testimonials.length);
+                }}
+                className="text-center absolute inset-0 flex flex-col items-center justify-center"
+              >
                 <p className="text-xl sm:text-2xl lg:text-3xl text-white/60 leading-relaxed font-light mb-10">
                   &ldquo;{testimonials[current].quote}&rdquo;
                 </p>
