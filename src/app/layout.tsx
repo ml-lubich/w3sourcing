@@ -35,9 +35,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
     >
-      <body className="min-h-screen">{children}</body>
+      <body className="min-h-screen bg-navy text-foreground">
+        <div className="noise-overlay" />
+        {children}
+      </body>
     </html>
   );
 }

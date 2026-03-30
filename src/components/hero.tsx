@@ -1,114 +1,161 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
-function ParticleGrid() {
-  const [dots, setDots] = useState<{ x: number; y: number; delay: number }[]>([]);
+const headlineWords = [
+  { text: "Recruitment", highlight: false },
+  { text: "for", highlight: false },
+  { text: "Tech,", highlight: true },
+  { text: "Legal", highlight: true },
+  { text: "&", highlight: true },
+  { text: "Finance", highlight: true },
+  { text: "Leaders", highlight: false },
+];
 
-  useEffect(() => {
-    const generated = Array.from({ length: 40 }, () => ({
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      delay: Math.random() * 5,
-    }));
-    setDots(generated);
-  }, []);
-
+function FloatingShape({ className, delay = 0 }: { className: string; delay?: number }) {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {dots.map((dot, i) => (
-        <div
-          key={i}
-          className="absolute w-1 h-1 rounded-full bg-gold/30"
-          style={{
-            left: `${dot.x}%`,
-            top: `${dot.y}%`,
-            animation: `pulse-dot 4s ease-in-out infinite`,
-            animationDelay: `${dot.delay}s`,
-          }}
-        />
-      ))}
-    </div>
+    <motion.div
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: delay + 1.5, duration: 1.5, ease: "easeOut" }}
+      className={className}
+    />
   );
 }
 
 export function Hero() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], [0, 250]);
+  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.7], [1, 0.85]);
+  const blobY = useTransform(scrollYProgress, [0, 1], [0, -180]);
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-navy via-navy-light to-indigo">
-      {/* Background effects */}
-      <div className="hero-grid absolute inset-0" />
-      <ParticleGrid />
+    <section
+      ref={containerRef}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-navy"
+    >
+      <div className="absolute inset-0 bg-grid opacity-40" />
 
-      {/* Floating orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-indigo-light/20 blur-3xl floating-orb" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-gold/5 blur-3xl floating-orb-delayed" />
+      <motion.div style={{ y: blobY }} className="absolute inset-0 pointer-events-none">
+        <FloatingShape className="absolute top-[10%] -left-[10%] w-[600px] h-[600px] rounded-full bg-blue/[0.07] blur-[120px] animate-mesh" delay={0} />
+        <FloatingShape className="absolute top-[20%] right-[-5%] w-[500px] h-[500px] rounded-full bg-accent/[0.05] blur-[120px] animate-mesh-alt" delay={0.3} />
+        <FloatingShape className="absolute bottom-[10%] left-[25%] w-[700px] h-[700px] rounded-full bg-gold/[0.03] blur-[140px] animate-mesh" delay={0.6} />
+        <FloatingShape className="absolute -bottom-[15%] right-[20%] w-[400px] h-[400px] rounded-full bg-blue-light/[0.05] blur-[100px] animate-mesh-alt" delay={0.2} />
+      </motion.div>
 
-      {/* Content */}
-      <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
-        <div className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full border border-gold/20 bg-gold/5">
-          <div className="w-2 h-2 rounded-full bg-gold animate-pulse" />
-          <span className="text-gold text-sm font-medium tracking-wide">
-            Global Recruitment Excellence
-          </span>
-        </div>
-
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6">
-          Global Recruitment{" "}
-          <br className="hidden sm:block" />
-          Excellence for{" "}
-          <span className="gradient-text">
-            Tech, Legal
-            <br className="hidden sm:block" />
-            & Finance
-          </span>{" "}
-          Leaders
-        </h1>
-
-        <p className="max-w-2xl mx-auto text-lg sm:text-xl text-white/60 leading-relaxed mb-10">
-          Connecting exceptional talent with world-class organisations across
-          the US, UK, EU, UAE, and Asia. Trusted by the world&apos;s most ambitious companies.
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="#contact"
-            className="btn-primary text-navy font-semibold px-8 py-4 rounded-full text-base"
-          >
-            Get in Touch
-          </a>
-          <a
-            href="#services"
-            className="group flex items-center gap-2 text-white/70 hover:text-white transition-colors px-6 py-4 text-base font-medium"
-          >
-            Explore Services
-            <svg
-              className="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path d="M9 5l7 7-7 7" />
-            </svg>
-          </a>
-        </div>
-
-        {/* Trust indicators */}
-        <div className="mt-20 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-white/30 text-sm">
-          <span>London</span>
-          <span className="hidden sm:inline">·</span>
-          <span>Singapore</span>
-          <span className="hidden sm:inline">·</span>
-          <span>New York</span>
-          <span className="hidden sm:inline">·</span>
-          <span>Dubai</span>
-          <span className="hidden sm:inline">·</span>
-          <span>Hong Kong</span>
-        </div>
+      {/* Floating geometric shapes */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <motion.div animate={{ y: [-10, 10, -10], rotate: [0, 180, 360] }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className="absolute top-[15%] left-[10%] w-3 h-3 border border-blue/20 rotate-45" />
+        <motion.div animate={{ y: [10, -10, 10], rotate: [360, 180, 0] }} transition={{ duration: 15, repeat: Infinity, ease: "linear" }} className="absolute top-[25%] right-[15%] w-4 h-4 border border-gold/15 rounded-full" />
+        <motion.div animate={{ y: [-15, 15, -15], x: [-5, 5, -5] }} transition={{ duration: 18, repeat: Infinity, ease: "linear" }} className="absolute bottom-[35%] left-[20%] w-2 h-2 bg-blue/20 rounded-full" />
+        <motion.div animate={{ y: [5, -20, 5], rotate: [0, 90, 0] }} transition={{ duration: 12, repeat: Infinity, ease: "linear" }} className="absolute top-[40%] right-[8%] w-5 h-5 border border-accent/10 rotate-12" />
+        <motion.div animate={{ y: [-8, 12, -8] }} transition={{ duration: 14, repeat: Infinity, ease: "linear" }} className="absolute bottom-[25%] right-[25%] w-2.5 h-2.5 bg-gold/15 rotate-45" />
+        <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.3, 0.1] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className="absolute top-[60%] left-[8%] w-20 h-20 border border-blue/5 rounded-full" />
+        <motion.div animate={{ scale: [1.2, 1, 1.2], opacity: [0.05, 0.15, 0.05] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }} className="absolute top-[12%] right-[30%] w-32 h-32 border border-accent/5 rounded-full" />
       </div>
 
-      {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
+      <motion.div style={{ y, opacity, scale }} className="relative z-10 mx-auto max-w-5xl px-6 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="inline-flex items-center gap-2.5 mb-10 px-5 py-2.5 rounded-full border border-blue/20 bg-blue/5 backdrop-blur-sm"
+        >
+          <motion.div animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} className="w-2 h-2 rounded-full bg-blue shadow-lg shadow-blue/50" />
+          <span className="text-blue-light text-sm font-medium tracking-wide">Global Recruitment Excellence</span>
+        </motion.div>
+
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-[1.05] tracking-tight mb-8">
+          <span className="flex flex-wrap justify-center gap-x-[0.3em]">
+            {headlineWords.map((word, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 50, filter: "blur(12px)", rotateX: -30 }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)", rotateX: 0 }}
+                transition={{ delay: 0.4 + i * 0.1, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                className={`inline-block ${word.highlight ? "gradient-text" : ""}`}
+                style={{ willChange: "transform, opacity, filter" }}
+              >
+                {word.text}
+              </motion.span>
+            ))}
+          </span>
+        </h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.4, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-2xl mx-auto text-lg sm:text-xl text-white/40 leading-relaxed mb-12"
+        >
+          Connecting exceptional talent with world-class organisations across
+          the US, UK, EU, UAE, and Asia. Trusted by the world&apos;s most ambitious companies.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.6, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+        >
+          <motion.a
+            href="#contact"
+            whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(59, 130, 246, 0.3)" }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            className="btn-primary text-white font-semibold px-10 py-4 rounded-full text-base"
+          >
+            Start a Conversation
+          </motion.a>
+          <motion.a
+            href="#services"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            className="btn-secondary text-white/70 font-medium px-10 py-4 rounded-full text-base group flex items-center gap-2"
+          >
+            Explore Services
+            <motion.svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} animate={{ x: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}>
+              <path d="M9 5l7 7-7 7" />
+            </motion.svg>
+          </motion.a>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 1 }}
+          className="mt-20 flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
+        >
+          {["London", "Singapore", "New York", "Dubai", "Hong Kong"].map((city, i) => (
+            <motion.span
+              key={city}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 2.1 + i * 0.08, duration: 0.5 }}
+              className="text-white/20 text-sm font-medium tracking-wide flex items-center gap-2"
+            >
+              <motion.span animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.7, 0.3] }} transition={{ duration: 3, repeat: Infinity, delay: i * 0.5, ease: "easeInOut" }} className="w-1 h-1 rounded-full bg-blue/50" />
+              {city}
+            </motion.span>
+          ))}
+        </motion.div>
+      </motion.div>
+
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-navy via-navy/50 to-transparent" />
+
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5, duration: 1 }} className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10">
+        <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} className="w-6 h-10 rounded-full border-2 border-white/10 flex items-start justify-center p-1.5">
+          <motion.div animate={{ y: [0, 14, 0], opacity: [1, 0.2, 1] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} className="w-1.5 h-1.5 rounded-full bg-blue/50" />
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

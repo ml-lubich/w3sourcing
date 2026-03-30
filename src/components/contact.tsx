@@ -1,171 +1,92 @@
 "use client";
 
 import { useState } from "react";
-import { ScrollSection } from "./scroll-animation";
-
-const offices = [
-  {
-    city: "London",
-    address: "128 City Road, London, EC1V 2NX",
-    flag: "🇬🇧",
-  },
-  {
-    city: "Singapore",
-    address: "Far East Finance Building, 14 Robinson Road #08-01, Singapore 048545",
-    flag: "🇸🇬",
-  },
-];
+import { motion, AnimatePresence } from "framer-motion";
 
 export function Contact() {
   const [submitted, setSubmitted] = useState(false);
 
   return (
-    <section id="contact" className="py-24 sm:py-32 bg-white">
-      <ScrollSection className="mx-auto max-w-7xl px-6">
-        <div className="text-center mb-16 animate-on-scroll">
-          <span className="text-gold font-semibold text-sm tracking-widest uppercase">
-            Contact Us
-          </span>
-          <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-navy tracking-tight">
-            Let&apos;s Start a Conversation
+    <section id="contact" className="relative py-28 sm:py-36 bg-navy overflow-hidden">
+      <div className="absolute inset-0 bg-dots opacity-15" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue/[0.03] blur-[120px] rounded-full" />
+
+      <div className="relative z-10 mx-auto max-w-7xl px-6">
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="text-center mb-16">
+          <span className="text-blue font-semibold text-sm tracking-[0.2em] uppercase mb-4 block">Contact Us</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white tracking-tight">
+            Let&apos;s Start a <span className="gradient-text-blue">Conversation</span>
           </h2>
-          <p className="mt-4 text-lg text-navy/50 max-w-2xl mx-auto">
-            Whether you&apos;re looking to build a team or take your next career step,
-            we&apos;d love to hear from you.
+          <p className="mt-5 text-lg text-white/35 max-w-2xl mx-auto leading-relaxed">
+            Whether you&apos;re looking to build a team or take your next career step, we&apos;d love to hear from you.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
-          {/* Form */}
-          <div className="lg:col-span-3 animate-on-scroll delay-1">
-            {submitted ? (
-              <div className="rounded-2xl bg-green-50 border border-green-200 p-10 text-center">
-                <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-7 h-7 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-navy mb-2">Message Sent</h3>
-                <p className="text-navy/50">Thank you for reaching out. We&apos;ll be in touch shortly.</p>
-              </div>
-            ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSubmitted(true);
-                }}
-                className="space-y-5"
-              >
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-sm font-medium text-navy mb-1.5">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      className="w-full rounded-xl border border-navy/10 bg-slate-50 px-4 py-3 text-sm text-navy placeholder:text-navy/30 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold/50 transition-all"
-                      placeholder="John"
-                    />
+          <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="lg:col-span-3">
+            <AnimatePresence mode="wait">
+              {submitted ? (
+                <motion.div key="success" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="glass-card rounded-2xl p-10 text-center border-blue/15">
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }} className="w-16 h-16 rounded-full bg-blue/15 flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M4.5 12.75l6 6 9-13.5" /></svg>
+                  </motion.div>
+                  <h3 className="text-xl font-bold text-white mb-2">Message Sent</h3>
+                  <p className="text-white/40">Thank you for reaching out. We&apos;ll be in touch shortly.</p>
+                </motion.div>
+              ) : (
+                <motion.form key="form" onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }} className="space-y-5">
+                  <div className="grid sm:grid-cols-2 gap-5">
+                    {[{ label: "First Name", ph: "John" }, { label: "Last Name", ph: "Smith" }].map((f, i) => (
+                      <motion.div key={f.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.6 }}>
+                        <label className="block text-sm font-medium text-white/60 mb-1.5">{f.label}</label>
+                        <input type="text" required className="w-full rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue/30 focus:border-blue/30 transition-all backdrop-blur-sm" placeholder={f.ph} />
+                      </motion.div>
+                    ))}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-navy mb-1.5">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      className="w-full rounded-xl border border-navy/10 bg-slate-50 px-4 py-3 text-sm text-navy placeholder:text-navy/30 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold/50 transition-all"
-                      placeholder="Smith"
-                    />
+                    <label className="block text-sm font-medium text-white/60 mb-1.5">Email</label>
+                    <input type="email" required className="w-full rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue/30 focus:border-blue/30 transition-all backdrop-blur-sm" placeholder="john@company.com" />
                   </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-navy mb-1.5">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    className="w-full rounded-xl border border-navy/10 bg-slate-50 px-4 py-3 text-sm text-navy placeholder:text-navy/30 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold/50 transition-all"
-                    placeholder="john@company.com"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-navy mb-1.5">
-                    I&apos;m looking for...
-                  </label>
-                  <select className="w-full rounded-xl border border-navy/10 bg-slate-50 px-4 py-3 text-sm text-navy focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold/50 transition-all">
-                    <option>Hiring talent for my team</option>
-                    <option>Exploring career opportunities</option>
-                    <option>Partnership or collaboration</option>
-                    <option>General enquiry</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-navy mb-1.5">
-                    Message
-                  </label>
-                  <textarea
-                    rows={4}
-                    required
-                    className="w-full rounded-xl border border-navy/10 bg-slate-50 px-4 py-3 text-sm text-navy placeholder:text-navy/30 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold/50 transition-all resize-none"
-                    placeholder="Tell us about your requirements..."
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="btn-primary text-navy font-semibold px-8 py-3.5 rounded-full text-sm w-full sm:w-auto"
-                >
-                  Send Message
-                </button>
-              </form>
-            )}
-          </div>
-
-          {/* Offices */}
-          <div className="lg:col-span-2 animate-on-scroll delay-2">
-            <h3 className="text-lg font-bold text-navy mb-6">Our Offices</h3>
-            <div className="space-y-6">
-              {offices.map((office) => (
-                <div
-                  key={office.city}
-                  className="rounded-xl border border-navy/8 p-6 hover:border-gold/20 hover:shadow-md transition-all duration-300"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">{office.flag}</span>
-                    <span className="font-semibold text-navy">
-                      {office.city}
-                    </span>
+                  <div>
+                    <label className="block text-sm font-medium text-white/60 mb-1.5">I&apos;m looking for...</label>
+                    <select className="w-full rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white/70 focus:outline-none focus:ring-2 focus:ring-blue/30 focus:border-blue/30 transition-all backdrop-blur-sm">
+                      <option className="bg-navy">Hiring talent for my team</option>
+                      <option className="bg-navy">Exploring career opportunities</option>
+                      <option className="bg-navy">Partnership or collaboration</option>
+                      <option className="bg-navy">General enquiry</option>
+                    </select>
                   </div>
-                  <p className="text-sm text-navy/50 leading-relaxed">
-                    {office.address}
-                  </p>
-                </div>
-              ))}
-            </div>
+                  <div>
+                    <label className="block text-sm font-medium text-white/60 mb-1.5">Message</label>
+                    <textarea rows={4} required className="w-full rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue/30 focus:border-blue/30 transition-all resize-none backdrop-blur-sm" placeholder="Tell us about your requirements..." />
+                  </div>
+                  <motion.button type="submit" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="btn-primary text-white font-semibold px-8 py-3.5 rounded-full text-sm w-full sm:w-auto">
+                    Send Message
+                  </motion.button>
+                </motion.form>
+              )}
+            </AnimatePresence>
+          </motion.div>
 
-            <div className="mt-8 rounded-xl border border-navy/8 p-6">
-              <h4 className="font-semibold text-navy mb-2">Email Us</h4>
-              <p className="text-sm text-navy/50">
-                info@w3sourcing.com
-              </p>
+          <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="lg:col-span-2 space-y-6">
+            <div className="glass-card rounded-xl p-6 hover:border-blue/15 transition-all duration-500">
+              <h4 className="font-semibold text-white mb-3">Email Us</h4>
+              <a href="mailto:info@w3sourcing.com" className="text-blue-light text-sm hover:text-blue transition-colors">info@w3sourcing.com</a>
             </div>
-
-            <div className="mt-6 flex gap-4">
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center text-navy/40 hover:bg-gold/10 hover:text-gold transition-colors"
-                aria-label="LinkedIn"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                </svg>
+            <div className="glass-card rounded-xl p-6 hover:border-blue/15 transition-all duration-500">
+              <h4 className="font-semibold text-white mb-3">Follow Us</h4>
+              <a href="#" className="inline-flex items-center gap-2 text-white/40 hover:text-blue-light transition-colors text-sm">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
+                LinkedIn
               </a>
             </div>
-          </div>
+            <div className="glass-card rounded-xl p-6 hover:border-blue/15 transition-all duration-500">
+              <h4 className="font-semibold text-white mb-3">Response Time</h4>
+              <p className="text-white/40 text-sm">We typically respond within 24 hours during business days.</p>
+            </div>
+          </motion.div>
         </div>
-      </ScrollSection>
+      </div>
     </section>
   );
 }
