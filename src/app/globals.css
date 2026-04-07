@@ -1,5 +1,6 @@
-/* Relative path: avoids resolving the `tailwindcss` package from a wrong cwd (e.g. parent `git/` folder). */
-@import "../../node_modules/tailwindcss/index.css";
+/* `source("../..")`: scan from the app root relative to this file so utilities are generated when
+ * `process.cwd()` is not the app root (e.g. some CI / Vercel layouts). Resolves `tailwindcss` via PostCSS. */
+@import "tailwindcss" source("../..");
 
 /* Match `next-themes` class on `<html>` (not only `prefers-color-scheme`) */
 @custom-variant dark (&:where(.dark, .dark *));

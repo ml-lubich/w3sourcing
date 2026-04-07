@@ -28,6 +28,10 @@ If `NEXT_PUBLIC_SITE_URL` is unset, the app falls back to **`VERCEL_URL`** on Ve
 3. In the Vercel dashboard, avoid overriding Install Command / Build Command unless they stay Bun-equivalent (otherwise you can undo `vercel.json`).
 4. Deploy; in build logs, confirm the install step runs **`bun install`** (frozen lockfile) and the build step completes the route smoke.
 
+### Tailwind v4 and the production CSS bundle
+
+`src/app/globals.css` imports Tailwind with **`@import "tailwindcss" source("../..");`** so class detection is anchored at the **app root** (relative to the stylesheet), not only `process.cwd()`. If that import used the default base and the build’s working directory did not match the app root, Tailwind could emit a tiny CSS chunk with almost no utilities—pages would look unstyled on Vercel while `bun run build` looked fine locally. After changing Tailwind entry or app layout paths, keep that `source(..)` segment aligned with the repo layout.
+
 ## CI (GitHub Actions)
 
 **`.github/workflows/ci.yml`** runs on pushes and pull requests to `main` / `master`: `bun install --frozen-lockfile`, then **`bun run ci`** (`lint` + `test` + `build`), then **`bun run smoke:routes:ci`** so PRs match the same gates as Vercel’s build command (minus duplicate `lint` on Vercel’s side, which still runs in the Vercel build step).
