@@ -72,7 +72,7 @@ export default function Home() {
       </a>
       <Header />
       <FloatingCTA />
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1} className="outline-none">
         <Hero />
         <ScrollReveal>
           <TrustedBy />

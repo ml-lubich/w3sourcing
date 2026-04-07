@@ -30,9 +30,24 @@ export function SnappyInPageAnchorClicks() {
         id = hrefAttr.slice(1);
       }
       if (!id) return;
-      if (id === "main-content") return;
 
       if (!document.getElementById(id)) return;
+
+      if (id === "main-content") {
+        e.preventDefault();
+        scrollToSectionId("main-content", { syncHash: false });
+        const main = document.getElementById("main-content");
+        if (main instanceof HTMLElement) {
+          const reduced =
+            typeof matchMedia !== "undefined" &&
+            matchMedia("(prefers-reduced-motion: reduce)").matches;
+          const delay = reduced ? 0 : 450;
+          window.setTimeout(() => {
+            main.focus({ preventScroll: true });
+          }, delay);
+        }
+        return;
+      }
 
       e.preventDefault();
       scrollToSectionId(id);

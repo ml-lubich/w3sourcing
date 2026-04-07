@@ -12,7 +12,11 @@ export function LegalPageShell({ children }: Readonly<{ children: ReactNode }>) 
         Skip to main content
       </a>
       <Header sectionLinksFromRoot />
-      <main id="main-content" className="min-h-screen bg-transparent pt-24 pb-16 md:pt-28">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="min-h-screen bg-transparent pt-24 pb-16 md:pt-28 outline-none"
+      >
         {children}
       </main>
       <Footer sectionLinksFromRoot />

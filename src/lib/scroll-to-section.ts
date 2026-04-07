@@ -99,8 +99,19 @@ export function clearPendingSectionScroll(): void {
   }
 }
 
-/** Scroll to `id` and sync the URL hash. Returns whether an element was found. */
-export function scrollToSectionId(id: string): boolean {
+export type ScrollToSectionIdOptions = Readonly<{
+  /**
+   * When false, scroll but keep the address bar on `pathname`+`search` only (no `#…`).
+   * Used for “skip to main” so shareable URLs stay clean.
+   */
+  syncHash?: boolean;
+}>;
+
+/** Scroll to `id` and by default sync `#id` in the URL. Returns whether an element was found. */
+export function scrollToSectionId(
+  id: string,
+  options?: ScrollToSectionIdOptions,
+): boolean {
   let decoded: string;
   try {
     decoded = decodeURIComponent(id);
@@ -125,8 +136,22 @@ export function scrollToSectionId(id: string): boolean {
   } else {
     scrollWindowToYSnappy(top);
   }
-  window.history.replaceState(null, "", `#${id}`);
+  const syncHash = options?.syncHash !== false;
+  if (syncHash) {
+    window.history.replaceState(null, "", `#${id}`);
+  } else {
+    const nextUrl = `${window.location.pathname}${window.location.search}`;
+    window.history.replaceState(null, "", nextUrl);
+  }
   return true;
+}
+
+/** If the only hash is the landmark skip target, remove it (bookmark / legacy links). */
+export function stripMainContentHashFromAddressBar(): void {
+  if (typeof window === "undefined") return;
+  const { hash, pathname, search } = window.location;
+  if (hash !== "#main-content") return;
+  window.history.replaceState(null, "", `${pathname}${search}`);
 }
 
 /** Scroll to top of the document; clears hash. Uses the same capped ease as section jumps. */

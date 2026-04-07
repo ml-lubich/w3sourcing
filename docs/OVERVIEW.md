@@ -19,7 +19,7 @@ Canonical registration and office details used in the UI live in `src/content/of
 - **Motion:** Framer Motion for section and hero polish, with reduced-motion and narrow-viewport safeguards documented in `docs/DESIGN.md`.
 - **Icons:** Lucide React (tree-shaken via `experimental.optimizePackageImports` in `next.config.ts`).
 - **Performance (home):** `src/app/page.tsx` is a Server Component. Hash / pending section scrolling is client-only (`src/components/home-hash-scroll.tsx`). Below-the-fold sections are loaded with `next/dynamic` into separate chunks; **Header**, **Hero**, **Trusted By**, and **Floating CTA** stay statically imported for first paint. Hero demo avatars use `next/image` (local SVG placeholder is `unoptimized`).
-- **Theme:** Custom `ThemeProvider` in `src/components/theme-provider.tsx` (not `next-themes`). User choice is stored under `localStorage` key `w3-theme`; an inline script in `layout.tsx` applies `class="dark"` on `<html>` before first paint when appropriate, aligned with `prefers-color-scheme` until the user sets a preference.
+- **Theme:** Custom `ThemeProvider` in `src/components/theme-provider.tsx` (not `next-themes`). User choice is stored under `localStorage` key `w3-theme`; `next/script` with `strategy="beforeInteractive"` loads `/w3-theme-boot.js` from `app/layout.tsx` so `class="dark"` on `<html>` matches storage / `prefers-color-scheme` before first paint.
 - **Package manager:** Bun (`bun install`, `bun run`, `bunx`); `package.json` includes `packageManager` for tooling alignment.
 - **Deployment:** Vercel with Bun for install and build (`vercel.json`, `docs/DEPLOYMENT.md`).
 

@@ -7,6 +7,7 @@ import {
   useLayoutEffect,
   useState,
 } from "react";
+import { createBfCacheThemePageShowHandler } from "@/lib/bf-cache-theme-pageshow";
 
 export type Theme = "light" | "dark";
 
@@ -44,6 +45,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional one-shot hydration
     setThemeState(stored);
     applyClass(stored);
+
+    const onBfCache = createBfCacheThemePageShowHandler({
+      readTheme: readStoredTheme,
+      applyClass,
+      setThemeState,
+    });
+    window.addEventListener("pageshow", onBfCache);
+    return () => window.removeEventListener("pageshow", onBfCache);
   }, []);
 
   const setTheme = useCallback((t: Theme) => {

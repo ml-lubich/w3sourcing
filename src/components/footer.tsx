@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import {
@@ -193,12 +194,12 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
             © Copyright {new Date().getFullYear()} W3 Sourcing
           </p>
           <div className="flex items-center gap-8">
-            <a href="/privacy" className="text-xs text-muted hover:text-foreground transition-colors">
+            <Link href="/privacy" className="text-xs text-muted hover:text-foreground transition-colors">
               Privacy Policy
-            </a>
-            <a href="/terms" className="text-xs text-muted hover:text-foreground transition-colors">
+            </Link>
+            <Link href="/terms" className="text-xs text-muted hover:text-foreground transition-colors">
               Terms of Use
-            </a>
+            </Link>
           </div>
         </motion.div>
 

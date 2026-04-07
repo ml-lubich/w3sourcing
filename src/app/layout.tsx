@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { AppMotionConfig } from "@/components/app-motion-config";
+import { BfCacheViewportRevive } from "@/components/bf-cache-viewport-revive";
 import { SnappyInPageAnchorClicks } from "@/components/snappy-in-page-anchor-clicks";
+import { StripMainContentUrlHash } from "@/components/strip-main-content-url-hash";
 import { ThemeProvider } from "@/components/theme-provider";
 import { getSiteUrl } from "@/lib/site";
 import "./globals.css";
@@ -98,13 +101,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${plusJakarta.variable}`}>
       <head>
-        {/* Blocking boot before paint; next/script re-triggers React 19 client “script in tree” warnings. */}
-        {/* eslint-disable-next-line @next/next/no-sync-scripts -- theme class must apply before first paint */}
-        <script src="/w3-theme-boot.js" />
+        <Script src="/w3-theme-boot.js" strategy="beforeInteractive" />
       </head>
       <body className="liquid-page-canvas min-h-screen bg-background text-foreground font-sans antialiased transition-colors duration-300">
         <ThemeProvider>
           <AppMotionConfig>
+            <BfCacheViewportRevive />
+            <StripMainContentUrlHash />
             <SnappyInPageAnchorClicks />
             {children}
           </AppMotionConfig>
