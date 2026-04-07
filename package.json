@@ -2,14 +2,22 @@
   "name": "w3sourcing",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "bun@1.3.9",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "dev": "bun scripts/run-next-dev.ts",
+    "build": "bun scripts/exec-in-repo-root.ts bun --bun next build",
+    "start": "bun scripts/exec-in-repo-root.ts bun --bun next start",
+    "lint": "bun scripts/exec-in-repo-root.ts bunx eslint .",
+    "ci": "bun run lint && bun run test && bun run build",
+    "precommit": "bun run lint && bun run test && bun run build && bun run smoke:routes:ci",
+    "test": "bun scripts/run-tests-in-root.ts",
+    "smoke:routes": "bun run scripts/smoke-no-404.ts",
+    "smoke:routes:ci": "SMOKE_SKIP_BUILD=1 bun run scripts/smoke-no-404.ts",
+    "smoke:routes:dev": "SMOKE_MODE=dev bun run scripts/smoke-no-404.ts"
   },
   "dependencies": {
     "framer-motion": "^12.38.0",
+    "lucide-react": "^1.7.0",
     "next": "16.2.1",
     "react": "19.2.4",
     "react-dom": "19.2.4"

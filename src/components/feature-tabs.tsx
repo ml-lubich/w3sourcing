@@ -1,7 +1,23 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useRef, useState } from "react";
+import {
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+  useInView,
+  type Variants,
+} from "framer-motion";
+import { SplitWords, SplitWordsRich } from "@/components/split-words";
+import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
+import { useMobileLightMotion } from "@/lib/use-mobile-light-motion";
+import {
+  SURFACE_REVEAL_DURATION_FULL,
+  SURFACE_REVEAL_DURATION_LITE,
+  SURFACE_REVEAL_EASE,
+  surfaceRevealEnterTransition,
+} from "@/lib/surface-reveal-motion";
+import { useSplitWordsAnimate } from "@/lib/use-split-words-animate";
 
 interface FeatureSection {
   id: string;
@@ -22,13 +38,13 @@ interface FeatureSection {
 const featureSections: FeatureSection[] = [
   {
     id: "source",
-    badge: "Source & Outreach",
-    badgeColor: "bg-accent/10 text-accent",
-    headline: "Source top talent ",
-    headlineAccent: "before anyone else",
+    badge: "Source & engage",
+    badgeColor: "text-accent",
+    headline: "Source leaders ",
+    headlineAccent: "others miss",
     accentColor: "text-accent",
     description:
-      "Our proprietary network and deep sector expertise let us identify and engage exceptional candidates who aren't actively looking.",
+      "Our proprietary network and deep sector expertise let us identify and engage exceptional candidates who aren't actively looking—relationships and judgment that no automation pipeline can substitute for.",
     tabs: [
       {
         label: "Executive Search",
@@ -36,7 +52,7 @@ const featureSections: FeatureSection[] = [
         body: "We map entire markets to find the exact candidate profile your organisation needs, from C-suite to VP-level hires.",
         bullets: [
           "Comprehensive market mapping across Tech, Legal & Finance",
-          "Access to passive candidates through trusted relationships",
+          "Access to passive candidates through trusted relationships—not inbox automation alone",
           "Average time-to-shortlist of just 14 days",
         ],
       },
@@ -54,18 +70,18 @@ const featureSections: FeatureSection[] = [
   },
   {
     id: "screen",
-    badge: "Screen & Assess",
-    badgeColor: "bg-green/10 text-green",
+    badge: "Qualify & assess",
+    badgeColor: "text-text-secondary",
     headline: "Assess candidates ",
-    headlineAccent: "with confidence",
-    accentColor: "text-green",
+    headlineAccent: "with rigour",
+    accentColor: "text-accent",
     description:
-      "Multi-stage screening ensures only the most qualified, culturally aligned candidates reach your interview room.",
+      "Multi-stage screening ensures only the most qualified, culturally aligned candidates reach your interview room—with consultants who read between the lines, because software has no taste for fit.",
     tabs: [
       {
         label: "Technical Assessment",
         title: "Rigorous competency-based evaluation",
-        body: "Our sector-specialist consultants evaluate candidates across technical skills, leadership qualities, and cultural fit.",
+        body: "Our sector-specialist consultants evaluate candidates across technical skills, leadership qualities, and cultural fit—the nuances algorithms flatten or miss.",
         bullets: [
           "Structured interviews aligned to your role specifications",
           "Technical assessments designed with industry experts",
@@ -86,11 +102,11 @@ const featureSections: FeatureSection[] = [
   },
   {
     id: "place",
-    badge: "Place & Integrate",
-    badgeColor: "bg-pink/10 text-pink",
-    headline: "Seamless placements ",
+    badge: "Place & integrate",
+    badgeColor: "text-accent",
+    headline: "Offers and onboarding ",
     headlineAccent: "that stick",
-    accentColor: "text-pink",
+    accentColor: "text-accent",
     description:
       "From offer negotiation to onboarding support, we ensure every placement is set up for long-term success.",
     tabs: [
@@ -116,240 +132,313 @@ const featureSections: FeatureSection[] = [
       },
     ],
   },
-  {
-    id: "tech",
-    badge: "Technology",
-    badgeColor: "bg-cyan/10 text-cyan",
-    headline: "VC-backed tech ",
-    headlineAccent: "hiring specialists",
-    accentColor: "text-cyan",
-    description:
-      "We partner with the world's most ambitious technology companies to build transformative engineering, product, and leadership teams.",
-    tabs: [
-      {
-        label: "Engineering",
-        title: "Build world-class engineering teams",
-        body: "From individual contributors to engineering directors, we understand what great technical talent looks like.",
-        bullets: [
-          "Full-stack, backend, frontend, DevOps, ML/AI specialists",
-          "Deep network in Series A through IPO-stage companies",
-          "Average 3 weeks from brief to accepted offer",
-        ],
-      },
-      {
-        label: "Product & Leadership",
-        title: "Product leaders who ship",
-        body: "We place product managers, designers, and technical leaders who drive real business outcomes.",
-        bullets: [
-          "CPO, VP Product, Head of Design placements",
-          "GTM and growth leadership for scaling companies",
-          "C-Suite advisory for technical founder teams",
-        ],
-      },
-    ],
-  },
-  {
-    id: "legal",
-    badge: "Legal",
-    badgeColor: "bg-yellow/10 text-yellow",
-    headline: "Elite legal ",
-    headlineAccent: "talent placement",
-    accentColor: "text-yellow",
-    description:
-      "Placing exceptional lawyers at Magic Circle firms, US elite, and top-tier in-house legal teams globally.",
-    tabs: [
-      {
-        label: "Private Practice",
-        title: "Lateral moves at the highest level",
-        body: "From NQ associates to partner-level laterals, we handle the most sensitive and complex legal searches.",
-        bullets: [
-          "Deep relationships across Magic Circle and US elite firms",
-          "Specialist focus on M&A, PE, Finance, and Disputes",
-          "Discretion and confidentiality as standard",
-        ],
-      },
-      {
-        label: "In-House",
-        title: "Build your in-house legal function",
-        body: "From General Counsel to legal operations, we help organisations build and scale their in-house teams.",
-        bullets: [
-          "GC, Deputy GC, and Head of Legal placements",
-          "Legal operations and compliance specialists",
-          "Cross-border legal team builds",
-        ],
-      },
-    ],
-  },
-  {
-    id: "finance",
-    badge: "Finance",
-    badgeColor: "bg-green/10 text-green",
-    headline: "Banking & finance ",
-    headlineAccent: "recruitment experts",
-    accentColor: "text-accent",
-    description:
-      "Connecting elite finance professionals with leading global banks, hedge funds, private equity, and corporate advisory firms.",
-    tabs: [
-      {
-        label: "Investment Banking",
-        title: "Top-tier investment banking talent",
-        body: "We place analysts through to MDs across bulge bracket, boutique, and middle-market investment banks.",
-        bullets: [
-          "M&A, ECM, DCM, and Restructuring specialists",
-          "Private Equity and Venture Capital placements",
-          "Cross-border deal team assembly",
-        ],
-      },
-      {
-        label: "Risk & Compliance",
-        title: "Regulatory expertise you can trust",
-        body: "As regulation intensifies, we help financial institutions hire the risk and compliance leaders they need.",
-        bullets: [
-          "CRO, Head of Compliance, and MLRO placements",
-          "Quantitative risk and model validation specialists",
-          "Regulatory change and financial crime experts",
-        ],
-      },
-    ],
-  },
 ];
+
+const EASE_PRO = [0.16, 1, 0.3, 1] as const;
 
 function FeatureBlock({ section, index }: { section: FeatureSection; index: number }) {
   const [activeTab, setActiveTab] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setInView(true); },
-      { threshold: 0.15 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
+  const inView = useInView(ref, { once: true, amount: 0.12, margin: "0px 0px -10% 0px" });
+  const reduced = useHydrationSafeReducedMotion();
+  const narrowViewport = useMobileLightMotion();
+  const liteMotion = reduced || narrowViewport;
+  const headingSplit = useSplitWordsAnimate(inView);
+  const tabPanelAnimate = headingSplit;
 
   const isReversed = index % 2 === 1;
-  const bgClass = index % 2 === 0 ? "bg-white" : "bg-gray-light";
+  const bgClass = index % 2 === 0 ? "section-band-glass" : "section-band-glass-muted";
+
+  const tabSpring = liteMotion
+    ? { type: "tween" as const, duration: 0.18, ease: EASE_PRO }
+    : { type: "spring" as const, stiffness: 420, damping: 32, mass: 0.85 };
+
+  const panelVariants = {
+    initial: liteMotion
+      ? { opacity: 0, y: 0, filter: "blur(0px)" }
+      : { opacity: 0, y: 14, filter: "blur(6px)" },
+    animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+    exit: liteMotion
+      ? { opacity: 0, y: 0, filter: "blur(0px)" }
+      : { opacity: 0, y: -10, filter: "blur(4px)" },
+  };
+
+  const listContainer = {
+    show: {
+      transition: { staggerChildren: 0.055, delayChildren: 0.06 },
+    },
+    hidden: {},
+  } as const;
+
+  const listItem: Variants = {
+    hidden: { opacity: 0, x: -10 },
+    show: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: SURFACE_REVEAL_DURATION_FULL, ease: SURFACE_REVEAL_EASE },
+    },
+  };
 
   return (
     <div ref={ref} className={`section-padding ${bgClass}`}>
       <div className="mx-auto max-w-7xl px-6">
         <div
-          className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-20 ${
+          className={`flex flex-col items-center gap-12 lg:flex-row lg:items-start lg:gap-20 ${
             isReversed ? "lg:flex-row-reverse" : ""
           }`}
         >
-          {/* Text side */}
-          <div
-            className={`flex-1 transition-all duration-700 ${
-              inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-            }`}
+          <motion.div
+            className="flex-1"
+            initial={reduced ? false : { opacity: 0, y: liteMotion ? 10 : 22 }}
+            animate={
+              inView
+                ? { opacity: 1, y: 0 }
+                : reduced
+                  ? { opacity: 1, y: 0 }
+                  : { opacity: 0, y: liteMotion ? 10 : 22 }
+            }
+            transition={surfaceRevealEnterTransition(liteMotion, reduced, {
+              delay: liteMotion ? 0 : 0.04 * index,
+            })}
           >
-            <span
-              className={`inline-block text-xs font-bold tracking-[0.15em] uppercase px-3 py-1.5 rounded-full mb-6 ${section.badgeColor}`}
+            <motion.span
+              className={`glass-chip mb-5 inline-block rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] ${section.badgeColor}`}
+              initial={reduced ? false : { opacity: 0, scale: 0.94, y: 8 }}
+              animate={
+                inView
+                  ? { opacity: 1, scale: 1, y: 0 }
+                  : reduced
+                    ? { opacity: 1, scale: 1, y: 0 }
+                    : { opacity: 0, scale: 0.94, y: 8 }
+              }
+              transition={surfaceRevealEnterTransition(liteMotion, reduced, {
+                delay: liteMotion ? 0 : 0.08 + index * 0.04,
+              })}
             >
               {section.badge}
-            </span>
+            </motion.span>
 
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-[2.75rem] font-bold text-primary leading-tight mb-4">
-              {section.headline}
-              <span className={section.accentColor}>{section.headlineAccent}</span>
+            <h2 className="mb-3 text-xl font-extrabold leading-[1.22] tracking-tight text-primary sm:text-2xl lg:text-3xl xl:text-[2.2rem]">
+              <SplitWordsRich
+                segments={[
+                  { text: section.headline },
+                  { text: section.headlineAccent, className: section.accentColor },
+                ]}
+                stagger={liteMotion ? 0.028 : 0.036}
+                delayStart={0.04}
+                animate={headingSplit}
+              />
             </h2>
 
-            <p className="text-text-secondary text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 max-w-lg">
+            <motion.p
+              className="mb-6 max-w-lg text-sm leading-relaxed text-text-secondary sm:mb-7 sm:text-[0.9375rem]"
+              initial={reduced ? false : { opacity: 0, y: 10 }}
+              animate={
+                inView
+                  ? { opacity: 1, y: 0 }
+                  : reduced
+                    ? { opacity: 1, y: 0 }
+                    : { opacity: 0, y: 10 }
+              }
+              transition={surfaceRevealEnterTransition(liteMotion, reduced, {
+                delay: liteMotion ? 0 : 0.14 + index * 0.04,
+              })}
+            >
               {section.description}
-            </p>
+            </motion.p>
 
-            {/* Tabs */}
-            <div className="flex gap-1 mb-6 border-b border-gray-border">
-              {section.tabs.map((tab, i) => (
-                <button
-                  key={tab.label}
-                  onClick={() => setActiveTab(i)}
-                  className={`px-4 py-3 text-sm font-semibold transition-all duration-200 border-b-2 -mb-px ${
-                    activeTab === i
-                      ? "text-accent border-accent"
-                      : "text-gray border-transparent hover:text-primary"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+            <LayoutGroup id={`feature-tabs-${section.id}`}>
+              <div className="glass-chip mb-5 flex flex-wrap gap-1 rounded-xl p-1">
+                {section.tabs.map((tab, i) => (
+                  <button
+                    key={tab.label}
+                    type="button"
+                    onClick={() => setActiveTab(i)}
+                    className={`relative z-10 rounded-lg px-3 py-2.5 text-xs font-semibold transition-colors duration-200 sm:px-4 sm:text-[13px] ${
+                      activeTab === i ? "text-accent" : "text-muted hover:text-primary"
+                    }`}
+                  >
+                    {activeTab === i && (
+                      <motion.span
+                        layoutId={`feature-tab-pill-${section.id}`}
+                        className="glass-panel glass-panel--chrome absolute inset-0 -z-10 rounded-lg"
+                        transition={tabSpring}
+                      />
+                    )}
+                    <span className="relative">{tab.label}</span>
+                  </button>
+                ))}
+              </div>
+            </LayoutGroup>
 
-            {/* Tab content */}
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" initial={false}>
               <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
+                key={`${section.id}-${activeTab}`}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={panelVariants}
+                transition={
+                  liteMotion
+                    ? { duration: SURFACE_REVEAL_DURATION_LITE, ease: EASE_PRO }
+                    : { duration: SURFACE_REVEAL_DURATION_FULL, ease: EASE_PRO }
+                }
               >
-                <h3 className="text-lg font-bold text-primary mb-2">
-                  {section.tabs[activeTab].title}
+                <h3 className="mb-1.5 text-base font-bold text-primary">
+                  <SplitWords
+                    as="span"
+                    text={section.tabs[activeTab].title}
+                    stagger={liteMotion ? 0.026 : 0.032}
+                    delayStart={0.02}
+                    variant="textLoad"
+                    animate={tabPanelAnimate}
+                  />
                 </h3>
-                <p className="text-text-secondary text-sm leading-relaxed mb-4">
+                <motion.p
+                  className="mb-3 text-xs leading-relaxed text-text-secondary sm:text-sm"
+                  initial={reduced || !tabPanelAnimate ? false : { opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={surfaceRevealEnterTransition(liteMotion, reduced, {
+                    delay: liteMotion ? 0 : 0.08,
+                  })}
+                >
                   {section.tabs[activeTab].body}
-                </p>
-                <ul className="space-y-2.5">
-                  {section.tabs[activeTab].bullets.map((bullet, bi) => (
-                    <li key={bi} className="flex items-start gap-3 text-sm text-text-secondary">
-                      <svg
-                        className="w-5 h-5 text-green shrink-0 mt-0.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2.5}
+                </motion.p>
+                {liteMotion ? (
+                  <ul className="space-y-2">
+                    {section.tabs[activeTab].bullets.map((bullet, bi) => (
+                      <li
+                        key={`${activeTab}-${bi}`}
+                        className="flex items-start gap-2.5 text-xs text-text-secondary sm:text-[13px]"
                       >
-                        <path d="M4.5 12.75l6 6 9-13.5" />
-                      </svg>
-                      {bullet}
-                    </li>
-                  ))}
-                </ul>
+                        <svg
+                          className="mt-0.5 h-4 w-4 shrink-0 text-success section-card-icon-glow"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2.5}
+                          aria-hidden
+                        >
+                          <path d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        {bullet}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <motion.ul
+                    className="space-y-2"
+                    initial="hidden"
+                    animate="show"
+                    variants={listContainer}
+                  >
+                    {section.tabs[activeTab].bullets.map((bullet, bi) => (
+                      <motion.li
+                        key={`${activeTab}-${bi}`}
+                        className="flex items-start gap-2.5 text-xs text-text-secondary sm:text-[13px]"
+                        variants={listItem}
+                      >
+                      <motion.svg
+                        className="mt-0.5 h-4 w-4 shrink-0 text-success section-card-icon-glow"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2.5}
+                          initial={reduced ? false : { scale: 0.6, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 400,
+                            damping: 22,
+                            delay: 0.12 + bi * 0.05,
+                          }}
+                          aria-hidden
+                        >
+                          <path d="M4.5 12.75l6 6 9-13.5" />
+                        </motion.svg>
+                        {bullet}
+                      </motion.li>
+                    ))}
+                  </motion.ul>
+                )}
               </motion.div>
             </AnimatePresence>
-          </div>
+          </motion.div>
 
-          {/* Card side */}
-          <div
-            className={`flex-1 w-full transition-all duration-700 delay-100 ${
-              inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-            }`}
+          <motion.div
+            className="flex-1 w-full"
+            initial={reduced ? false : { opacity: 0, y: liteMotion ? 12 : 28 }}
+            animate={
+              inView
+                ? { opacity: 1, y: 0 }
+                : reduced
+                  ? { opacity: 1, y: 0 }
+                  : { opacity: 0, y: liteMotion ? 12 : 28 }
+            }
+            transition={surfaceRevealEnterTransition(liteMotion, reduced, {
+              delay: liteMotion ? 0 : 0.1 + index * 0.05,
+            })}
           >
-            <div className="bg-white rounded-2xl border border-gray-border p-6 shadow-[0_8px_30px_rgba(0,0,64,0.06)]">
-              <div className="space-y-4">
+            <div className="glass-panel rounded-2xl p-5 shadow-[0_18px_44px_rgb(15_23_42_/_0.05)] sm:p-6">
+              <div className="space-y-3">
                 {section.tabs.map((tab, i) => (
-                  <div
+                  <motion.div
                     key={tab.label}
-                    className={`rounded-xl p-4 border transition-all duration-200 cursor-pointer ${
+                    layout={!liteMotion}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setActiveTab(i);
+                      }
+                    }}
+                    className={`cursor-pointer rounded-row-highlight p-3.5 outline-none transition-[box-shadow] duration-300 sm:p-4 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:focus-visible:ring-offset-slate-900 ${
                       activeTab === i
-                        ? "border-accent/30 bg-accent/[0.03]"
-                        : "border-gray-border bg-gray-light hover:border-gray"
+                        ? "glass-panel ring-1 ring-accent/22"
+                        : "glass-chip hover:ring-1 hover:ring-gray-border/50"
                     }`}
                     onClick={() => setActiveTab(i)}
+                    animate={
+                      liteMotion
+                        ? {}
+                        : {
+                            scale: activeTab === i ? 1 : 0.985,
+                            opacity: activeTab === i ? 1 : 0.78,
+                          }
+                    }
+                    transition={{ duration: SURFACE_REVEAL_DURATION_FULL, ease: EASE_PRO }}
                   >
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${section.badgeColor}`}>
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <div className="mb-1.5 flex items-center gap-2.5">
+                      <motion.div
+                        className={`glass-chip flex h-7 w-7 items-center justify-center rounded-lg ${section.badgeColor}`}
+                        animate={liteMotion ? {} : { scale: activeTab === i ? 1.06 : 1 }}
+                        transition={{ type: "spring", stiffness: 380, damping: 24 }}
+                      >
+                        <svg
+                          className="h-3.5 w-3.5 section-card-icon-glow"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
                           {i === 0 ? (
                             <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                           ) : (
                             <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                           )}
                         </svg>
-                      </div>
-                      <span className="font-semibold text-primary text-sm">{tab.label}</span>
+                      </motion.div>
+                      <span className="text-[13px] font-semibold text-primary">{tab.label}</span>
                     </div>
-                    <p className="text-text-secondary text-xs leading-relaxed pl-11">
+                    <p className="pl-9 text-[11px] leading-relaxed text-text-secondary sm:pl-10 sm:text-xs">
                       {tab.body}
                     </p>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

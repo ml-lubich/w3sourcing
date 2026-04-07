@@ -2,33 +2,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-
-const faqs = [
-  {
-    q: "What sectors do you specialise in?",
-    a: "We focus exclusively on three high-impact sectors: Technology (VC-backed and scale-ups), Legal (Magic Circle, US elite, and in-house), and Banking & Finance (investment banking, private equity, risk and compliance). This deep specialisation allows us to deliver candidates other generalist firms simply can't reach.",
-  },
-  {
-    q: "How quickly can you fill a role?",
-    a: "Our average time-to-shortlist is 14 days. For executive searches, we typically present a qualified shortlist within 2-3 weeks. Urgent hires can be fast-tracked, with candidates presented within 5-7 business days depending on the role complexity.",
-  },
-  {
-    q: "What is your fee structure?",
-    a: "We operate on a retained and contingency basis depending on the seniority and complexity of the search. Executive and leadership roles are typically retained, while mid-level positions can be handled on a contingency basis. We're happy to discuss the best model for your specific needs.",
-  },
-  {
-    q: "Do you operate globally?",
-    a: "Yes. While our offices are in London and Singapore, we place candidates across 45+ countries. Our strongest coverage is across the UK, US, EU, Middle East, and Asia Pacific, with particular depth in major financial centres.",
-  },
-  {
-    q: "What makes W3 Sourcing different from other recruiters?",
-    a: "Three things: deep sector expertise (our consultants are former industry practitioners), a genuinely global network built over 12+ years, and an honest, consultative approach. We'll tell you when a search is unrealistic and help you recalibrate — that candour is why 98% of our clients come back.",
-  },
-  {
-    q: "Do you offer any guarantees?",
-    a: "Yes. All placements come with a 12-month free replacement guarantee. If a candidate leaves or doesn't work out within the first year, we'll conduct a replacement search at no additional cost. Our 98% retention rate means we rarely need to use it.",
-  },
-];
+import { faqItems } from "@/content/faq-items";
+import { SplitWordsRich } from "@/components/split-words";
+import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
+import { useMobileLightMotion } from "@/lib/use-mobile-light-motion";
+import { SURFACE_REVEAL_DURATION_LITE, SURFACE_REVEAL_EASE, surfaceRevealEnterTransition } from "@/lib/surface-reveal-motion";
+import { useSplitWordsAnimate } from "@/lib/use-split-words-animate";
 
 function FAQItem({
   question,
@@ -42,7 +21,7 @@ function FAQItem({
   onToggle: () => void;
 }) {
   return (
-    <div className="border-b border-gray-border last:border-b-0">
+    <div className="border-b border-gray-border/40 last:border-b-0">
       <button
         onClick={onToggle}
         className="w-full flex items-center justify-between py-6 text-left group"
@@ -53,10 +32,10 @@ function FAQItem({
         <motion.div
           animate={{ rotate: isOpen ? 45 : 0 }}
           transition={{ duration: 0.2 }}
-          className="w-8 h-8 rounded-full bg-gray-light flex items-center justify-center shrink-0 group-hover:bg-accent/10 transition-colors"
+          className="glass-chip w-8 h-8 rounded-full flex items-center justify-center shrink-0 group-hover:border-accent/35 transition-colors"
         >
           <svg
-            className={`w-4 h-4 transition-colors ${isOpen ? "text-accent" : "text-gray"}`}
+            className={`w-4 h-4 transition-colors ${isOpen ? "text-accent" : "text-muted"}`}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -72,7 +51,7 @@ function FAQItem({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            transition={{ duration: SURFACE_REVEAL_DURATION_LITE, ease: SURFACE_REVEAL_EASE }}
             className="overflow-hidden"
           >
             <p className="text-text-secondary text-sm leading-relaxed pb-6 pr-12">
@@ -85,10 +64,14 @@ function FAQItem({
   );
 }
 
-export function FAQ() {
+export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const reduced = useHydrationSafeReducedMotion();
+  const narrowViewport = useMobileLightMotion();
+  const liteMotion = reduced || narrowViewport;
+  const headingSplit = useSplitWordsAnimate(visible);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -99,29 +82,52 @@ export function FAQ() {
     return () => observer.disconnect();
   }, []);
 
-  const leftColumn = faqs.slice(0, 3);
-  const rightColumn = faqs.slice(3);
+  const leftColumn = faqItems.slice(0, 3);
+  const rightColumn = faqItems.slice(3);
 
   return (
-    <section id="faq" className="section-padding bg-gray-light overflow-hidden">
+    <section id="faq" className="section-padding section-band-glass-muted overflow-hidden" aria-labelledby="faq-heading">
       <div ref={ref} className="mx-auto max-w-7xl px-6">
         <div
           className={`text-center mb-16 transition-all duration-700 ${
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
-          <span className="inline-block text-xs font-bold tracking-[0.15em] uppercase px-3 py-1.5 rounded-full bg-cyan/10 text-cyan mb-6">
+          <span className="glass-chip inline-block text-xs font-semibold tracking-[0.12em] uppercase px-3 py-1.5 rounded-lg text-text-secondary mb-6">
             FAQ
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary tracking-tight">
-            Frequently asked <span className="text-accent">questions</span>
+          <h2
+            id="faq-heading"
+            className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-primary tracking-tight leading-[1.15]"
+          >
+            <SplitWordsRich
+              className="justify-center"
+              segments={[
+                { text: "Answers to" },
+                { text: "common questions", className: "text-accent" },
+              ]}
+              stagger={0.04}
+              delayStart={0.06}
+              animate={headingSplit}
+            />
           </h2>
           <p className="mt-4 text-text-secondary text-lg max-w-2xl mx-auto">
             Everything you need to know about working with W3 Sourcing.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-0 md:gap-12 max-w-5xl mx-auto">
+        <motion.div
+          className="grid md:grid-cols-2 gap-0 md:gap-12 max-w-5xl mx-auto"
+          initial={reduced ? false : { opacity: 0, y: liteMotion ? 10 : 16 }}
+          animate={
+            visible || reduced
+              ? { opacity: 1, y: 0 }
+              : { opacity: 0, y: liteMotion ? 10 : 16 }
+          }
+          transition={surfaceRevealEnterTransition(liteMotion, reduced, {
+            delay: reduced ? 0 : 0.1,
+          })}
+        >
           <div>
             {leftColumn.map((faq, i) => (
               <FAQItem
@@ -147,7 +153,7 @@ export function FAQ() {
               );
             })}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

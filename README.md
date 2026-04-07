@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# W3 Sourcing
 
-## Getting Started
+Next.js marketing site. **Use [Bun](https://bun.sh) for all installs and scripts** (see `packageManager` in `package.json`).
 
-First, run the development server:
+## Setup (step by step)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Install Bun (version aligned with `packageManager` in `package.json` when possible).
+2. From the repo root: `bun install`
+3. `bun run dev` — opens the URL Next prints (default port **3000**, or the next free port if 3000 is taken; use `bun run dev -- -p 0` for an OS-assigned port). A **second** `next dev` for the same folder is not allowed by Next 16; this repo stops the previous dev server (using `.next/dev/lock`) before starting, so `bun run dev` is safe to re-run. To disable that, set `W3_REPLACE_NEXT_DEV=0`. Other scripts (`build`, `start`, `lint`) still use `exec-in-repo-root` so they work from a parent directory.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command                    | Purpose                                                         |
+| -------------------------- | --------------------------------------------------------------- |
+| `bun run dev`              | Development server                                              |
+| `bun run build`            | Production build                                                |
+| `bun run start`            | Serve production build                                          |
+| `bun run lint`             | ESLint                                                          |
+| `bun run test`             | Unit tests (`src/`) + TypeScript check                          |
+| `bun run smoke:routes`     | Route smoke (default: build + `next start`)                     |
+| `bun run smoke:routes:dev` | Route smoke against `next dev` (avoid if dev server is running) |
+| `bun run smoke:routes:ci`  | Smoke after an existing build (`SMOKE_SKIP_BUILD=1`)            |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploy on Vercel (step by step)
 
-## Learn More
+1. Push the repo; ensure **`bun.lock`** is committed and there is **no** root `package-lock.json`.
+2. Import the project in [Vercel](https://vercel.com/new); defaults should pick up **`vercel.json`** (`bun install --frozen-lockfile`, then `bun run build`).
+3. Confirm in the deployment build log that dependencies install with **Bun**.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+More detail: **`docs/DEPLOYMENT.md`**.

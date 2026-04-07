@@ -1,18 +1,63 @@
-@import "tailwindcss";
+/* Relative path: avoids resolving the `tailwindcss` package from a wrong cwd (e.g. parent `git/` folder). */
+@import "../../node_modules/tailwindcss/index.css";
+
+/* Match `next-themes` class on `<html>` (not only `prefers-color-scheme`) */
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #000040;
-  --primary: #000040;
-  --accent: #4d65ff;
-  --green: #2EB57D;
-  --pink: #FF0660;
-  --yellow: #EBB02E;
-  --cyan: #35C5F0;
-  --gray: #B1B1C0;
-  --gray-light: #F5F5FA;
-  --gray-border: #E5E5EE;
-  --text-secondary: #6B6B80;
+  /* Fixed header: must match scroll-spy threshold in `Header` (via `html` scroll-padding) */
+  --header-scroll-offset: 5.5rem;
+  /** Card hover lift; keep in sync with `SURFACE_CARD_HOVER_LIFT_PX` in `surface-reveal-motion.ts`. */
+  --surface-card-hover-lift: 0.3125rem;
+  --background: #fafafa;
+  --foreground: #0f172a;
+  --primary: #0f172a;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --success: #059669;
+  --muted: #64748b;
+  --gray-light: #f1f5f9;
+  --gray-border: #e2e8f0;
+  --text-secondary: #334155;
+  --surface: #ffffff;
+  /* Distinct closing band in light mode; dark slate in `.dark` / `html.dark` */
+  --footer: #e2e8f0;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark,
+html.dark :root {
+  --background: #030712;
+  --foreground: #f1f5f9;
+  --primary: #f8fafc;
+  --accent: #818cf8;
+  --accent-hover: #a5b4fc;
+  --success: #34d399;
+  --muted: #94a3b8;
+  --gray-light: #0f172a;
+  --gray-border: #1e293b;
+  --text-secondary: #cbd5e1;
+  --surface: #0f172a;
+  --footer: #020617;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #070a12;
+  --foreground: #f1f5f9;
+  --primary: #f8fafc;
+  --accent: #818cf8;
+  --accent-hover: #a5b4fc;
+  --success: #34d399;
+  --muted: #94a3b8;
+  --gray-light: #151f32;
+  --gray-border: #273549;
+  --text-secondary: #94a3b8;
+  --surface: #0d1321;
+  --footer: #020617;
 }
 
 @theme inline {
@@ -20,31 +65,221 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-accent: var(--accent);
-  --color-green: var(--green);
-  --color-pink: var(--pink);
-  --color-yellow: var(--yellow);
-  --color-cyan: var(--cyan);
-  --color-gray: var(--gray);
+  --color-accent-hover: var(--accent-hover);
+  --color-success: var(--success);
+  --color-muted: var(--muted);
   --color-gray-light: var(--gray-light);
   --color-gray-border: var(--gray-border);
   --color-text-secondary: var(--text-secondary);
-  --font-sans: var(--font-inter);
+  --color-surface: var(--surface);
+  --color-footer: var(--footer);
+  --font-sans: var(--font-sans-jakarta);
+  /* Dense list / tab rows: iOS-like squircle radius (use `rounded-row-highlight`); keep rows inside overflow parents (no negative horizontal margin) so corners are not clipped. */
+  --radius-row-highlight: 0.875rem;
 }
 
 html {
-  scroll-behavior: smooth;
+  /* In-page jumps use JS easing (`scroll-to-section.ts`) + `SnappyInPageAnchorClicks` for a short, capped duration. */
+  scroll-behavior: auto;
+  scroll-padding-top: var(--header-scroll-offset);
+}
+
+/* `scroll-padding` on html is not always applied to programmatic `scrollIntoView`; margin on targets fixes deep links. */
+main#main-content section[id],
+main#main-content #features {
+  scroll-margin-top: var(--header-scroll-offset);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans-jakarta), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Marquee for logos */
+/** SVG `<text>` labels in How It Works deco (Tailwind `[&_text]:opacity-*` breaks v4 CSS codegen). */
+.hiw-step-art-svg text {
+  opacity: 0.95;
+}
+
+/**
+ * Global liquid canvas: fixed wash behind all content so frosted surfaces
+ * (`glass-panel`, section bands, header) always refract a consistent depth field.
+ */
+body.liquid-page-canvas {
+  background-image:
+    radial-gradient(
+      ellipse 95% 70% at 50% -30%,
+      color-mix(in srgb, var(--accent) 13%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 55% 42% at 100% 8%,
+      color-mix(in srgb, var(--accent) 7%, transparent),
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse 55% 42% at 0% 22%,
+      color-mix(in srgb, #06b6d4 6%, transparent),
+      transparent 50%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface) 50%, var(--background)) 0%,
+      var(--background) 42%,
+      color-mix(in srgb, var(--gray-light) 16%, var(--background)) 100%
+    );
+  background-attachment: fixed;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+html.dark body.liquid-page-canvas {
+  background-image:
+    radial-gradient(
+      ellipse 92% 65% at 50% -32%,
+      color-mix(in srgb, var(--accent) 18%, transparent),
+      transparent 56%
+    ),
+    radial-gradient(
+      ellipse 50% 38% at 96% 6%,
+      color-mix(in srgb, var(--accent) 10%, transparent),
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse 50% 38% at 4% 18%,
+      color-mix(in srgb, #22d3ee 8%, transparent),
+      transparent 48%
+    ),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 28%, var(--background)) 0%, var(--background) 100%);
+}
+
+/** Full-width section strips: frosted translucency over the global canvas. */
+.section-band-glass {
+  position: relative;
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  backdrop-filter: blur(20px) saturate(158%);
+  -webkit-backdrop-filter: blur(20px) saturate(158%);
+}
+
+.section-band-glass-muted {
+  position: relative;
+  background: color-mix(in srgb, var(--gray-light) 52%, transparent);
+  backdrop-filter: blur(20px) saturate(158%);
+  -webkit-backdrop-filter: blur(20px) saturate(158%);
+}
+
+html.dark .section-band-glass {
+  background: color-mix(in srgb, var(--surface) 40%, transparent);
+}
+
+html.dark .section-band-glass-muted {
+  background: color-mix(in srgb, var(--gray-light) 44%, transparent);
+}
+
+/**
+ * WebKit (esp. iOS Safari): `backdrop-filter` on an ancestor + per-word composited layers
+ * (`SplitWords` / `motion.span` + transform) yields illegible smeared headings; body copy
+ * without those layers stays sharp. Drop frosted sampling on narrow viewports; fills stay.
+ */
+@media (max-width: 639px) {
+  .section-band-glass,
+  .section-band-glass-muted,
+  .glass-panel,
+  .glass-panel-liquid,
+  .glass-panel-strong {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/** Compact frosted controls (inputs, small chips). */
+.glass-control {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface) 82%, transparent) 0%,
+    color-mix(in srgb, var(--surface) 64%, transparent) 100%
+  );
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  border: 1px solid color-mix(in srgb, var(--gray-border) 82%, var(--primary) 6%);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, white 70%, transparent) inset,
+    0 2px 10px color-mix(in srgb, var(--primary) 4%, transparent);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.dark .glass-control {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--surface) 38%, transparent) 0%,
+    color-mix(in srgb, #020617 22%, transparent) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--gray-border) 42%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, white 6%, transparent) inset,
+    0 2px 12px rgba(0, 0, 0, 0.22);
+}
+
+.glass-chip {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface) 84%, transparent) 0%,
+    color-mix(in srgb, var(--surface) 66%, transparent) 100%
+  );
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid color-mix(in srgb, var(--gray-border) 78%, var(--primary) 6%);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, white 72%, transparent) inset,
+    0 4px 16px color-mix(in srgb, var(--primary) 6%, transparent);
+  transition:
+    background 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dark .glass-chip {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--surface) 44%, transparent) 0%,
+    color-mix(in srgb, #020617 26%, transparent) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--gray-border) 44%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, white 8%, transparent) inset,
+    0 6px 20px rgba(0, 0, 0, 0.28);
+}
+
+/* GSAP / Webflow SplitText-style tiles (`SplitWords`): explicit box model like goperfect.com word nodes. */
+.gsap_split_word_clip {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: baseline;
+  /* `overflow: hidden` masks Y translation; without extra inline padding, tight parent
+   * `line-height` can clip descenders (g, p, y) and ascenders during motion. */
+  padding-block: 0.1em 0.26em;
+}
+
+.gsap_split_word {
+  position: relative;
+  display: inline-block;
+  vertical-align: baseline;
+}
+
 @keyframes marquee {
   0% { transform: translateX(0%); }
   100% { transform: translateX(-50%); }
@@ -54,7 +289,6 @@ body {
   animation: marquee 30s linear infinite;
 }
 
-/* Pop-scale animation for counters */
 @keyframes pop-scale {
   0% { transform: scale(1); }
   50% { transform: scale(1.08); }
@@ -65,27 +299,259 @@ body {
   animation: pop-scale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Header scrolled state */
-.header-scrolled {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--gray-border);
-  box-shadow: 0 1px 12px rgba(0, 0, 64, 0.04);
+/**
+ * Section header decorative SVGs (`PracticeAreaAnimatedArt`, `WhyW3AnimatedArt`, `StepArt`):
+ * Light mode: ink-forward `currentColor` so thin strokes survive pale glass + header scrims.
+ * Dark mode: existing accent-forward mix (unchanged).
+ */
+.section-deco-art-svg {
+  pointer-events: none;
+  color: color-mix(in srgb, var(--accent) 28%, var(--primary) 72%);
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 42%, transparent))
+    drop-shadow(0 0 18px color-mix(in srgb, var(--accent) 26%, transparent));
 }
 
-/* Section spacing */
+html.dark .section-deco-art-svg {
+  color: color-mix(in srgb, var(--accent) 76%, var(--foreground) 24%);
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 55%, transparent))
+    drop-shadow(0 0 20px color-mix(in srgb, var(--accent) 32%, transparent));
+}
+
+@keyframes section-deco-art-glow-breathe {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent) 36%, transparent))
+      drop-shadow(0 0 14px color-mix(in srgb, var(--accent) 20%, transparent));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 52%, transparent))
+      drop-shadow(0 0 24px color-mix(in srgb, var(--accent) 32%, transparent));
+  }
+}
+
+html.dark .section-deco-art-svg.section-deco-art-svg--motion {
+  animation: section-deco-art-glow-breathe-dark 3.1s ease-in-out infinite;
+}
+
+@keyframes section-deco-art-glow-breathe-dark {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 52%, transparent))
+      drop-shadow(0 0 18px color-mix(in srgb, var(--accent) 30%, transparent));
+  }
+  50% {
+    filter: drop-shadow(0 0 14px color-mix(in srgb, var(--accent) 72%, transparent))
+      drop-shadow(0 0 30px color-mix(in srgb, var(--accent) 42%, transparent));
+  }
+}
+
+.section-deco-art-svg.section-deco-art-svg--motion {
+  animation: section-deco-art-glow-breathe 3.1s ease-in-out infinite;
+}
+
+@keyframes section-card-icon-glow-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent) 45%, transparent));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 68%, transparent))
+      drop-shadow(0 0 18px color-mix(in srgb, var(--accent) 38%, transparent));
+  }
+}
+
+@keyframes section-card-icon-glow-pulse-light {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent-hover) 55%, transparent));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent-hover) 72%, transparent))
+      drop-shadow(0 0 14px color-mix(in srgb, var(--accent) 35%, transparent));
+  }
+}
+
+.section-card-icon-glow {
+  animation: section-card-icon-glow-pulse-light 2.75s ease-in-out infinite;
+}
+
+html.dark .section-card-icon-glow {
+  animation: section-card-icon-glow-pulse 2.75s ease-in-out infinite;
+}
+
+/** Pause infinite CSS marquees while off-screen (controlled from `TrustedBy`). */
+.marquee-paused {
+  animation-play-state: paused;
+}
+
+/** Trusted-by intro fades: skip motion when the user requests reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .trusted-by-fade {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body,
+  .glass-panel,
+  .glass-panel::before,
+  .glass-panel-liquid,
+  .glass-panel-liquid::before,
+  .glass-chip,
+  .glass-control {
+    transition: none !important;
+  }
+
+  .animate-marquee,
+  .animate-pop-scale {
+    animation: none !important;
+  }
+
+  .hero-orb {
+    animation: none;
+  }
+
+  .hero-card-shimmer::after {
+    animation: none;
+  }
+
+  .hero-live-dot {
+    animation: none;
+  }
+
+  .section-deco-art-svg.section-deco-art-svg--motion,
+  .section-card-icon-glow {
+    animation: none !important;
+  }
+
+  .section-deco-art-svg {
+    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent) 34%, transparent));
+  }
+
+  html.dark .section-deco-art-svg {
+    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent) 36%, transparent));
+  }
+}
+
+/* Frosted shell: `--header-glass` opacity on ::before (1 = full frost). At top, tints drop for a see-through bar.
+   Do not set `position: relative` here — it overrides Tailwind `fixed` (same specificity, this file follows utilities)
+   and makes the bar in-flow (black band above the hero instead of glass over the wash). */
+.header-bar {
+  isolation: isolate;
+  --header-tint-a: 78%;
+  --header-tint-b: 60%;
+  --header-dark-tint-a: 54%;
+  --header-dark-tint-b: 38%;
+  --header-glass: 1;
+  border-bottom: none;
+  box-shadow: 0 14px 48px
+    color-mix(in srgb, rgb(15 23 42) calc(var(--header-glass) * 7%), transparent);
+  transition: box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.header-bar[data-at-top] {
+  /* True top-of-page transparency: hero (or page wash) shows through; blur/frost returns after ~12px scroll */
+  --header-tint-a: 0%;
+  --header-tint-b: 0%;
+  --header-dark-tint-a: 0%;
+  --header-dark-tint-b: 0%;
+  --header-glass: 0;
+  box-shadow: none;
+}
+
+.dark .header-bar,
+html.dark .header-bar {
+  box-shadow: 0 14px 48px
+    color-mix(in srgb, rgb(0 0 0) calc(var(--header-glass) * 45%), transparent);
+}
+
+.header-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--header-glass);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface) var(--header-tint-a), transparent) 0%,
+    color-mix(in srgb, var(--surface) var(--header-tint-b), transparent) 100%
+  );
+  backdrop-filter: blur(22px) saturate(165%);
+  -webkit-backdrop-filter: blur(22px) saturate(165%);
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dark .header-bar::before,
+html.dark .header-bar::before {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface) var(--header-dark-tint-a), transparent) 0%,
+    color-mix(in srgb, var(--footer) var(--header-dark-tint-b), transparent) 100%
+  );
+}
+
+.header-bar > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Navbar scroll-spy: active link glow + reflection line */
+.nav-link-section {
+  position: relative;
+  transition: color 0.2s ease, text-shadow 0.25s ease;
+}
+
+.nav-link-section-active {
+  color: var(--accent);
+  text-shadow:
+    0 0 14px color-mix(in srgb, var(--accent) 45%, transparent),
+    0 0 28px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.nav-link-section-active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  width: min(72%, 4.5rem);
+  height: 2px;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--accent) 90%, white 10%),
+    transparent
+  );
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--accent) 60%, transparent),
+    0 0 20px color-mix(in srgb, var(--accent) 30%, transparent);
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .nav-link-section-active::after {
+    display: none;
+  }
+}
+
 .section-padding {
-  padding: 80px 0;
+  padding: 5rem 0;
 }
 
 @media (min-width: 768px) {
   .section-padding {
-    padding: 120px 0;
+    padding: 7.5rem 0;
   }
 }
 
-/* Scroll reveal */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -97,13 +563,15 @@ body {
   transform: translateY(0);
 }
 
-/* Selection */
 ::selection {
-  background: rgba(77, 101, 255, 0.15);
+  background: rgba(79, 70, 229, 0.18);
   color: var(--primary);
 }
 
-/* Scrollbar */
+.dark ::selection {
+  background: rgba(129, 140, 248, 0.25);
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -113,7 +581,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gray);
+  background: color-mix(in srgb, var(--muted) 50%, var(--gray-border));
   border-radius: 3px;
 }
 
@@ -121,7 +589,14 @@ body {
   background: var(--accent);
 }
 
-/* FAQ accordion */
+html.dark ::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
 .faq-answer {
   max-height: 0;
   overflow: hidden;
@@ -130,4 +605,420 @@ body {
 
 .faq-answer.open {
   max-height: 500px;
+}
+
+/* Hero ambient wash */
+.hero-wash {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -30%, rgba(79, 70, 229, 0.14), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 0%, rgba(99, 102, 241, 0.08), transparent 45%),
+    radial-gradient(ellipse 50% 40% at 0% 20%, rgba(14, 165, 233, 0.06), transparent 45%),
+    linear-gradient(180deg, var(--surface) 0%, var(--background) 100%);
+}
+
+.dark .hero-wash {
+  background:
+    radial-gradient(ellipse 85% 55% at 50% -35%, rgba(99, 102, 241, 0.22), transparent 55%),
+    radial-gradient(ellipse 45% 35% at 95% 5%, rgba(79, 70, 229, 0.12), transparent 50%),
+    radial-gradient(ellipse 45% 35% at 5% 15%, rgba(56, 189, 248, 0.08), transparent 45%),
+    linear-gradient(180deg, var(--surface) 0%, var(--background) 100%);
+}
+
+@keyframes hero-orb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(12px, -10px) scale(1.04); }
+  66% { transform: translate(-8px, 8px) scale(0.98); }
+}
+
+.hero-orb {
+  animation: hero-orb-float 14s ease-in-out infinite;
+}
+
+@media (max-width: 639px) {
+  .hero-orb {
+    animation: none;
+  }
+
+  .hero-card-shimmer::after {
+    animation: none;
+  }
+}
+
+@keyframes hero-live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.92); }
+}
+
+.hero-live-dot {
+  animation: hero-live-pulse 2s ease-in-out infinite;
+}
+
+@keyframes hero-shimmer {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+@keyframes hero-shimmer-line {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.hero-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--accent) 50%, transparent) 45%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  animation: hero-shimmer-line 4.2s ease-in-out infinite;
+}
+
+.hero-card-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-card-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.45;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    color-mix(in srgb, var(--accent) 8%, transparent) 45%,
+    transparent 80%
+  );
+  animation: hero-shimmer 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.dark .hero-card-shimmer::after {
+  opacity: 0.4;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    color-mix(in srgb, var(--accent) 12%, transparent) 45%,
+    transparent 80%
+  );
+}
+
+.hero-surface-grid {
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, var(--gray-border) 55%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--gray-border) 55%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 75% 70% at 50% 20%, black 15%, transparent 70%);
+}
+
+.hero-dot-noise {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in srgb, var(--muted) 14%, transparent) 1px,
+    transparent 0
+  );
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 20%, transparent 65%);
+  opacity: 0.45;
+}
+
+.dark .hero-dot-noise {
+  opacity: 0.32;
+}
+
+/* ── Liquid glass surfaces (frosted panels + specular edge, elevation not hairlines) ─ */
+.glass-panel {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--surface) 92%, var(--gray-light) 8%) 0%,
+    color-mix(in srgb, var(--surface) 76%, var(--gray-light) 24%) 100%
+  );
+  backdrop-filter: blur(22px) saturate(165%);
+  -webkit-backdrop-filter: blur(22px) saturate(165%);
+  border: 1px solid color-mix(in srgb, var(--gray-border) 88%, var(--primary) 8%);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, white 85%, transparent) inset,
+    0 1px 2px color-mix(in srgb, var(--primary) 5%, transparent),
+    0 10px 28px color-mix(in srgb, var(--primary) 7%, transparent),
+    0 28px 70px color-mix(in srgb, var(--primary) 11%, transparent);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dark .glass-panel {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--surface) 42%, transparent) 0%,
+    color-mix(in srgb, #0f172a 28%, transparent) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--gray-border) 45%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, white 8%, transparent) inset,
+    0 8px 28px rgba(0, 0, 0, 0.28),
+    0 28px 72px rgba(0, 0, 0, 0.42);
+}
+
+.glass-panel::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+  opacity: 0.55;
+  background: linear-gradient(
+    125deg,
+    color-mix(in srgb, var(--accent) 14%, transparent) 0%,
+    transparent 42%,
+    color-mix(in srgb, var(--accent) 6%, transparent) 100%
+  );
+  mix-blend-mode: soft-light;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dark .glass-panel::before {
+  opacity: 0.4;
+  mix-blend-mode: screen;
+}
+
+.glass-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/**
+ * Frosted card hover: fine pointer + full motion only. Compact chrome (pills, tab indicators, small links)
+ * opts out via `.glass-panel--chrome` / `.glass-panel-liquid--chrome`.
+ */
+@media (hover: hover) and (pointer: fine) {
+  @media (prefers-reduced-motion: no-preference) {
+    .glass-panel:not(.glass-panel--chrome):hover,
+    .glass-panel-liquid:not(.glass-panel-liquid--chrome):hover {
+      transform: translateY(calc(-1 * var(--surface-card-hover-lift)));
+    }
+  }
+}
+
+/**
+ * Liquid glass (light edge): softer separation than `.glass-panel` — hairline tint + depth, not framed boxes.
+ * Used for dense column stacks (Industries & functions) where per-row borders read as noise.
+ */
+.glass-panel-liquid {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(
+    158deg,
+    color-mix(in srgb, var(--surface) 62%, transparent) 0%,
+    color-mix(in srgb, var(--surface) 38%, var(--gray-light) 18%) 52%,
+    color-mix(in srgb, var(--surface) 28%, transparent) 100%
+  );
+  backdrop-filter: blur(44px) saturate(195%);
+  -webkit-backdrop-filter: blur(44px) saturate(195%);
+  border: 1px solid color-mix(in srgb, var(--gray-border) 18%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, white 78%, transparent) inset,
+    0 22px 56px -22px color-mix(in srgb, var(--primary) 11%, transparent),
+    0 4px 14px color-mix(in srgb, var(--primary) 5%, transparent);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dark .glass-panel-liquid {
+  background: linear-gradient(
+    152deg,
+    color-mix(in srgb, var(--surface) 34%, transparent) 0%,
+    color-mix(in srgb, #0a1020 30%, transparent) 50%,
+    color-mix(in srgb, #040814 22%, transparent) 100%
+  );
+  border: 1px solid color-mix(in srgb, white 9%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, white 12%, transparent) inset,
+    0 18px 46px rgba(0, 0, 0, 0.26),
+    0 0 80px -30px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.glass-panel-liquid::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+  opacity: 0.42;
+  background:
+    radial-gradient(120% 80% at 0% 0%, color-mix(in srgb, var(--accent) 18%, transparent) 0%, transparent 55%),
+    radial-gradient(90% 70% at 100% 100%, color-mix(in srgb, #22d3ee 10%, transparent) 0%, transparent 52%);
+  mix-blend-mode: soft-light;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dark .glass-panel-liquid::before {
+  opacity: 0.32;
+  mix-blend-mode: screen;
+}
+
+.glass-panel-liquid > * {
+  position: relative;
+  z-index: 1;
+}
+
+/** Denser frost for hero / primary preview cards */
+.glass-panel-strong {
+  backdrop-filter: blur(28px) saturate(175%);
+  -webkit-backdrop-filter: blur(28px) saturate(175%);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--surface) 88%, transparent) 0%,
+    color-mix(in srgb, var(--surface) 58%, transparent) 100%
+  );
+}
+
+.dark .glass-panel-strong {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--surface) 55%, transparent) 0%,
+    color-mix(in srgb, #020617 35%, transparent) 100%
+  );
+}
+
+/** Section wash behind glass stacks */
+.section-glass-ambient {
+  position: relative;
+  /* Blur/filter spill sits outside the border box; clipping it creates a hard seam
+   * between alternating sections (especially in dark mode). Page-level `body { overflow-x: hidden }` contains horizontal bleed. */
+  overflow: visible;
+}
+
+.section-glass-ambient::before,
+.section-glass-ambient::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  z-index: 0;
+}
+
+.section-glass-ambient::before {
+  width: min(72vw, 520px);
+  height: 320px;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.section-glass-ambient::after {
+  width: 280px;
+  height: 280px;
+  bottom: -80px;
+  right: -40px;
+  background: color-mix(in srgb, #06b6d4 12%, transparent);
+  opacity: 0.45;
+}
+
+.dark .section-glass-ambient::before {
+  opacity: 0.35;
+}
+
+.dark .section-glass-ambient::after {
+  opacity: 0.28;
+}
+
+.section-glass-ambient > .section-glass-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/**
+ * Practice / Why / Process card headers: radial scrim into the white body.
+ * Light: translucent end-stop so `section-deco-art-svg` strokes are not erased by opaque `#fff`.
+ */
+.pa-card-header-scrim {
+  background: radial-gradient(
+    ellipse 80% 70% at 50% 0%,
+    transparent 40%,
+    color-mix(in srgb, var(--surface) 72%, transparent) 100%
+  );
+}
+
+html.dark .pa-card-header-scrim {
+  background: radial-gradient(
+    ellipse 80% 70% at 50% 0%,
+    transparent 38%,
+    rgb(15 23 42 / 0.88) 100%
+  );
+}
+
+.why-card-header-scrim {
+  background: radial-gradient(
+    ellipse 85% 72% at 50% 0%,
+    transparent 38%,
+    color-mix(in srgb, var(--surface) 70%, transparent) 100%
+  );
+}
+
+html.dark .why-card-header-scrim {
+  background: radial-gradient(
+    ellipse 85% 72% at 50% 0%,
+    transparent 36%,
+    rgb(15 23 42 / 0.9) 100%
+  );
+}
+
+.step-card-header-scrim {
+  transition: background 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  background: radial-gradient(
+    ellipse 80% 72% at 50% 0%,
+    transparent 46%,
+    color-mix(in srgb, var(--surface) 68%, var(--gray-light) 18%) 100%
+  );
+}
+
+html.dark .step-card-header-scrim {
+  background: radial-gradient(
+    ellipse 80% 70% at 50% 0%,
+    transparent 35%,
+    rgb(15 23 42 / 0.85) 100%
+  );
+}
+
+/* Slightly richer wash behind Industries & functions (still one ambient system). */
+.section-glass-ambient.section-industries-ambient::before {
+  width: min(82vw, 600px);
+  height: 360px;
+  filter: blur(96px);
+  opacity: 0.5;
+}
+
+.section-glass-ambient.section-industries-ambient::after {
+  width: min(42vw, 340px);
+  height: 340px;
+  filter: blur(88px);
+  opacity: 0.42;
+}
+
+.dark .section-glass-ambient.section-industries-ambient::before {
+  opacity: 0.38;
+}
+
+.dark .section-glass-ambient.section-industries-ambient::after {
+  opacity: 0.32;
 }

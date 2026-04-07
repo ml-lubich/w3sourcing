@@ -1,0 +1,6 @@
+set -euo pipefail
+# Same gate as CI: lint + types/unit tests + production build (catches broken SSR/CSS/Tailwind)
+# + route smoke (fails on any discovered route returning 404 or 5xx).
+# Browser-only hydration warnings are not fully observable here; a green build + smoke
+# still blocks the class of regressions that produced bad server HTML vs client trees.
+bun run precommit
