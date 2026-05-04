@@ -18,17 +18,17 @@ type Pillar = {
   body: string;
   Icon: LucideIcon;
   art: WhyArt;
-  accent: string;
+  tone: string;
 };
 
 const pillars: Pillar[] = [
   {
     title: "Deep Domain Expertise",
     body:
-      "Our consultants bring sector-specific insight and market knowledge to every engagement—context, calibration, and advocacy that spreadsheets and models cannot replicate—so placements land faster and hold longer.",
+      "Our consultants bring sector-specific insight and live market calibration to every engagement, from VC-backed operator searches to partner and regulated finance mandates. That context, advocacy, and judgment help placements land faster and hold longer.",
     Icon: Sparkles,
     art: "expertise",
-    accent: "from-violet-500/22 to-accent/18",
+    tone: "surface-gradient-field--venture",
   },
   {
     title: "Global Reach, Local Insight",
@@ -36,15 +36,15 @@ const pillars: Pillar[] = [
       "With active search capabilities across the U.S., U.K., EU, UAE, and Asia, we understand region-specific talent dynamics while delivering a seamless cross-border recruitment experience.",
     Icon: Globe2,
     art: "global",
-    accent: "from-accent/24 to-cyan-500/16",
+    tone: "surface-gradient-field--process",
   },
   {
     title: "Human-Led & Relationship-Driven",
     body:
-      "We prioritise consultation and collaboration over transactional hiring. Tools can rank keywords; they do not have taste, feel, or responsibility for your reputation—our partners do, with clients and candidates alike.",
+      "We prioritise consultation and collaboration over transactional hiring. Tools can rank keywords; they do not have taste, founder feel, or responsibility for your reputation. Our partners do, with clients and candidates alike.",
     Icon: Handshake,
     art: "relationship",
-    accent: "from-cyan-500/14 to-accent/20",
+    tone: "surface-gradient-field--process",
   },
   {
     title: "Commitment to Ethics & Confidentiality",
@@ -52,7 +52,7 @@ const pillars: Pillar[] = [
       "We operate with the highest professional and ethical standards. Protecting confidential candidate and client information is core to how we work, and we uphold fair, inclusive, and non-discriminatory recruitment practices.",
     Icon: Scale,
     art: "ethics",
-    accent: "from-accent/20 to-emerald-500/12",
+    tone: "surface-gradient-field--trust",
   },
 ];
 
@@ -105,21 +105,21 @@ export function WhyW3() {
 
         <ul className="grid sm:grid-cols-2 gap-6 lg:gap-8 list-none p-0 m-0">
           {pillars.map((pillar, i) => (
-            <motion.li
-              key={pillar.title}
-              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 20 }}
-              animate={
-                visible
-                  ? { opacity: 1, y: 0 }
-                  : reduced
-                    ? { opacity: 0 }
-                    : { opacity: 0, y: 20 }
-              }
-              transition={surfaceRevealEnterTransition(liteMotion, reduced, { delay: 0.06 * i })}
-            >
-              <article className="glass-panel flex h-full flex-col overflow-hidden rounded-2xl">
+            <li key={pillar.title}>
+              <motion.article
+                className="glass-panel flex h-full flex-col overflow-hidden rounded-2xl"
+                initial={reduced ? { opacity: 0 } : { opacity: 0, y: 20 }}
+                animate={
+                  visible
+                    ? { opacity: 1, y: 0 }
+                    : reduced
+                      ? { opacity: 0 }
+                      : { opacity: 0, y: 20 }
+                }
+                transition={surfaceRevealEnterTransition(liteMotion, reduced, { delay: 0.06 * i })}
+              >
                 <div
-                  className={`relative h-28 shrink-0 overflow-hidden bg-gradient-to-br ${pillar.accent} via-surface/30 dark:via-slate-900/25 to-transparent sm:h-32`}
+                  className={`surface-gradient-field ${pillar.tone} relative h-28 shrink-0 overflow-hidden sm:h-32`}
                 >
                   <WhyW3AnimatedArt
                     variant={pillar.art}
@@ -160,8 +160,8 @@ export function WhyW3() {
                     {pillar.body}
                   </motion.p>
                 </div>
-              </article>
-            </motion.li>
+              </motion.article>
+            </li>
           ))}
         </ul>
       </div>

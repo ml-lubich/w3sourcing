@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { ResilientImage } from "@/components/resilient-image";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 import { sectionHref } from "@/lib/section-href";
@@ -18,7 +19,6 @@ const navLinks = [
   { label: "Compare", href: "#compare" },
   { label: "Clients", href: "#testimonials" },
   { label: "FAQ", href: "#faq" },
-  { label: "Contact", href: "#contact" },
 ] as const;
 
 export type HeaderProps = {
@@ -140,12 +140,15 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
     >
       <div className="mx-auto max-w-7xl px-6 flex items-center justify-between gap-3 min-w-0">
         <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-white text-sm font-extrabold shadow-sm transition-transform group-hover:scale-[1.03]">
-            W3
-          </span>
-          <span className="text-primary font-bold text-lg tracking-tight">
-            Sourcing
-          </span>
+          <ResilientImage
+            src="/images/logo_w3_sourcing_wordmark.png"
+            alt="W3 Sourcing"
+            width={184}
+            height={72}
+            className="h-full w-full object-contain transition-[filter,transform] duration-200 group-hover:scale-[1.03] dark:brightness-0 dark:invert"
+            wrapperClassName="relative inline-block h-10 w-[150px] overflow-hidden rounded-md align-middle sm:w-[180px]"
+            priority
+          />
         </Link>
 
         <nav
@@ -178,14 +181,10 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
         <div className="flex items-center gap-2 shrink-0">
           <ThemeToggle />
           <a
-            href={sectionHref("#contact", sectionLinksFromRoot)}
-            onClick={(e) => {
-              setActiveHref("#contact");
-              onSectionLinkClick(e, "#contact");
-            }}
-            className="hidden md:inline-flex bg-accent text-white font-semibold text-sm py-2.5 px-5 rounded-xl shadow-[0_2px_12px_rgb(79_70_229_/_0.2)] transition-all duration-200 hover:bg-accent-hover"
+            href="mailto:info@w3sourcing.com"
+            className="hidden md:inline-flex bg-accent text-white font-semibold text-sm py-2.5 px-5 rounded-xl shadow-[0_8px_24px_color-mix(in_srgb,var(--accent)_30%,transparent)] transition-all duration-200 hover:bg-accent-hover"
           >
-            Get in touch
+            Email us
           </a>
           <button
             type="button"
@@ -219,7 +218,6 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
             exit={{ height: 0 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             className="bg-surface md:hidden absolute top-full left-0 right-0 z-[2] min-h-[calc(100dvh-4.5rem)] overflow-hidden border-t border-gray-border/35 shadow-[0_24px_48px_rgb(15_23_42_/_0.12)] dark:shadow-[0_24px_48px_rgb(0_0_0_/_0.4)]"
-            style={{ backgroundColor: "var(--surface)" }}
           >
             <nav className="flex flex-col p-6 gap-1">
               {navLinks.map((link) => {
@@ -244,14 +242,11 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
                 );
               })}
               <a
-                href={sectionHref("#contact", sectionLinksFromRoot)}
-                onClick={(e) => {
-                  setActiveHref("#contact");
-                  onMobileSectionLinkClick(e, "#contact");
-                }}
-                className="bg-accent text-white font-semibold text-sm py-3 px-6 rounded-xl text-center shadow-[0_4px_20px_rgb(79_70_229_/_0.28)] transition-all duration-200 hover:bg-accent-hover hover:shadow-[0_8px_28px_rgb(79_70_229_/_0.38)]"
+                href="mailto:info@w3sourcing.com"
+                onClick={() => setMobileOpen(false)}
+                className="bg-accent text-white font-semibold text-sm py-3 px-6 rounded-xl text-center shadow-[0_10px_28px_color-mix(in_srgb,var(--accent)_36%,transparent)] transition-all duration-200 hover:bg-accent-hover hover:shadow-[0_14px_34px_color-mix(in_srgb,var(--accent)_42%,transparent)]"
               >
-                Get in touch
+                Email us
               </a>
             </nav>
           </motion.div>

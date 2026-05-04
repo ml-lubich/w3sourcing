@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Geist, Instrument_Serif } from "next/font/google";
 import { AppMotionConfig } from "@/components/app-motion-config";
 import { BfCacheViewportRevive } from "@/components/bf-cache-viewport-revive";
 import { SnappyInPageAnchorClicks } from "@/components/snappy-in-page-anchor-clicks";
@@ -9,17 +9,24 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { getSiteUrl } from "@/lib/site";
 import "./globals.css";
 
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: "--font-sans-jakarta",
+const geistSans = Geist({
+  variable: "--font-sans-geist",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-display-instrument",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400"],
 });
 
 const siteUrl = getSiteUrl();
 const defaultTitle = "Executive Recruitment | W3 Sourcing";
 const defaultDescription =
-  "Human-led executive search for technology, legal, and banking & finance: principal judgment, discretion, and fit—because tools cannot replace taste on who belongs in your leadership team. US, UK, EU, UAE, Asia.";
+  "Human-led executive search for VC-backed technology, legal, and banking & finance: principal judgment, discretion, and fit because tools cannot replace taste on who belongs in your leadership team. US, UK, EU, UAE, Asia.";
 
 const ogImageAlt =
   "W3 Sourcing — executive recruitment in technology, legal, and banking";
@@ -29,6 +36,29 @@ const googleVerification =
 
 export const metadata: Metadata = {
   metadataBase: siteUrl,
+  manifest: "/images/favicon/site.webmanifest",
+  icons: {
+    icon: [
+      { url: "/images/favicon/favicon.ico", sizes: "48x48" },
+      {
+        url: "/images/favicon/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
+      {
+        url: "/images/favicon/favicon-16x16.png",
+        sizes: "16x16",
+        type: "image/png",
+      },
+    ],
+    apple: [
+      {
+        url: "/images/favicon/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  },
   title: {
     default: defaultTitle,
     template: "%s | W3 Sourcing",
@@ -38,6 +68,10 @@ export const metadata: Metadata = {
   keywords: [
     "executive search",
     "executive recruitment",
+    "VC recruitment",
+    "venture capital recruitment",
+    "VC-backed recruitment",
+    "startup executive search",
     "tech recruitment",
     "technology recruitment",
     "legal recruitment",
@@ -99,7 +133,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${plusJakarta.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${instrumentSerif.variable}`}
+    >
       <head>
         <Script src="/w3-theme-boot.js" strategy="beforeInteractive" />
       </head>

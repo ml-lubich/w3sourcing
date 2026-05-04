@@ -1,5 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "bun install --frozen-lockfile",
-  "buildCommand": "bun run lint && bun run build && bun run smoke:routes:ci"
+  "buildCommand": "bun run ci && bun run smoke:routes:ci"
 }

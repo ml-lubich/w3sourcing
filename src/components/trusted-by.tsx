@@ -1,40 +1,41 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import type { LucideIcon } from "lucide-react";
-import {
-  Coins,
-  Landmark,
-  LineChart,
-  Rocket,
-  Scale,
-  TrendingUp,
-  Wallet,
-} from "lucide-react";
+import { ResilientImage } from "@/components/resilient-image";
 
 type CompanyEntry = {
   name: string;
-  Icon: LucideIcon;
+  mark: string;
+  domain: string;
 };
 
-const companies: CompanyEntry[] = [
-  { name: "Goldman Sachs", Icon: Landmark },
-  { name: "Sequoia Capital", Icon: TrendingUp },
-  { name: "Andreessen Horowitz", Icon: Rocket },
-  { name: "Clifford Chance", Icon: Scale },
-  { name: "Stripe", Icon: Wallet },
-  { name: "Linklaters", Icon: Scale },
-  { name: "Morgan Stanley", Icon: Landmark },
-  { name: "Y Combinator", Icon: Rocket },
-  { name: "Allen & Overy", Icon: Scale },
-  { name: "Revolut", Icon: Wallet },
-  { name: "JP Morgan", Icon: Landmark },
-  { name: "Freshfields", Icon: Scale },
-  { name: "Accel Partners", Icon: TrendingUp },
-  { name: "Coinbase", Icon: Coins },
-  { name: "Slaughter and May", Icon: Scale },
-  { name: "Tiger Global", Icon: LineChart },
+const topRowCompanies: readonly CompanyEntry[] = [
+  { name: "Goldman Sachs", mark: "GS", domain: "goldmansachs.com" },
+  { name: "Sequoia Capital", mark: "SQ", domain: "sequoiacap.com" },
+  { name: "Andreessen Horowitz", mark: "AH", domain: "a16z.com" },
+  { name: "Clifford Chance", mark: "CC", domain: "cliffordchance.com" },
+  { name: "Stripe", mark: "ST", domain: "stripe.com" },
+  { name: "Raft", mark: "RF", domain: "teamraft.com" },
+  { name: "Linklaters", mark: "LK", domain: "linklaters.com" },
+  { name: "Morgan Stanley", mark: "MS", domain: "morganstanley.com" },
+  { name: "Y Combinator", mark: "YC", domain: "ycombinator.com" },
 ];
+
+const bottomRowCompanies: readonly CompanyEntry[] = [
+  { name: "Allen & Overy", mark: "AO", domain: "allenovery.com" },
+  { name: "Revolut", mark: "RV", domain: "revolut.com" },
+  { name: "Palantir", mark: "PL", domain: "palantir.com" },
+  { name: "JP Morgan", mark: "JP", domain: "jpmorganchase.com" },
+  { name: "Freshfields", mark: "FF", domain: "freshfields.com" },
+  { name: "Accel Partners", mark: "AC", domain: "accel.com" },
+  { name: "Coinbase", mark: "CB", domain: "coinbase.com" },
+  { name: "Slaughter and May", mark: "SM", domain: "slaughterandmay.com" },
+  { name: "Tiger Global", mark: "TG", domain: "tigerglobal.com" },
+];
+
+function companyIconUrl(domain: string): string {
+  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
+}
 
 /**
  * Long soft ramp at edges (2026-style “infinite” strip): content dissolves into background.
@@ -47,18 +48,96 @@ const marqueeMaskClass =
 /** Two-stop only: heavy `via-*` scrims read as a flat slab on the fixed liquid canvas. */
 const edgeScrimClass = "from-background to-transparent";
 
-function MarqueeItem({ name, Icon }: CompanyEntry) {
+function CompanyIcon({ name, mark, domain }: CompanyEntry) {
+  const [failed, setFailed] = useState(false);
+
   return (
-    <span className="inline-flex shrink-0 items-center gap-2 px-6 opacity-[0.56] transition-opacity duration-500 ease-out group-hover/trusted-marquee:opacity-[0.88] dark:opacity-[0.38] dark:group-hover/trusted-marquee:opacity-[0.82] sm:px-8 [@media(hover:none)]:opacity-[0.6] dark:[@media(hover:none)]:opacity-[0.44]">
-      <Icon
-        className="size-3 shrink-0 text-text-secondary sm:size-3.5 dark:text-muted"
-        strokeWidth={1.15}
-        aria-hidden
-      />
-      <span className="text-[0.8125rem] font-normal tracking-wide text-text-secondary sm:text-sm dark:text-muted">
-        {name}
-      </span>
+    <span
+      className="relative grid size-8 shrink-0 place-items-center sm:size-9"
+      aria-hidden
+    >
+      {failed ? (
+        <span className="text-[0.62rem] font-bold leading-none text-accent dark:text-muted sm:text-[0.68rem]">
+          {mark}
+        </span>
+      ) : (
+        <ResilientImage
+          src={companyIconUrl(domain)}
+          alt=""
+          width={28}
+          height={28}
+          unoptimized
+          wrapperClassName="relative block size-5 sm:size-6"
+          skeletonClassName="bg-transparent"
+          className="h-full w-full object-contain"
+          onError={() => setFailed(true)}
+          title={name}
+        />
+      )}
     </span>
+  );
+}
+
+function MarqueeItem({ ariaHidden = false, ...company }: CompanyEntry & { ariaHidden?: boolean }) {
+  const itemClassName =
+    "inline-flex shrink-0 items-center gap-3 px-5 opacity-[0.76] transition-opacity duration-500 ease-out group-hover/trusted-marquee:opacity-100 dark:opacity-[0.54] dark:group-hover/trusted-marquee:opacity-[0.9] sm:px-7 [@media(hover:none)]:opacity-[0.8] dark:[@media(hover:none)]:opacity-[0.6]";
+  const itemContent = (
+    <>
+      <CompanyIcon {...company} />
+      <span className="text-[0.8125rem] font-medium tracking-wide text-text-secondary sm:text-sm dark:text-muted">
+        {company.name}
+      </span>
+    </>
+  );
+
+  if (ariaHidden) {
+    return (
+      <span className={itemClassName} aria-hidden="true">
+        {itemContent}
+      </span>
+    );
+  }
+
+  return (
+    <span
+      className={itemClassName}
+    >
+      {itemContent}
+    </span>
+  );
+}
+
+function MarqueeTrack({
+  companies,
+  copyKey,
+  reverse,
+  durationClassName,
+  active,
+  className = "",
+}: {
+  companies: readonly CompanyEntry[];
+  copyKey: string;
+  reverse: boolean;
+  durationClassName: string;
+  active: boolean;
+  className?: string;
+}) {
+  const orderedCompanies = reverse ? [...companies].reverse() : companies;
+  const directionClassName = reverse ? "[animation-direction:reverse]" : "";
+
+  return (
+    <div
+      className={`animate-marquee flex shrink-0 items-center ${directionClassName} ${durationClassName} ${
+        active ? "" : "marquee-paused"
+      } ${className}`.trim()}
+    >
+      {orderedCompanies.map((company) => (
+        <MarqueeItem key={`${copyKey}-a-${company.domain}`} {...company} />
+      ))}
+      {orderedCompanies.map((company) => (
+        <MarqueeItem key={`${copyKey}-b-${company.domain}`} {...company} ariaHidden />
+      ))}
+    </div>
   );
 }
 
@@ -86,14 +165,14 @@ export function TrustedBy() {
   return (
     <section
       ref={ref}
-      className="group/trusted-marquee relative isolate overflow-hidden bg-transparent py-12 md:py-16"
+      className="group/trusted-marquee relative isolate overflow-hidden bg-transparent py-7 md:py-10"
       aria-label="Organizations that trust this firm"
     >
       <div
         className={`relative z-[1] mb-8 md:mb-10 text-center transition-all duration-[680ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${revealed}`}
       >
         <span className="inline-block max-w-[min(40rem,92vw)] text-balance text-[0.6875rem] font-semibold uppercase leading-relaxed tracking-[0.16em] text-muted/72 sm:text-xs dark:text-muted/42">
-          Trusted where leadership hires need judgment, not autopilot
+          Trusted by VC-backed operators, fund leaders, finance teams, and law firms when leadership hires need judgment
         </span>
       </div>
 
@@ -111,17 +190,13 @@ export function TrustedBy() {
           className={`mb-4 transition-all delay-75 duration-[820ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${revealed}`}
         >
           <div className={`relative flex overflow-hidden ${marqueeMaskClass}`}>
-            <div
-              className={`animate-marquee flex shrink-0 items-center ${marqueeActive ? "" : "marquee-paused"}`}
-              style={{ animationDuration: "78s" }}
-            >
-              {companies.map((c, i) => (
-                <MarqueeItem key={`r1-a-${i}`} {...c} />
-              ))}
-              {companies.map((c, i) => (
-                <MarqueeItem key={`r1-b-${i}`} {...c} />
-              ))}
-            </div>
+            <MarqueeTrack
+              companies={topRowCompanies}
+              copyKey="trusted-row-top"
+              reverse={false}
+              durationClassName="[animation-duration:78s]"
+              active={marqueeActive}
+            />
           </div>
         </div>
 
@@ -129,17 +204,14 @@ export function TrustedBy() {
           className={`transition-all delay-200 duration-[820ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${revealed}`}
         >
           <div className={`relative flex overflow-hidden ${marqueeMaskClass}`}>
-            <div
-              className={`animate-marquee flex shrink-0 items-center ${marqueeActive ? "" : "marquee-paused"}`}
-              style={{ animationDirection: "reverse", animationDuration: "96s" }}
-            >
-              {[...companies].reverse().map((c, i) => (
-                <MarqueeItem key={`r2-a-${i}`} {...c} />
-              ))}
-              {[...companies].reverse().map((c, i) => (
-                <MarqueeItem key={`r2-b-${i}`} {...c} />
-              ))}
-            </div>
+            <MarqueeTrack
+              companies={bottomRowCompanies}
+              copyKey="trusted-row-bottom"
+              reverse
+              durationClassName="[animation-duration:96s]"
+              active={marqueeActive}
+              className="-translate-x-12"
+            />
           </div>
         </div>
       </div>

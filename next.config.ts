@@ -54,6 +54,13 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "www.google.com",
+        pathname: "/s2/favicons",
+      },
+    ],
     /** Longer cache for optimized derivatives; URLs are content-addressed via query params. */
     minimumCacheTTL: 60 * 60 * 24 * 30,
   },

@@ -215,19 +215,19 @@ export function SplitWordsRich({
       <span className={className}>
         {segments.map((s, i) => (
           <span key={i} className={s.className}>
-            {s.text}
+            {i > 0 && " "}{s.text}
           </span>
         ))}
       </span>
     );
   }
 
-  if (shouldAnimate && !motionMounted) {
+  if (!motionMounted) {
     return (
       <span className={className}>
         {segments.map((s, i) => (
           <span key={i} className={s.className}>
-            {s.text}
+            {i > 0 && " "}{s.text}
           </span>
         ))}
       </span>

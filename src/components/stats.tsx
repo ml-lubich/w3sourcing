@@ -20,12 +20,12 @@ const statStages = [
     { value: 500, suffix: "+", label: "Placements delivered", color: "text-accent" },
     { value: 98, suffix: "%", label: "Client retention", color: "text-success" },
     { value: 45, suffix: "+", label: "Countries covered", color: "text-primary dark:text-white" },
-    { value: 14, suffix: " days", label: "Avg. time to shortlist", color: "text-muted" },
+    { value: 7, suffix: " days", label: "Avg. time to signal", color: "text-muted" },
   ],
   [
     { value: 12, suffix: "+", label: "Years in retained search", color: "text-accent" },
     { value: 48, suffix: "h", label: "First slate turnaround", color: "text-success" },
-    { value: 200, suffix: "+", label: "Active hiring partnerships", color: "text-primary dark:text-white" },
+    { value: 200, suffix: "+", label: "Founder and operator partnerships", color: "text-primary dark:text-white" },
     { value: 3, suffix: "", label: "Avg. finalists per role", color: "text-muted" },
   ],
 ];
@@ -150,7 +150,7 @@ export function Stats() {
     : { duration: SURFACE_REVEAL_DURATION_FULL, ease };
 
   return (
-    <section id="stats" className="section-padding section-band-glass-muted overflow-hidden">
+    <section id="stats" className="section-band-glass-muted overflow-hidden py-10 md:pt-14 md:pb-8">
       <div ref={ref} className="mx-auto max-w-7xl px-6">
         <div
           className={`text-center mb-16 transition-all duration-700 ${
@@ -182,12 +182,12 @@ export function Stats() {
             </span>
           </h2>
           <p className="mt-4 text-text-secondary text-lg max-w-2xl mx-auto leading-relaxed">
-            Retained search for teams where every hire shapes the trajectory of the business—and where only people, not
-            prompts, should decide who belongs in the room.
+            Retained search for companies where one senior hire can bend the trajectory—and where people, not prompts,
+            decide who belongs in the room.
           </p>
         </div>
 
-        <div className="relative min-h-[320px] sm:min-h-[280px] perspective-[1200px]">
+        <div className="relative min-h-[160px] sm:min-h-[150px] perspective-[1200px]">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={activeStage}

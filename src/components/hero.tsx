@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useRef, useEffect, useState, useMemo } from "react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import {
   AnimatePresence,
   motion,
@@ -12,11 +12,13 @@ import {
   animate,
 } from "framer-motion";
 import { SplitWords } from "@/components/split-words";
+import { ResilientImage } from "@/components/resilient-image";
 import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
 import { useMobileLightMotion } from "@/lib/use-mobile-light-motion";
 import { useSplitWordsAnimate } from "@/lib/use-split-words-animate";
 
 type PipelineStage = "Screen" | "Interview" | "Shortlist";
+type FitPct = 89 | 90 | 91 | 92 | 93 | 94 | 95 | 96;
 
 const stageEase = [0.22, 1, 0.36, 1] as const;
 const stageFlipDuration = 0.42;
@@ -25,7 +27,7 @@ const rowHighlightFade = { full: 0.32, lite: 0.14 } as const;
 
 type MockRow = {
   label: string;
-  fit: number;
+  fit: FitPct;
   restingStage: PipelineStage;
   /** Omit when there is no candidate photo; a generic silhouette is shown. */
   avatarSrc?: string;
@@ -45,13 +47,33 @@ const DEMO_AVATAR = (file: string) => `/images/demo-avatars/${file}`;
 
 /** Hero accent lines: cycle sector-specific appeals, then the combined positioning line. */
 const HERO_ACCENT_FRAMES = [
-  { line1: "for Technology", line2: "leaders" },
-  { line1: "for Legal", line2: "leaders" },
-  { line1: "for Finance", line2: "leaders" },
-  { line1: "for Tech, Legal & Finance", line2: "leaders" },
+  { line1: "for VC-backed", line2: "operators" },
+  { line1: "for portfolio-scale", line2: "leaders" },
+  { line1: "for Legal & Finance", line2: "operators" },
+  { line1: "for founder-led", line2: "markets" },
 ] as const;
 
 const accentRotateMs = 4200;
+
+const FIT_BAR_WIDTH_CLASS_BY_PCT: Record<FitPct, string> = {
+  89: "w-[89%]",
+  90: "w-[90%]",
+  91: "w-[91%]",
+  92: "w-[92%]",
+  93: "w-[93%]",
+  94: "w-[94%]",
+  95: "w-[95%]",
+  96: "w-[96%]",
+};
+
+function pipelinePreviewWidthClass(index: number, dashboardInView: boolean): string {
+  if (!dashboardInView) return "w-[12%]";
+  if (index === 0) return "w-[38%]";
+  if (index === 1) return "w-[44%]";
+  if (index === 2) return "w-[50%]";
+  if (index === 3) return "w-[56%]";
+  return "w-[62%]";
+}
 
 /** Demo searches: title/subtitle and shortlist rotate together after each full row cycle. */
 const MOCK_SEARCHES: MockSearch[] = [
@@ -195,16 +217,16 @@ function CandidateAvatarThumb({
 
   return (
     <div
-      className={`relative w-7 h-7 shrink-0 overflow-hidden rounded-full ring-2 ring-white/50 dark:ring-white/10 transition-[box-shadow,ring-color] duration-300 ease-out ${
-        isActive ? "ring-accent/50 dark:ring-accent/45 shadow-sm" : ""
-      }`}
+      className={`relative w-7 h-7 shrink-0 overflow-hidden rounded-full ring-2 ring-white/50 dark:ring-white/10 transition-[box-shadow,ring-color] duration-300 ease-out ${isActive ? "ring-accent/50 dark:ring-accent/45 shadow-sm" : ""
+        }`}
     >
-      <Image
+      <ResilientImage
         src={resolvedSrc}
         alt=""
         width={28}
         height={28}
         className="h-full w-full object-cover"
+        wrapperClassName="relative block h-full w-full overflow-hidden rounded-full"
         sizes="28px"
         loading="lazy"
         decoding="async"
@@ -229,22 +251,22 @@ function FitBar({
   rowDelay,
   instant,
 }: {
-  pct: number;
+  pct: FitPct;
   enabled: boolean;
   rowDelay: number;
   instant: boolean;
 }) {
   const w = enabled ? `${pct}%` : "0%";
+  const widthClass = enabled ? FIT_BAR_WIDTH_CLASS_BY_PCT[pct] : "w-0";
   return (
     <div className="hidden sm:block w-20 h-1.5 rounded-full bg-gray-border dark:bg-white/10 overflow-hidden">
       {instant ? (
         <div
-          className="h-full rounded-full bg-gradient-to-r from-accent to-indigo-400"
-          style={{ width: w }}
+          className={`h-full rounded-full bg-gradient-to-r from-accent to-sky-400 ${widthClass}`}
         />
       ) : (
         <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-accent to-indigo-400"
+          className="h-full rounded-full bg-gradient-to-r from-accent to-sky-400"
           initial={{ width: "0%" }}
           animate={{ width: w }}
           transition={{ duration: 0.9, delay: rowDelay + 0.15, ease: [0.22, 1, 0.36, 1] }}
@@ -367,25 +389,22 @@ export function Hero() {
         {liteMotion ? (
           <>
             <div
-              className={`hero-orb absolute -top-32 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-accent/[0.12] dark:bg-accent/20 blur-[100px] transition-opacity duration-200 ${
-                visible ? "opacity-100" : "opacity-0"
-              }`}
+              className={`hero-orb absolute -top-32 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-accent/[0.1] dark:bg-accent/20 blur-[100px] transition-opacity duration-200 ${visible ? "opacity-100" : "opacity-0"
+                }`}
             />
             <div
-              className={`hero-orb absolute top-40 -right-24 h-64 w-64 rounded-full bg-cyan-400/15 dark:bg-cyan-400/10 blur-[80px] transition-opacity duration-200 ${
-                visible ? "opacity-100" : "opacity-0"
-              }`}
+              className={`hero-orb absolute top-40 -right-24 h-64 w-64 rounded-full bg-cyan-400/15 dark:bg-cyan-400/10 blur-[80px] transition-opacity duration-200 ${visible ? "opacity-100" : "opacity-0"
+                }`}
             />
             <div
-              className={`hero-orb absolute bottom-20 -left-16 h-56 w-56 rounded-full bg-violet-500/10 dark:bg-violet-400/15 blur-[72px] transition-opacity duration-200 ${
-                visible ? "opacity-100" : "opacity-0"
-              }`}
+              className={`hero-orb absolute bottom-20 -left-16 h-56 w-56 rounded-full bg-sky-500/12 dark:bg-cyan-300/15 blur-[72px] transition-opacity duration-200 ${visible ? "opacity-100" : "opacity-0"
+                }`}
             />
           </>
         ) : (
           <>
             <motion.div
-              className="hero-orb absolute -top-32 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-accent/[0.12] dark:bg-accent/20 blur-[100px]"
+              className="hero-orb absolute -top-32 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-accent/[0.1] dark:bg-accent/20 blur-[100px]"
               initial={{ opacity: 0, scale: 0.85 }}
               animate={visible ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
@@ -397,21 +416,20 @@ export function Hero() {
               transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             />
             <motion.div
-              className="hero-orb absolute bottom-20 -left-16 h-56 w-56 rounded-full bg-violet-500/10 dark:bg-violet-400/15 blur-[72px]"
+              className="hero-orb absolute bottom-20 -left-16 h-56 w-56 rounded-full bg-sky-500/12 dark:bg-cyan-300/15 blur-[72px]"
               initial={{ opacity: 0, x: -40 }}
               animate={visible ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             />
           </>
         )}
-        <div className="absolute inset-0 hero-surface-grid opacity-[0.55] dark:opacity-[0.45]" aria-hidden />
+        <div className="absolute inset-0 hero-surface-grid opacity-[0.48] dark:opacity-[0.45]" aria-hidden />
         <div className="absolute inset-0 hero-dot-noise" aria-hidden />
       </div>
 
       <div
-        className={`relative z-10 mx-auto max-w-6xl px-6 text-center transition-transform duration-700 ease-out will-change-transform ${
-          visible ? "translate-y-0" : "translate-y-6"
-        }`}
+        className={`relative z-10 mx-auto max-w-6xl px-6 text-center transition-transform duration-700 ease-out will-change-transform ${visible ? "translate-y-0" : "translate-y-6"
+          }`}
       >
         <motion.div
           className="glass-panel glass-panel--chrome inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full shadow-sm"
@@ -429,14 +447,15 @@ export function Hero() {
             ) : null}
             <span className="relative inline-flex h-2 w-2 rounded-full bg-success shadow-[0_0_10px_rgb(5_150_105_/_0.55)]" />
           </span>
+          <Sparkles className="size-3.5 text-accent" strokeWidth={1.8} aria-hidden />
           <span className="text-text-secondary dark:text-slate-300 text-sm font-medium tracking-wide">
-            US · UK · EU · UAE · Asia · London · Singapore
+            Founder-market search · VC-backed · Legal · Finance
           </span>
         </motion.div>
 
         <h1
           id="hero-heading"
-          className="text-center text-[2.35rem] sm:text-5xl md:text-6xl lg:text-[3.85rem] font-extrabold text-primary dark:text-white leading-[1.26] sm:leading-[1.24] md:leading-[1.22] tracking-[-0.02em] mb-6 max-w-4xl mx-auto"
+          className="text-center text-[2.65rem] sm:text-[3.45rem] md:text-[4.45rem] lg:text-[5.1rem] font-extrabold text-primary dark:text-white leading-[0.98] sm:leading-[0.98] md:leading-[0.96] tracking-[-0.02em] mb-6 max-w-5xl mx-auto"
         >
           <span className="sr-only" aria-live="polite" aria-atomic="true">
             {heroSrHeadline}
@@ -445,7 +464,7 @@ export function Hero() {
             <SplitWords
               as="span"
               splitTextDecorative
-              text="Global recruitment excellence"
+              text="Executive search for"
               className="justify-center"
               stagger={0.048}
               delayStart={0.05}
@@ -453,7 +472,7 @@ export function Hero() {
             />
           </span>
           <span
-            className="block mt-3 sm:mt-4 text-accent leading-[1.32] sm:leading-[1.28] min-h-[2.6rem] sm:min-h-[2.35rem]"
+            className="block mt-1 min-h-[2.45rem] text-[2rem] leading-[0.95] text-accent min-[380px]:text-[2.25rem] sm:mt-2 sm:min-h-[3.5rem] sm:text-[3.55rem] md:min-h-[4.3rem] md:text-[4.45rem] lg:min-h-[5rem] lg:text-[5.2rem]"
             aria-hidden
           >
             <AnimatePresence initial={false} mode="wait">
@@ -468,29 +487,16 @@ export function Hero() {
                   ease: [...stageEase],
                 }}
               >
-                <span className="block">
-                  <SplitWords
-                    as="span"
-                    splitTextDecorative
-                    text={accentFrame.line1}
-                    className="justify-center text-accent"
-                    delayStart={0.08}
-                    stagger={0.04}
-                    animate={splitWordsOn}
-                  />
-                </span>
-                <span className="block mt-2 sm:mt-2.5">
-                  <SplitWords
-                    as="span"
-                    splitTextDecorative
-                    text={accentFrame.line2}
-                    className="justify-center text-accent"
-                    gsapWordIndexStart={accentFrame.line1.split(/\s+/).length}
-                    delayStart={0.08 + accentFrame.line1.split(/\s+/).length * 0.04}
-                    stagger={0.04}
-                    animate={splitWordsOn}
-                  />
-                </span>
+                <SplitWords
+                  as="span"
+                  splitTextDecorative
+                  text={`${accentFrame.line1} ${accentFrame.line2}`}
+                  phraseWidth="fit"
+                  className="mx-auto justify-center whitespace-nowrap text-accent drop-shadow-[0_14px_34px_color-mix(in_srgb,var(--accent)_24%,transparent)] dark:text-cyan-200 dark:drop-shadow-[0_16px_36px_color-mix(in_srgb,var(--accent)_34%,transparent)]"
+                  delayStart={0.08}
+                  stagger={0.04}
+                  animate={splitWordsOn}
+                />
               </motion.span>
             </AnimatePresence>
           </span>
@@ -506,10 +512,9 @@ export function Hero() {
               : { duration: 0.6, delay: 0.55, ease: [0.22, 1, 0.36, 1] }
           }
         >
-          Automation can surface names; it does not carry what outstanding leadership hires need—
-          taste, instinct, and accountability. W3 Sourcing brings expert, human-led judgment to the work
-          that cannot be automated, connecting exceptional talent with world-class organisations across
-          the US, UK, EU, UAE, and Asia.
+          Automation can surface names. Leadership hiring still depends on judgment, discretion,
+          and accountability. W3 Sourcing helps VC-backed and growth-stage companies, portfolio teams,
+          and high-trust legal and finance groups map markets, engage scarce leaders, and close the people who change the slope.
         </motion.p>
 
         <motion.div
@@ -519,14 +524,12 @@ export function Hero() {
           animate={visible ? "visible" : "hidden"}
         >
           <motion.a
-            href="#contact"
+            href="mailto:info@w3sourcing.com"
             variants={ctaItemVariants}
-            className="w-full sm:w-auto bg-accent text-white font-semibold text-base py-3.5 px-8 rounded-xl shadow-[0_4px_24px_rgb(79_70_229_/_0.35)] dark:shadow-[0_4px_32px_rgb(99_102_241_/_0.35)] transition-all duration-200 hover:bg-accent-hover hover:scale-[1.02] active:scale-[0.99] inline-flex items-center justify-center gap-2"
+            className="w-full sm:w-auto bg-accent text-white font-semibold text-base py-3.5 px-8 rounded-xl shadow-[0_8px_30px_color-mix(in_srgb,var(--accent)_42%,transparent)] transition-all duration-200 hover:bg-accent-hover hover:scale-[1.02] active:scale-[0.99] inline-flex items-center justify-center gap-2"
           >
-            Get in touch
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
+            Email us
+            <ArrowRight className="size-5" strokeWidth={2} aria-hidden />
           </motion.a>
           <motion.a
             href="#practice-areas"
@@ -556,7 +559,7 @@ export function Hero() {
           <div className="hero-card-shimmer glass-panel glass-panel-strong relative rounded-2xl shadow-[0_28px_80px_rgb(15_23_42_/_0.08)] dark:shadow-[0_28px_90px_rgb(0_0_0_/_0.42)] overflow-hidden">
             <div className="absolute inset-x-0 top-0 h-px z-10 bg-gradient-to-r from-transparent via-accent/35 to-transparent" />
             <motion.div
-              className="absolute inset-0 bg-gradient-to-br from-accent/[0.03] via-transparent to-cyan-500/[0.04] pointer-events-none"
+              className="absolute inset-0 bg-gradient-to-br from-accent/[0.05] via-transparent to-sky-500/[0.05] pointer-events-none"
               initial={{ opacity: 0 }}
               animate={dashboardInView ? { opacity: 1 } : {}}
               transition={{ duration: liteMotion ? 0.2 : 1.2 }}
@@ -657,144 +660,141 @@ export function Hero() {
                   ref={listRef}
                   className="mt-2 max-h-[min(220px,42vh)] space-y-2.5 overflow-x-hidden overflow-y-auto scroll-smooth pr-1 [scrollbar-gutter:stable]"
                 >
-                {mockRows.map((row, idx) => {
-                  const isActive = dashboardInView && activeRow === idx;
-                  const rowHighlightDuration = liteMotion ? rowHighlightFade.lite : rowHighlightFade.full;
-                  return (
-                    <motion.div
-                      key={`${searchIndex}-${idx}-${row.label}`}
-                      data-candidate-row={idx}
-                      className="relative text-xs sm:text-sm rounded-row-highlight border-l-[3px] border-transparent px-2 py-1.5"
-                      initial={liteMotion ? false : { opacity: 0, x: -10 }}
-                      animate={dashboardInView ? { opacity: 1, x: 0 } : {}}
-                      transition={
-                        liteMotion
-                          ? { duration: 0 }
-                          : {
+                  {mockRows.map((row, idx) => {
+                    const isActive = dashboardInView && activeRow === idx;
+                    const rowHighlightDuration = liteMotion ? rowHighlightFade.lite : rowHighlightFade.full;
+                    return (
+                      <motion.div
+                        key={`${searchIndex}-${idx}-${row.label}`}
+                        data-candidate-row={idx}
+                        className="relative text-xs sm:text-sm rounded-row-highlight border-l-[3px] border-transparent px-2 py-1.5"
+                        initial={liteMotion ? false : { opacity: 0, x: -10 }}
+                        animate={dashboardInView ? { opacity: 1, x: 0 } : {}}
+                        transition={
+                          liteMotion
+                            ? { duration: 0 }
+                            : {
                               delay: 0.42 + idx * 0.06,
                               duration: 0.4,
                               ease: [0.22, 1, 0.36, 1],
                             }
-                      }
-                    >
-                      <motion.div
-                        aria-hidden
-                        className="pointer-events-none absolute top-0 bottom-0 -left-[3px] w-[calc(100%+3px)] rounded-row-highlight border-l-[3px] border-accent bg-accent/[0.06] dark:bg-accent/[0.1]"
-                        initial={false}
-                        animate={{ opacity: isActive ? 1 : 0 }}
-                        transition={{
-                          duration: rowHighlightDuration,
-                          ease: [...stageEase],
-                        }}
-                      />
-                      <div className="relative z-10 flex w-full min-w-0 items-center gap-3">
-                      <div className="flex-1 flex items-center gap-2 min-w-0">
-                        <CandidateAvatarThumb
-                          avatarSrc={row.avatarSrc}
-                          avatarAlt={row.avatarAlt}
-                          isActive={isActive}
+                        }
+                      >
+                        <motion.div
+                          aria-hidden
+                          className="pointer-events-none absolute top-0 bottom-0 -left-[3px] w-[calc(100%+3px)] rounded-row-highlight border-l-[3px] border-accent bg-accent/[0.06] dark:bg-accent/[0.1]"
+                          initial={false}
+                          animate={{ opacity: isActive ? 1 : 0 }}
+                          transition={{
+                            duration: rowHighlightDuration,
+                            ease: [...stageEase],
+                          }}
                         />
-                        <span className="truncate text-left font-medium text-primary dark:text-slate-200 text-[11px] sm:text-sm min-w-0 max-w-[5.5rem] sm:max-w-[7.5rem]">
-                          {row.label}
-                        </span>
-                        <div className="flex-1 min-w-[1.5rem] h-2.5 rounded-full bg-slate-200/90 dark:bg-white/10 overflow-hidden">
-                          {liteMotion ? (
-                            <div
-                              className="h-full rounded-full bg-slate-300/90 dark:bg-white/20"
-                              style={{
-                                width: dashboardInView ? `${38 + idx * 6}%` : "12%",
-                              }}
+                        <div className="relative z-10 flex w-full min-w-0 items-center gap-3">
+                          <div className="flex-1 flex items-center gap-2 min-w-0">
+                            <CandidateAvatarThumb
+                              avatarSrc={row.avatarSrc}
+                              avatarAlt={row.avatarAlt}
+                              isActive={isActive}
                             />
-                          ) : (
-                            <motion.div
-                              className="h-full rounded-full bg-slate-300/90 dark:bg-white/20"
-                              initial={{ width: "12%" }}
-                              animate={dashboardInView ? { width: `${38 + idx * 6}%` } : {}}
-                              transition={{
-                                duration: 0.85,
-                                delay: 0.5 + idx * 0.07,
-                                ease: [0.22, 1, 0.36, 1],
-                              }}
+                            <span className="truncate text-left font-medium text-primary dark:text-slate-200 text-[11px] sm:text-sm min-w-0 max-w-[5.5rem] sm:max-w-[7.5rem]">
+                              {row.label}
+                            </span>
+                            <div className="flex-1 min-w-[1.5rem] h-2.5 rounded-full bg-slate-200/90 dark:bg-white/10 overflow-hidden">
+                              {liteMotion ? (
+                                <div
+                                  className={`h-full rounded-full bg-slate-300/90 dark:bg-white/20 ${pipelinePreviewWidthClass(idx, dashboardInView)}`}
+                                />
+                              ) : (
+                                <motion.div
+                                  className="h-full rounded-full bg-slate-300/90 dark:bg-white/20"
+                                  initial={{ width: "12%" }}
+                                  animate={dashboardInView ? { width: `${38 + idx * 6}%` } : {}}
+                                  transition={{
+                                    duration: 0.85,
+                                    delay: 0.5 + idx * 0.07,
+                                    ease: [0.22, 1, 0.36, 1],
+                                  }}
+                                />
+                              )}
+                            </div>
+                          </div>
+                          <div className="w-11 shrink-0 text-right sm:hidden font-semibold text-accent tabular-nums text-[11px]">
+                            <FitPercent
+                              value={row.fit}
+                              enabled={dashboardInView}
+                              delayMs={480 + idx * 90}
+                              instant={liteMotion}
                             />
-                          )}
-                        </div>
-                      </div>
-                      <div className="w-11 shrink-0 text-right sm:hidden font-semibold text-accent tabular-nums text-[11px]">
-                        <FitPercent
-                          value={row.fit}
-                          enabled={dashboardInView}
-                          delayMs={480 + idx * 90}
-                          instant={liteMotion}
-                        />
-                      </div>
-                      <div className="w-20 hidden sm:flex justify-end items-center gap-2">
-                        <FitBar
-                          pct={row.fit}
-                          enabled={dashboardInView}
-                          rowDelay={0.5 + idx * 0.09}
-                          instant={liteMotion}
-                        />
-                        <span className="font-semibold text-accent tabular-nums w-9 text-right">
-                          <FitPercent
-                            value={row.fit}
-                            enabled={dashboardInView}
-                            delayMs={480 + idx * 90}
-                            instant={liteMotion}
-                          />
-                        </span>
-                      </div>
-                      <div className="w-[6.25rem] sm:w-40 shrink-0 flex flex-col items-end justify-center min-h-[1.375rem] sm:min-h-[1.5rem] [perspective:480px] [transform-style:preserve-3d]">
-                        {liteMotion ? (
-                          <span
-                            className={`text-right text-[10px] sm:text-xs font-semibold tabular-nums ${stageTone(row.restingStage)}`}
-                          >
-                            {isActive ? (
-                              <span className="inline-flex rounded-md bg-accent/15 px-1.5 py-0.5 ring-1 ring-accent/30 dark:bg-accent/20">
+                          </div>
+                          <div className="w-20 hidden sm:flex justify-end items-center gap-2">
+                            <FitBar
+                              pct={row.fit}
+                              enabled={dashboardInView}
+                              rowDelay={0.5 + idx * 0.09}
+                              instant={liteMotion}
+                            />
+                            <span className="font-semibold text-accent tabular-nums w-9 text-right">
+                              <FitPercent
+                                value={row.fit}
+                                enabled={dashboardInView}
+                                delayMs={480 + idx * 90}
+                                instant={liteMotion}
+                              />
+                            </span>
+                          </div>
+                          <div className="w-[6.25rem] sm:w-40 shrink-0 flex flex-col items-end justify-center min-h-[1.375rem] sm:min-h-[1.5rem] [perspective:480px] [transform-style:preserve-3d]">
+                            {liteMotion ? (
+                              <span
+                                className={`text-right text-[10px] sm:text-xs font-semibold tabular-nums ${stageTone(row.restingStage)}`}
+                              >
+                                {isActive ? (
+                                  <span className="inline-flex rounded-md bg-accent/15 px-1.5 py-0.5 ring-1 ring-accent/30 dark:bg-accent/20">
+                                    {row.restingStage}
+                                  </span>
+                                ) : (
+                                  row.restingStage
+                                )}
+                              </span>
+                            ) : isActive ? (
+                              <motion.span
+                                key={`stage-focus-${searchIndex}-${idx}`}
+                                initial={{
+                                  opacity: 0,
+                                  rotateX: 14,
+                                  y: 6,
+                                  filter: "blur(4px)",
+                                }}
+                                animate={{
+                                  opacity: 1,
+                                  rotateX: 0,
+                                  y: 0,
+                                  filter: "blur(0px)",
+                                }}
+                                transition={{ duration: stageFlipDuration, ease: stageEase }}
+                                className={`inline-block text-right text-[10px] sm:text-xs font-semibold tabular-nums origin-[100%_50%] ${stageTone(row.restingStage)}`}
+                              >
+                                <span className="inline-flex rounded-md bg-accent/15 px-1.5 py-0.5 ring-1 ring-accent/30 dark:bg-accent/20">
+                                  {row.restingStage}
+                                </span>
+                              </motion.span>
+                            ) : (
+                              <span
+                                className={`text-right text-[10px] sm:text-xs font-semibold tabular-nums ${stageTone(row.restingStage)}`}
+                              >
                                 {row.restingStage}
                               </span>
-                            ) : (
-                              row.restingStage
                             )}
-                          </span>
-                        ) : isActive ? (
-                          <motion.span
-                            key={`stage-focus-${searchIndex}-${idx}`}
-                            initial={{
-                              opacity: 0,
-                              rotateX: 14,
-                              y: 6,
-                              filter: "blur(4px)",
-                            }}
-                            animate={{
-                              opacity: 1,
-                              rotateX: 0,
-                              y: 0,
-                              filter: "blur(0px)",
-                            }}
-                            transition={{ duration: stageFlipDuration, ease: stageEase }}
-                            className={`inline-block text-right text-[10px] sm:text-xs font-semibold tabular-nums origin-[100%_50%] ${stageTone(row.restingStage)}`}
-                          >
-                            <span className="inline-flex rounded-md bg-accent/15 px-1.5 py-0.5 ring-1 ring-accent/30 dark:bg-accent/20">
-                              {row.restingStage}
-                            </span>
-                          </motion.span>
-                        ) : (
-                          <span
-                            className={`text-right text-[10px] sm:text-xs font-semibold tabular-nums ${stageTone(row.restingStage)}`}
-                          >
-                            {row.restingStage}
-                          </span>
-                        )}
-                        {isActive ? (
-                          <span className="sr-only">
-                            Highlighted candidate {row.label}, stage {row.restingStage}.
-                          </span>
-                        ) : null}
-                      </div>
-                      </div>
-                    </motion.div>
-                  );
-                })}
+                            {isActive ? (
+                              <span className="sr-only">
+                                Highlighted candidate {row.label}, stage {row.restingStage}.
+                              </span>
+                            ) : null}
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
               </motion.div>
             </div>

@@ -1,11 +1,15 @@
 import { ImageResponse } from "next/og";
+import { loadBrandWordmarkDataUrl } from "./brand-wordmark";
 
 export const alt =
   "W3 Sourcing — executive recruitment in technology, legal, and banking";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+export const runtime = "nodejs";
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
+  const wordmarkSrc = await loadBrandWordmarkDataUrl();
+
   return new ImageResponse(
     (
       <div
@@ -27,17 +31,16 @@ export default function OpenGraphImage() {
             maxWidth: 900,
           }}
         >
-          <div
+          <img
+            src={wordmarkSrc}
+            alt="W3 Sourcing"
             style={{
-              fontSize: 72,
-              fontWeight: 800,
-              color: "#f8fafc",
-              letterSpacing: "-0.03em",
-              lineHeight: 1.05,
+              width: 520,
+              height: 204,
+              objectFit: "contain",
+              filter: "brightness(0) invert(1)",
             }}
-          >
-            W3 Sourcing
-          </div>
+          />
           <div
             style={{
               fontSize: 32,

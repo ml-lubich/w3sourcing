@@ -1,5 +1,13 @@
 # Deployment
 
+## Table of contents
+
+- [Toolchain](#toolchain)
+- [Local](#local)
+- [SEO (canonical URL)](#seo-canonical-url)
+- [Vercel](#vercel)
+- [CI (GitHub Actions)](#ci-github-actions)
+
 ## Toolchain
 
 - **Package manager:** **Bun** only for install and scripts. Keep **`bun.lock`** in the repo; do **not** add `package-lock.json` (or other lockfiles) at the project root, or Vercel may infer npm instead of Bun.
@@ -24,9 +32,9 @@ If `NEXT_PUBLIC_SITE_URL` is unset, the app falls back to **`VERCEL_URL`** on Ve
 ## Vercel
 
 1. Connect the Git repository; root directory = repo root (where `package.json` and `bun.lock` live).
-2. **`vercel.json`** sets **`installCommand`** to `bun install --frozen-lockfile` and **`buildCommand`** to `bun run lint && bun run build && bun run smoke:routes:ci` so installs and builds use Bun, lint runs before the production build, and each deployment validates routes without a second `next build` (see `docs/TESTING.md`).
+2. **`vercel.json`** sets **`installCommand`** to `bun install --frozen-lockfile` and **`buildCommand`** to `bun run ci && bun run smoke:routes:ci` so installs and builds use Bun, every deployment runs lint, tests, the production build, and route smoke without a second `next build` (see `docs/TESTING.md`).
 3. In the Vercel dashboard, avoid overriding Install Command / Build Command unless they stay Bun-equivalent (otherwise you can undo `vercel.json`).
-4. Deploy; in build logs, confirm the install step runs **`bun install`** (frozen lockfile) and the build step completes the route smoke.
+4. Deploy; in build logs, confirm the install step runs **`bun install`** (frozen lockfile) and the build step completes tests plus route smoke.
 
 ### Tailwind v4 and the production CSS bundle
 
@@ -34,6 +42,6 @@ If `NEXT_PUBLIC_SITE_URL` is unset, the app falls back to **`VERCEL_URL`** on Ve
 
 ## CI (GitHub Actions)
 
-**`.github/workflows/ci.yml`** runs on pushes and pull requests to `main` / `master`: `bun install --frozen-lockfile`, then **`bun run ci`** (`lint` + `test` + `build`), then **`bun run smoke:routes:ci`** so PRs match the same gates as Vercel’s build command (minus duplicate `lint` on Vercel’s side, which still runs in the Vercel build step).
+**`.github/workflows/ci.yml`** runs on pushes and pull requests to `main` / `master`: `bun install --frozen-lockfile`, then **`bun run ci`** (`lint` + `test` + `build`), then **`bun run smoke:routes:ci`** so PRs match the same gates as Vercel’s build command.
 
 Install sets **`HUSKY=0`** so Husky does not run during CI install.

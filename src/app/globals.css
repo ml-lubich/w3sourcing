@@ -10,19 +10,19 @@
   --header-scroll-offset: 5.5rem;
   /** Card hover lift; keep in sync with `SURFACE_CARD_HOVER_LIFT_PX` in `surface-reveal-motion.ts`. */
   --surface-card-hover-lift: 0.3125rem;
-  --background: #fafafa;
-  --foreground: #0f172a;
-  --primary: #0f172a;
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
+  --background: #fbfcff;
+  --foreground: #111827;
+  --primary: #111827;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
   --success: #059669;
   --muted: #64748b;
-  --gray-light: #f1f5f9;
-  --gray-border: #e2e8f0;
+  --gray-light: #eef4ff;
+  --gray-border: #d9e2f0;
   --text-secondary: #334155;
   --surface: #ffffff;
   /* Distinct closing band in light mode; dark slate in `.dark` / `html.dark` */
-  --footer: #e2e8f0;
+  --footer: #dbe6f5;
 }
 
 html.dark {
@@ -34,8 +34,8 @@ html.dark :root {
   --background: #030712;
   --foreground: #f1f5f9;
   --primary: #f8fafc;
-  --accent: #818cf8;
-  --accent-hover: #a5b4fc;
+  --accent: #38bdf8;
+  --accent-hover: #67e8f9;
   --success: #34d399;
   --muted: #94a3b8;
   --gray-light: #0f172a;
@@ -50,8 +50,8 @@ html.dark :root {
   --background: #070a12;
   --foreground: #f1f5f9;
   --primary: #f8fafc;
-  --accent: #818cf8;
-  --accent-hover: #a5b4fc;
+  --accent: #22d3ee;
+  --accent-hover: #67e8f9;
   --success: #34d399;
   --muted: #94a3b8;
   --gray-light: #151f32;
@@ -74,7 +74,8 @@ html.dark :root {
   --color-text-secondary: var(--text-secondary);
   --color-surface: var(--surface);
   --color-footer: var(--footer);
-  --font-sans: var(--font-sans-jakarta);
+  --font-sans: var(--font-sans-geist);
+  --font-display: var(--font-display-instrument);
   /* Dense list / tab rows: iOS-like squircle radius (use `rounded-row-highlight`); keep rows inside overflow parents (no negative horizontal margin) so corners are not clipped. */
   --radius-row-highlight: 0.875rem;
 }
@@ -94,7 +95,8 @@ main#main-content #features {
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans-jakarta), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans-geist), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-feature-settings: "ss01" 1, "cv01" 1, "cv02" 1, "cv03" 1;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -103,9 +105,37 @@ body {
     color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+body :is(h1, h2) {
+  font-family: var(--font-display-instrument), var(--font-sans-geist), ui-serif, Georgia, serif;
+  font-weight: 400;
+  font-synthesis-weight: none;
+  letter-spacing: 0;
+}
+
+body :is(h1, h2) strong,
+body :is(h1, h2) b {
+  font-weight: 400;
+}
+
 /** SVG `<text>` labels in How It Works deco (Tailwind `[&_text]:opacity-*` breaks v4 CSS codegen). */
 .hiw-step-art-svg text {
-  opacity: 0.95;
+  fill: currentColor;
+  font-family: var(--font-sans-geist), system-ui, sans-serif;
+  font-size: 6px;
+  font-weight: 600;
+  opacity: 1;
+}
+
+.hiw-step-art-svg .hiw-label-md {
+  font-size: 6.5px;
+}
+
+.hiw-step-art-svg .hiw-label-sm {
+  font-size: 5.5px;
+}
+
+.hiw-step-art-svg .hiw-label-xs {
+  font-size: 5px;
 }
 
 /**
@@ -115,28 +145,38 @@ body {
 body.liquid-page-canvas {
   background-image:
     radial-gradient(
-      ellipse 95% 70% at 50% -30%,
-      color-mix(in srgb, var(--accent) 13%, transparent),
+      ellipse 92% 66% at 50% -32%,
+      color-mix(in srgb, var(--accent) 11%, transparent),
       transparent 55%
     ),
     radial-gradient(
       ellipse 55% 42% at 100% 8%,
-      color-mix(in srgb, var(--accent) 7%, transparent),
+      color-mix(in srgb, #06b6d4 7%, transparent),
       transparent 52%
     ),
     radial-gradient(
       ellipse 55% 42% at 0% 22%,
-      color-mix(in srgb, #06b6d4 6%, transparent),
+      color-mix(in srgb, #8b5cf6 5%, transparent),
       transparent 50%
     ),
     linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--primary) 3%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
       180deg,
-      color-mix(in srgb, var(--surface) 50%, var(--background)) 0%,
-      var(--background) 42%,
-      color-mix(in srgb, var(--gray-light) 16%, var(--background)) 100%
+      color-mix(in srgb, var(--primary) 3%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface) 76%, var(--background)) 0%,
+      var(--background) 46%,
+      color-mix(in srgb, var(--gray-light) 26%, var(--background)) 100%
     );
   background-attachment: fixed;
-  background-size: 100% 100%;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 72px 72px, 72px 72px, 100% 100%;
   background-repeat: no-repeat;
 }
 
@@ -163,24 +203,36 @@ html.dark body.liquid-page-canvas {
 /** Full-width section strips: frosted translucency over the global canvas. */
 .section-band-glass {
   position: relative;
-  background: color-mix(in srgb, var(--surface) 62%, transparent);
-  backdrop-filter: blur(20px) saturate(158%);
-  -webkit-backdrop-filter: blur(20px) saturate(158%);
+  --section-band-fill: color-mix(in srgb, var(--surface) 74%, transparent);
+  --section-band-edge-fade: clamp(4.5rem, 10vw, 9rem);
+  background: linear-gradient(
+    180deg,
+    transparent 0,
+    var(--section-band-fill) var(--section-band-edge-fade),
+    var(--section-band-fill) calc(100% - var(--section-band-edge-fade)),
+    transparent 100%
+  );
 }
 
 .section-band-glass-muted {
   position: relative;
-  background: color-mix(in srgb, var(--gray-light) 52%, transparent);
-  backdrop-filter: blur(20px) saturate(158%);
-  -webkit-backdrop-filter: blur(20px) saturate(158%);
+  --section-band-fill: color-mix(in srgb, var(--gray-light) 56%, transparent);
+  --section-band-edge-fade: clamp(4.5rem, 10vw, 9rem);
+  background: linear-gradient(
+    180deg,
+    transparent 0,
+    var(--section-band-fill) var(--section-band-edge-fade),
+    var(--section-band-fill) calc(100% - var(--section-band-edge-fade)),
+    transparent 100%
+  );
 }
 
 html.dark .section-band-glass {
-  background: color-mix(in srgb, var(--surface) 40%, transparent);
+  --section-band-fill: color-mix(in srgb, var(--surface) 40%, transparent);
 }
 
 html.dark .section-band-glass-muted {
-  background: color-mix(in srgb, var(--gray-light) 44%, transparent);
+  --section-band-fill: color-mix(in srgb, var(--gray-light) 44%, transparent);
 }
 
 /**
@@ -206,15 +258,16 @@ html.dark .section-band-glass-muted {
   box-sizing: border-box;
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--surface) 82%, transparent) 0%,
-    color-mix(in srgb, var(--surface) 64%, transparent) 100%
+    color-mix(in srgb, var(--surface) 88%, transparent) 0%,
+    color-mix(in srgb, var(--surface) 72%, var(--gray-light) 10%) 100%
   );
   backdrop-filter: blur(14px) saturate(150%);
   -webkit-backdrop-filter: blur(14px) saturate(150%);
-  border: 1px solid color-mix(in srgb, var(--gray-border) 82%, var(--primary) 6%);
+  border: 1px solid color-mix(in srgb, var(--gray-border) 78%, var(--accent) 8%);
   box-shadow:
     0 1px 0 color-mix(in srgb, white 70%, transparent) inset,
-    0 2px 10px color-mix(in srgb, var(--primary) 4%, transparent);
+    0 2px 10px color-mix(in srgb, var(--primary) 4%, transparent),
+    0 0 0 1px color-mix(in srgb, white 52%, transparent) inset;
   transition:
     border-color 0.25s ease,
     box-shadow 0.25s ease;
@@ -237,15 +290,16 @@ html.dark .section-band-glass-muted {
   isolation: isolate;
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--surface) 84%, transparent) 0%,
-    color-mix(in srgb, var(--surface) 66%, transparent) 100%
+    color-mix(in srgb, var(--surface) 90%, transparent) 0%,
+    color-mix(in srgb, var(--surface) 72%, var(--gray-light) 10%) 100%
   );
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border: 1px solid color-mix(in srgb, var(--gray-border) 78%, var(--primary) 6%);
+  border: 1px solid color-mix(in srgb, var(--gray-border) 74%, var(--accent) 10%);
   box-shadow:
     0 1px 0 color-mix(in srgb, white 72%, transparent) inset,
-    0 4px 16px color-mix(in srgb, var(--primary) 6%, transparent);
+    0 4px 16px color-mix(in srgb, var(--primary) 5%, transparent),
+    0 0 0 1px color-mix(in srgb, white 54%, transparent) inset;
   transition:
     background 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
@@ -262,6 +316,95 @@ html.dark .section-band-glass-muted {
   box-shadow:
     0 1px 0 color-mix(in srgb, white 8%, transparent) inset,
     0 6px 20px rgba(0, 0, 0, 0.28);
+}
+
+/** Shared gradient language: quiet fields, not decorative rainbow panels. */
+.surface-gradient-field {
+  --surface-gradient-primary: var(--accent);
+  --surface-gradient-secondary: #06b6d4;
+  position: relative;
+  background:
+    radial-gradient(
+      92% 72% at 14% 0%,
+      color-mix(in srgb, var(--surface-gradient-primary) 16%, transparent) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      78% 68% at 100% 100%,
+      color-mix(in srgb, var(--surface-gradient-secondary) 10%, transparent) 0%,
+      transparent 56%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--surface) 72%, var(--gray-light) 18%) 0%,
+      color-mix(in srgb, var(--gray-light) 46%, transparent) 48%,
+      color-mix(in srgb, var(--surface) 68%, transparent) 100%
+    );
+  transition: background 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.surface-gradient-field--venture {
+  --surface-gradient-primary: var(--accent);
+  --surface-gradient-secondary: #8b5cf6;
+}
+
+.surface-gradient-field--process {
+  --surface-gradient-primary: var(--accent);
+  --surface-gradient-secondary: #06b6d4;
+}
+
+.surface-gradient-field--trust {
+  --surface-gradient-primary: #475569;
+  --surface-gradient-secondary: var(--accent);
+}
+
+.surface-gradient-field--finance {
+  --surface-gradient-primary: #059669;
+  --surface-gradient-secondary: var(--accent);
+}
+
+html.dark .surface-gradient-field {
+  background:
+    radial-gradient(
+      88% 68% at 12% 0%,
+      color-mix(in srgb, var(--surface-gradient-primary) 22%, transparent) 0%,
+      transparent 58%
+    ),
+    radial-gradient(
+      76% 66% at 100% 100%,
+      color-mix(in srgb, var(--surface-gradient-secondary) 14%, transparent) 0%,
+      transparent 56%
+    ),
+    linear-gradient(
+      140deg,
+      color-mix(in srgb, var(--surface) 38%, transparent) 0%,
+      color-mix(in srgb, #020617 30%, transparent) 100%
+    );
+}
+
+.section-cta-gradient {
+  background:
+    radial-gradient(
+      88% 64% at 50% -28%,
+      color-mix(in srgb, var(--accent) 18%, transparent) 0%,
+      transparent 62%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--footer) 82%, var(--surface) 18%) 0%,
+      color-mix(in srgb, var(--gray-light) 88%, var(--surface) 12%) 48%,
+      color-mix(in srgb, var(--surface) 62%, var(--gray-light) 38%) 100%
+    );
+}
+
+html.dark .section-cta-gradient {
+  background:
+    radial-gradient(
+      88% 64% at 50% -28%,
+      color-mix(in srgb, var(--accent) 24%, transparent) 0%,
+      transparent 62%
+    ),
+    linear-gradient(135deg, var(--footer) 0%, #0f172a 52%, #082f49 100%);
 }
 
 /* GSAP / Webflow SplitText-style tiles (`SplitWords`): explicit box model like goperfect.com word nodes. */
@@ -307,9 +450,9 @@ html.dark .section-band-glass-muted {
  */
 .section-deco-art-svg {
   pointer-events: none;
-  color: color-mix(in srgb, var(--accent) 28%, var(--primary) 72%);
-  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 42%, transparent))
-    drop-shadow(0 0 18px color-mix(in srgb, var(--accent) 26%, transparent));
+  color: color-mix(in srgb, var(--accent) 38%, var(--primary) 62%);
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 36%, transparent))
+    drop-shadow(0 0 18px color-mix(in srgb, #06b6d4 20%, transparent));
 }
 
 html.dark .section-deco-art-svg {
@@ -445,14 +588,15 @@ html.dark .section-card-icon-glow {
    and makes the bar in-flow (black band above the hero instead of glass over the wash). */
 .header-bar {
   isolation: isolate;
-  --header-tint-a: 78%;
-  --header-tint-b: 60%;
+  --header-tint-a: 86%;
+  --header-tint-b: 70%;
   --header-dark-tint-a: 54%;
   --header-dark-tint-b: 38%;
   --header-glass: 1;
   border-bottom: none;
-  box-shadow: 0 14px 48px
-    color-mix(in srgb, rgb(15 23 42) calc(var(--header-glass) * 7%), transparent);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, white calc(var(--header-glass) * 70%), transparent) inset,
+    0 14px 48px color-mix(in srgb, rgb(15 23 42) calc(var(--header-glass) * 7%), transparent);
   transition: box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -544,12 +688,12 @@ html.dark .header-bar::before {
 }
 
 .section-padding {
-  padding: 5rem 0;
+  padding: 3rem 0;
 }
 
 @media (min-width: 768px) {
   .section-padding {
-    padding: 7.5rem 0;
+    padding: 4.5rem 0;
   }
 }
 
@@ -565,12 +709,12 @@ html.dark .header-bar::before {
 }
 
 ::selection {
-  background: rgba(79, 70, 229, 0.18);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
   color: var(--primary);
 }
 
 .dark ::selection {
-  background: rgba(129, 140, 248, 0.25);
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 ::-webkit-scrollbar {
@@ -611,17 +755,25 @@ html.dark ::-webkit-scrollbar-thumb {
 /* Hero ambient wash */
 .hero-wash {
   background:
-    radial-gradient(ellipse 80% 60% at 50% -30%, rgba(79, 70, 229, 0.14), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 100% 0%, rgba(99, 102, 241, 0.08), transparent 45%),
-    radial-gradient(ellipse 50% 40% at 0% 20%, rgba(14, 165, 233, 0.06), transparent 45%),
-    linear-gradient(180deg, var(--surface) 0%, var(--background) 100%);
+    radial-gradient(
+      ellipse 78% 58% at 50% -32%,
+      color-mix(in srgb, var(--accent) 15%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(ellipse 46% 36% at 100% 0%, rgba(6, 182, 212, 0.08), transparent 45%),
+    radial-gradient(ellipse 48% 38% at 0% 20%, rgba(139, 92, 246, 0.07), transparent 45%),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 86%, var(--background)) 0%, var(--background) 100%);
 }
 
 .dark .hero-wash {
   background:
-    radial-gradient(ellipse 85% 55% at 50% -35%, rgba(99, 102, 241, 0.22), transparent 55%),
-    radial-gradient(ellipse 45% 35% at 95% 5%, rgba(79, 70, 229, 0.12), transparent 50%),
-    radial-gradient(ellipse 45% 35% at 5% 15%, rgba(56, 189, 248, 0.08), transparent 45%),
+    radial-gradient(
+      ellipse 85% 55% at 50% -35%,
+      color-mix(in srgb, var(--accent) 24%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(ellipse 45% 35% at 95% 5%, rgba(6, 182, 212, 0.14), transparent 50%),
+    radial-gradient(ellipse 45% 35% at 5% 15%, rgba(14, 165, 233, 0.1), transparent 45%),
     linear-gradient(180deg, var(--surface) 0%, var(--background) 100%);
 }
 
@@ -705,18 +857,72 @@ html.dark ::-webkit-scrollbar-thumb {
   );
 }
 
+@keyframes image-skeleton-shimmer {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+.image-load-skeleton {
+  z-index: 1;
+  overflow: hidden;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--gray-light) 82%, white 18%),
+      color-mix(in srgb, var(--surface) 72%, var(--accent) 10%)
+    );
+}
+
+.image-load-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    color-mix(in srgb, white 58%, transparent) 46%,
+    transparent 78%
+  );
+  animation: image-skeleton-shimmer 1.45s ease-in-out infinite;
+}
+
+.dark .image-load-skeleton {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--surface-elevated) 82%, white 5%),
+      color-mix(in srgb, var(--accent) 18%, transparent)
+    );
+}
+
+.dark .image-load-skeleton::after {
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    color-mix(in srgb, white 16%, transparent) 46%,
+    transparent 78%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image-load-skeleton::after {
+    animation: none;
+  }
+}
+
 .hero-surface-grid {
   background-image:
     linear-gradient(
-      color-mix(in srgb, var(--gray-border) 55%, transparent) 1px,
+      color-mix(in srgb, var(--gray-border) 58%, transparent) 1px,
       transparent 1px
     ),
     linear-gradient(
       90deg,
-      color-mix(in srgb, var(--gray-border) 55%, transparent) 1px,
+      color-mix(in srgb, var(--gray-border) 58%, transparent) 1px,
       transparent 1px
     );
-  background-size: 56px 56px;
+  background-size: 48px 48px;
   mask-image: radial-gradient(ellipse 75% 70% at 50% 20%, black 15%, transparent 70%);
 }
 
@@ -741,17 +947,18 @@ html.dark ::-webkit-scrollbar-thumb {
   isolation: isolate;
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--surface) 92%, var(--gray-light) 8%) 0%,
-    color-mix(in srgb, var(--surface) 76%, var(--gray-light) 24%) 100%
+    color-mix(in srgb, var(--surface) 94%, var(--gray-light) 6%) 0%,
+    color-mix(in srgb, var(--surface) 82%, var(--gray-light) 18%) 100%
   );
   backdrop-filter: blur(22px) saturate(165%);
   -webkit-backdrop-filter: blur(22px) saturate(165%);
-  border: 1px solid color-mix(in srgb, var(--gray-border) 88%, var(--primary) 8%);
+  border: 1px solid color-mix(in srgb, var(--gray-border) 76%, var(--accent) 10%);
   box-shadow:
-    0 1px 0 color-mix(in srgb, white 85%, transparent) inset,
+    0 1px 0 color-mix(in srgb, white 88%, transparent) inset,
+    0 0 0 1px color-mix(in srgb, white 54%, transparent) inset,
     0 1px 2px color-mix(in srgb, var(--primary) 5%, transparent),
-    0 10px 28px color-mix(in srgb, var(--primary) 7%, transparent),
-    0 28px 70px color-mix(in srgb, var(--primary) 11%, transparent);
+    0 12px 30px color-mix(in srgb, var(--primary) 6%, transparent),
+    0 34px 84px color-mix(in srgb, var(--primary) 10%, transparent);
   transition:
     transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     background 0.45s cubic-bezier(0.22, 1, 0.36, 1),
@@ -779,13 +986,15 @@ html.dark ::-webkit-scrollbar-thumb {
   inset: 0;
   border-radius: inherit;
   z-index: 0;
-  opacity: 0.55;
-  background: linear-gradient(
-    125deg,
-    color-mix(in srgb, var(--accent) 14%, transparent) 0%,
-    transparent 42%,
-    color-mix(in srgb, var(--accent) 6%, transparent) 100%
-  );
+  opacity: 0.5;
+  background:
+    radial-gradient(110% 80% at 0% 0%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 48%),
+    linear-gradient(
+      125deg,
+      color-mix(in srgb, #06b6d4 8%, transparent) 0%,
+      transparent 42%,
+      color-mix(in srgb, var(--accent) 5%, transparent) 100%
+    );
   mix-blend-mode: soft-light;
   transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -822,16 +1031,17 @@ html.dark ::-webkit-scrollbar-thumb {
   isolation: isolate;
   background: linear-gradient(
     158deg,
-    color-mix(in srgb, var(--surface) 62%, transparent) 0%,
-    color-mix(in srgb, var(--surface) 38%, var(--gray-light) 18%) 52%,
-    color-mix(in srgb, var(--surface) 28%, transparent) 100%
+    color-mix(in srgb, var(--surface) 76%, transparent) 0%,
+    color-mix(in srgb, var(--surface) 50%, var(--gray-light) 16%) 52%,
+    color-mix(in srgb, var(--surface) 38%, transparent) 100%
   );
   backdrop-filter: blur(44px) saturate(195%);
   -webkit-backdrop-filter: blur(44px) saturate(195%);
-  border: 1px solid color-mix(in srgb, var(--gray-border) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gray-border) 30%, transparent);
   box-shadow:
-    0 1px 0 color-mix(in srgb, white 78%, transparent) inset,
-    0 22px 56px -22px color-mix(in srgb, var(--primary) 11%, transparent),
+    0 1px 0 color-mix(in srgb, white 84%, transparent) inset,
+    0 0 0 1px color-mix(in srgb, white 46%, transparent) inset,
+    0 24px 60px -22px color-mix(in srgb, var(--primary) 10%, transparent),
     0 4px 14px color-mix(in srgb, var(--primary) 5%, transparent);
   transition:
     transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
@@ -885,8 +1095,8 @@ html.dark ::-webkit-scrollbar-thumb {
   -webkit-backdrop-filter: blur(28px) saturate(175%);
   background: linear-gradient(
     160deg,
-    color-mix(in srgb, var(--surface) 88%, transparent) 0%,
-    color-mix(in srgb, var(--surface) 58%, transparent) 100%
+    color-mix(in srgb, var(--surface) 94%, transparent) 0%,
+    color-mix(in srgb, var(--surface) 68%, var(--gray-light) 10%) 100%
   );
 }
 

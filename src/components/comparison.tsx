@@ -27,6 +27,7 @@ const platformColumns: { id: string; label: string; hint: string }[] = [
   { id: "findem", label: "Findem", hint: "Talent data" },
   { id: "paraform", label: "Paraform", hint: "Recruiter network" },
   { id: "jobboards", label: "Job boards", hint: "Posts & inbound" },
+  { id: "juicebox", label: "Juicebox", hint: "AI sourcing" },
 ];
 
 const MATRIX_DATA_COLUMN_COUNT = 1 + platformColumns.length;
@@ -35,64 +36,64 @@ const matrixRows: MatrixRow[] = [
   {
     feature: "Principal-led partner owns the mandate end-to-end",
     w3: "yes",
-    platforms: ["no", "no", "no", "no", "partial", "no"],
+    platforms: ["no", "no", "no", "no", "partial", "no", "no"],
   },
   {
     feature: "Human-in-the-loop judgment on every shortlist",
     w3: "yes",
-    platforms: ["partial", "partial", "partial", "partial", "partial", "no"],
+    platforms: ["partial", "partial", "partial", "partial", "partial", "no", "partial"],
   },
   {
     feature: "Confidential, sensitive, or board-level searches",
     w3: "yes",
-    platforms: ["partial", "no", "partial", "partial", "partial", "no"],
+    platforms: ["partial", "no", "partial", "partial", "partial", "no", "no"],
   },
   {
     feature: "Trusted outreach to passive executives",
     w3: "yes",
-    platforms: ["yes", "yes", "partial", "yes", "yes", "no"],
+    platforms: ["yes", "yes", "partial", "yes", "yes", "no", "partial"],
   },
   {
     feature: "Culture & leadership fit beyond keywords",
     w3: "yes",
-    platforms: ["no", "partial", "yes", "yes", "partial", "no"],
+    platforms: ["no", "partial", "yes", "yes", "partial", "no", "partial"],
   },
   {
     feature: "Curated shortlists over profile or applicant volume",
     w3: "yes",
-    platforms: ["no", "partial", "partial", "partial", "partial", "no"],
+    platforms: ["no", "partial", "partial", "partial", "partial", "no", "partial"],
   },
   {
-    feature: "Depth in Technology, Legal & Finance leadership",
+    feature: "Depth in VC-backed Tech, Legal & Finance leadership",
     w3: "yes",
-    platforms: ["no", "partial", "no", "partial", "partial", "no"],
+    platforms: ["no", "partial", "no", "partial", "partial", "no", "partial"],
   },
   {
     feature: "Multi-region hiring coverage",
     w3: "yes",
-    platforms: ["yes", "yes", "yes", "yes", "yes", "yes"],
+    platforms: ["yes", "yes", "yes", "yes", "yes", "yes", "yes"],
   },
   {
     feature: "Remote, hybrid & distributed mandates with retained judgment",
     w3: "yes",
-    platforms: ["partial", "partial", "partial", "partial", "partial", "partial"],
+    platforms: ["partial", "partial", "partial", "partial", "partial", "partial", "partial"],
   },
   {
     feature: "Automation at scale (enrichment, campaigns, pipelines)",
     w3: "partial",
-    platforms: ["yes", "yes", "yes", "yes", "yes", "partial"],
+    platforms: ["yes", "yes", "yes", "yes", "yes", "partial", "yes"],
   },
   {
     feature: "Self-serve platform: seats, posts, or usage-based pricing",
     w3: "no",
-    platforms: ["yes", "yes", "yes", "yes", "yes", "yes"],
+    platforms: ["yes", "yes", "yes", "yes", "yes", "yes", "yes"],
   },
 ];
 
 const pullQuotes = [
   {
     quote:
-      "They understood our culture from day one and delivered three exceptional engineering leaders within six weeks.",
+      "They understood our founder-led culture from day one and delivered three exceptional engineering leaders within six weeks.",
     name: "Sarah Chen",
     title: "CTO, Series B Fintech",
   },
@@ -175,7 +176,6 @@ const COMPARE_HEADLINE_LINE1 = "A full matrix—";
 const COMPARE_HEADLINE_LINE1_WORDS = COMPARE_HEADLINE_LINE1.trim().split(/\s+/).length;
 
 export function Comparison() {
-  const introRef = useRef<HTMLDivElement>(null);
   const matrixIntroRef = useRef<HTMLDivElement>(null);
   const matrixCardRef = useRef<HTMLDivElement>(null);
   const closingRef = useRef<HTMLDivElement>(null);
@@ -189,12 +189,11 @@ export function Comparison() {
   const liteMotion = reduced || narrowViewport;
   const activeCol = hoverCol ?? autoCol;
 
-  const introInView = useInView(introRef, { once: true, amount: 0.14, margin: "0px 0px -48px 0px" });
   const matrixIntroInView = useInView(matrixIntroRef, { once: true, amount: 0.14, margin: "0px 0px -40px 0px" });
   const matrixCardInView = useInView(matrixCardRef, { once: true, amount: 0.12, margin: "0px 0px -32px 0px" });
   const closingInView = useInView(closingRef, { once: true, amount: 0.15, margin: "0px 0px -40px 0px" });
 
-  const introHeadingAnimate = useSplitWordsAnimate(introInView);
+  const introHeadingAnimate = useSplitWordsAnimate(true);
   const matrixHeadingAnimate = useSplitWordsAnimate(matrixIntroInView);
   const closingHeadingAnimate = useSplitWordsAnimate(closingInView);
 
@@ -230,10 +229,10 @@ export function Comparison() {
   }, []);
 
   return (
-    <section id="compare" className="section-padding section-band-glass">
+    <section id="compare" className="section-band-glass pt-8 pb-12 md:pt-10 md:pb-18">
       <div className="mx-auto max-w-7xl px-6">
         <ScrollReveal className="mb-10 lg:mb-12">
-          <div ref={introRef} className="mx-auto max-w-2xl text-center">
+          <div className="mx-auto max-w-2xl text-center">
             <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
               <span className="glass-chip inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold text-text-secondary">
                 <span className="relative flex h-2 w-2">
@@ -287,10 +286,10 @@ export function Comparison() {
               Jump to the matrix
             </a>
             <a
-              href="#contact"
-              className="inline-flex items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white shadow-[0_4px_24px_rgb(79_70_229_/_0.28)] transition-colors hover:bg-accent-hover"
+              href="mailto:info@w3sourcing.com"
+              className="inline-flex items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_color-mix(in_srgb,var(--accent)_34%,transparent)] transition-colors hover:bg-accent-hover"
             >
-              Talk to us
+              Email us
             </a>
           </div>
         </ScrollReveal>
@@ -347,7 +346,7 @@ export function Comparison() {
                 setHoverCol(null);
               }}
             >
-            <table className="w-full min-w-[920px] text-left border-collapse">
+            <table className="w-full min-w-[1040px] text-left border-collapse">
               <caption className="sr-only">
                 Capability comparison: features as rows, providers as columns. One column is visually emphasized at a
                 time.
@@ -484,20 +483,20 @@ export function Comparison() {
                 animate={closingHeadingAnimate}
               />
             </h3>
-            <p className="mt-3 text-text-secondary leading-relaxed">
+            <p className="mt-3 text-text-secondary leading-relaxed text-center">
               Use platforms for volume and automation; use W3 when you need discernment AI cannot provide—judgment,
               discretion, and one accountable partner who stands behind the shortlist.
             </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-4">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
               <a
-                href="#contact"
-                className="inline-flex items-center justify-center gap-2 bg-accent text-white font-semibold text-sm py-3 px-6 rounded-xl shadow-[0_4px_24px_rgb(79_70_229_/_0.28)] transition-colors hover:bg-accent-hover"
+                href="mailto:info@w3sourcing.com"
+                className="inline-flex items-center justify-center gap-2 bg-accent text-white font-semibold text-sm py-3 px-6 rounded-xl shadow-[0_10px_30px_color-mix(in_srgb,var(--accent)_34%,transparent)] transition-colors hover:bg-accent-hover"
               >
-                Get in touch
+                Email us
               </a>
               <a
                 href="#testimonials"
-                className="inline-flex text-sm font-semibold text-accent hover:text-accent-hover transition-colors"
+                className="inline-flex items-center text-sm font-semibold text-accent hover:text-accent-hover transition-colors"
               >
                 Read client stories →
               </a>

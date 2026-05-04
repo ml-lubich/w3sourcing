@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ResilientImage } from "@/components/resilient-image";
 
 const PERRY_LINKEDIN = "https://www.linkedin.com/in/perrybarrow/";
 
@@ -18,12 +18,13 @@ export function FounderSpotlightCard() {
       */}
       <div className="relative z-[2] isolate shrink-0 md:mx-0">
         <div className="relative h-36 w-36 shrink-0 overflow-hidden rounded-full border border-slate-200/80 bg-surface shadow-[0_8px_24px_rgb(15_23_42_/_0.12)] dark:border-white/15 dark:shadow-[0_8px_24px_rgb(0_0_0_/_0.35)] sm:h-40 sm:w-40">
-          <Image
+          <ResilientImage
             src="/images/perry-barrow.webp"
             alt="Perry Barrow, Founder and Managing Director of W3 Sourcing"
             fill
             sizes="(min-width: 768px) 160px, 144px"
             className="object-cover object-top"
+            wrapperClassName="absolute inset-0 overflow-hidden rounded-full"
             priority
           />
         </div>

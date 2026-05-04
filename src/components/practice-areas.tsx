@@ -17,7 +17,7 @@ const PRACTICE_INTRO_PREFIX =
 
 /** Rotating closers (after prefix); parallel to hero sector frames + combined line. */
 const PRACTICE_INTRO_ACCENTS = [
-  "Technology leadership.",
+  "VC-backed technology leadership.",
   "Legal leadership.",
   "Banking & Finance leadership.",
   "three high-impact domains.",
@@ -27,25 +27,25 @@ const practiceIntroRotateMs = 4200;
 
 const areas = [
   {
-    title: "VC-Backed Technology Recruitment",
+    title: "VC & Growth Technology Recruitment",
     body:
-      "We partner with venture-backed and high-growth tech companies to build exceptional teams—from software engineers through senior leadership—for on-site, hybrid, and remote mandates. Technical screens can narrow lists; we add the instinct for who will lead, scale culture, and endure—globally.",
+      "We partner with accelerator-backed, VC-backed, and growth-stage technology companies from seed through pre-IPO to build exceptional teams, from founding engineers through senior leadership, for on-site, hybrid, and remote mandates. Technical screens can narrow lists; we add the founder-market instinct for who will lead, scale culture, and endure globally.",
     art: "tech" as const,
-    accent: "from-violet-500/25 to-accent/20",
+    tone: "surface-gradient-field--venture",
   },
   {
     title: "Legal Recruitment",
     body:
       "Serving top U.S. and U.K. law firms, we recruit outstanding legal professionals from associate through partner levels. Practitioner insight and network access meet human judgment on who can carry the book—not keyword similarity alone.",
     art: "legal" as const,
-    accent: "from-slate-500/15 to-accent/22",
+    tone: "surface-gradient-field--trust",
   },
   {
     title: "Banking & Finance Recruitment",
     body:
       "For global financial institutions and multinational corporations, we provide specialist recruitment support across investment banking, corporate finance, risk and compliance, and related disciplines. Regulated, high-stakes mandates need partners who read risk and calibre—not algorithms optimising for volume.",
     art: "finance" as const,
-    accent: "from-emerald-500/12 to-accent/22",
+    tone: "surface-gradient-field--finance",
   },
 ];
 
@@ -93,7 +93,7 @@ function PracticeAreaCard(props: {
         >
           <article className="glass-panel flex h-full flex-col overflow-hidden rounded-2xl shadow-[0_20px_48px_rgb(15_23_42_/_0.05)] dark:shadow-[0_24px_60px_rgb(0_0_0_/_0.3)] transition-[box-shadow,transform] duration-300 ease-out hover:shadow-[0_28px_56px_rgb(15_23_42_/_0.09)] dark:hover:shadow-[0_32px_72px_rgb(0_0_0_/_0.38)]">
             <div
-              className={`relative h-32 shrink-0 overflow-hidden bg-gradient-to-br ${area.accent} via-surface/30 dark:via-slate-900/25 to-transparent sm:h-36`}
+              className={`surface-gradient-field ${area.tone} relative h-32 shrink-0 overflow-hidden sm:h-36`}
             >
               <PracticeAreaAnimatedArt variant={area.art} idSuffix={`pa-${i}`} animate={artAnimate} />
               <div className="pa-card-header-scrim pointer-events-none absolute inset-0" aria-hidden />
@@ -180,7 +180,7 @@ export function PracticeAreas() {
           }`}
         >
           <p
-            className="text-xs font-semibold uppercase tracking-[0.14em] text-muted mb-3 flex justify-center"
+            className="text-xs font-semibold uppercase tracking-[0.14em] text-accent mb-3 flex justify-center"
             aria-label="What we do"
           >
             <SplitWords

@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { faqItems } from "@/content/faq-items";
 import {
   W3_LONDON_ADDRESS,
@@ -72,8 +73,10 @@ export function HomeJsonLd() {
   };
 
   return (
-    <script
+    <Script
+      id="home-json-ld"
       type="application/ld+json"
+      strategy="afterInteractive"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(payload) }}
     />
   );

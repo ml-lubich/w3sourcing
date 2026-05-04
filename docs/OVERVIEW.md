@@ -1,5 +1,18 @@
 # W3Sourcing — Project overview
 
+## Table of contents
+
+- [Purpose](#purpose)
+- [Brand and audience](#brand-and-audience)
+- [Tech stack](#tech-stack)
+- [Routes](#routes)
+- [Home page section order](#home-page-section-order)
+- [Contact deprecation](#2026-05-04-contact-deprecation)
+- [Commands](#commands)
+- [Repository conventions](#repository-conventions)
+- [Notes for contributors and tooling](#notes-for-contributors-and-tooling)
+- [Current implementation snapshot](#2026-05-04-current-implementation-snapshot)
+
 ## Purpose
 
 This repository is the marketing front end for **W3 Sourcing**: a global executive recruitment firm operating across technology, legal, and banking and finance. The product is a **single, scroll-based landing experience** that should feel as careful and deliberate as a senior search mandate—clear structure, calm motion, and copy that honours the fact that hiring is never only software; it is judgment, relationships, and discretion.
@@ -27,11 +40,11 @@ Canonical registration and office details used in the UI live in `src/content/of
 
 | Path       | Purpose |
 | ---------- | ------- |
-| `/`        | Home: full landing with all sections (see below). |
+| `/`        | Home: full landing with all sections and header/footer section navigation (see below). |
 | `/privacy` | Privacy policy (uses `LegalPageShell`; header/footer with root section links). |
 | `/terms`   | Terms of use (same shell pattern). |
 
-Contact is **`#contact` on the home page**, not a separate route. The contact form is **frontend-only**: submit handlers prevent default navigation and show a success state; **no message is sent to a backend** until you wire an API or third-party service.
+Contact is **direct email-first** in the current public journey: header, hero, comparison, 404, footer, and final CTA actions should resolve to `mailto:info@w3sourcing.com`. The deprecated `#contact` form component remains in the tree for implementation history only.
 
 ## Home page section order
 
@@ -39,19 +52,23 @@ The visible sequence in `src/app/page.tsx` is:
 
 1. Hero (with pipeline-style preview and accessibility affordances described in `docs/DESIGN.md`).
 2. Trusted-by (marquee social proof).
-3. Practice areas (`#practice-areas`).
-4. Why W3 (`#why-w3`).
-5. How it works (`#process`).
-6. Industries and functions (`#industries`).
-7. Feature tabs / methodology (`#features`).
-8. Stats (`#stats`).
-9. Comparison (`#compare`, matrix anchor `#compare-matrix`).
-10. Testimonials (`#testimonials`).
-11. FAQ (`#faq`).
-12. Contact (`#contact`).
+3. Leadership / founder (`#leadership`).
+4. Practice areas (`#practice-areas`).
+5. Why W3 (`#why-w3`).
+6. How it works (`#process`).
+7. Industries and functions (`#industries`).
+8. Feature tabs / methodology (`#features`).
+9. Stats (`#stats`).
+10. Comparison (`#compare`, matrix anchor `#compare-matrix`).
+11. Testimonials (`#testimonials`).
+12. FAQ (`#faq`).
 13. CTA banner (closing strip before the footer).
 
-The main navigation in `Header` links a subset of these anchors (practices, process, methodology, results, compare, clients, FAQ, contact). Other sections remain discoverable by scroll and through in-page cross-links.
+The main navigation in `Header` links a subset of these anchors (leadership, practices, process, methodology, results, compare, clients, FAQ) plus direct email contact. Other sections remain discoverable by scroll and through in-page cross-links.
+
+## 2026-05-04 Contact Deprecation
+
+The previous home-page `#contact` form is deprecated and no longer rendered in the primary user journey. Header, hero, comparison, 404, footer, and final CTA contact actions should send users directly to `mailto:info@w3sourcing.com`; the old `src/components/contact.tsx` component remains in the tree only as deprecated implementation history until a later cleanup task removes it.
 
 **Floating control** (`FloatingCTA`) is present on the home layout (sm+): after ~600px scroll it shows **Back to top**, which scrolls to the document top and clears the URL hash using the same capped ease as in-page section jumps (`src/lib/scroll-to-section.ts`).
 
@@ -64,7 +81,7 @@ The main navigation in `Header` links a subset of these anchors (practices, proc
 - `bun run test` — unit tests under `src/` plus `tsc --noEmit` (see `docs/TESTING.md`).
 - `bun run smoke:routes` — route smoke (build + production server + GET each route); variants `smoke:routes:dev` and `smoke:routes:ci` are documented in `docs/TESTING.md`.
 
-**Before you commit:** run **`bun run test`** locally when you change app or lib code; Vercel runs **`bun run build`** and **`bun run smoke:routes:ci`** on deploy (see `docs/TESTING.md`).
+**Before you commit:** run **`bun run test`** locally when you change app or lib code; Vercel runs **`bun run ci`** and **`bun run smoke:routes:ci`** on deploy (see `docs/TESTING.md`).
 
 ## Repository conventions
 
@@ -74,3 +91,12 @@ The main navigation in `Header` links a subset of these anchors (practices, proc
 ## Notes for contributors and tooling
 
 Before changing routing, metadata, or App Router structure, confirm patterns against the **installed** Next.js version (this project tracks Next 16.x). Design intent, motion rules, and component-level behaviour are specified in `docs/DESIGN.md`. Product-level expectations and constraints are summarised in `docs/REQUIREMENTS.md`.
+
+## 2026-05-04 Current Implementation Snapshot
+
+- The home page now renders **Leadership** (`#leadership`) after Trusted-by and before Practice areas. Header and footer navigation include Leadership.
+- The home page no longer renders the deprecated `Contact` section. Direct contact actions use `mailto:info@w3sourcing.com` from the header, hero, comparison, 404, footer, and closing CTA.
+- The current home sequence is: Hero, Trusted-by, Leadership, Practice areas, Why W3, How it works, Industries and functions, Feature tabs, Stats, Comparison, Testimonials, FAQ, CTA banner, Footer.
+- `TrustedByClient` is statically imported by the home page but disables SSR for the marquee implementation with `next/dynamic({ ssr: false })` inside the client wrapper.
+- User-visible images use `ResilientImage` where they need a persistent shimmer skeleton and load-failure handling: header wordmark, hero avatars, trusted-by logos, and the founder portrait.
+- `/privacy` is content-driven from `src/content/privacy-policy.ts`; the page renders the full DPA-style policy, schedules, contact email, and office addresses from that typed content module.

@@ -2,13 +2,13 @@ import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
-import { TrustedBy } from "@/components/trusted-by";
 import { HomeHashScroll } from "@/components/home-hash-scroll";
 import { FloatingCTA } from "@/components/floating-cta";
 import { HomeJsonLd } from "@/components/home-json-ld";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { FounderSpotlight } from "@/components/founder-spotlight";
 import { FounderSpotlightCard } from "@/components/founder-spotlight-card";
+import { TrustedByClient } from "@/components/trusted-by-client";
 import { getSiteUrl } from "@/lib/site";
 
 const PracticeAreas = dynamic(() =>
@@ -36,9 +36,6 @@ const Testimonials = dynamic(() =>
   import("@/components/testimonials").then((m) => ({ default: m.Testimonials })),
 );
 const FAQ = dynamic(() => import("@/components/faq"));
-const Contact = dynamic(() =>
-  import("@/components/contact").then((m) => ({ default: m.Contact })),
-);
 const CTABanner = dynamic(() =>
   import("@/components/cta-banner").then((m) => ({ default: m.CTABanner })),
 );
@@ -75,7 +72,7 @@ export default function Home() {
       <main id="main-content" tabIndex={-1} className="outline-none">
         <Hero />
         <ScrollReveal>
-          <TrustedBy />
+          <TrustedByClient />
         </ScrollReveal>
         <ScrollReveal>
           <FounderSpotlight>
@@ -108,9 +105,6 @@ export default function Home() {
         </ScrollReveal>
         <ScrollReveal>
           <FAQ />
-        </ScrollReveal>
-        <ScrollReveal>
-          <Contact />
         </ScrollReveal>
         <ScrollReveal>
           <CTABanner />

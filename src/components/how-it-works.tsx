@@ -16,7 +16,6 @@ type Step = {
   title: string;
   body: string;
   Icon: LucideIcon;
-  accent: string;
 };
 
 const steps: Step[] = [
@@ -25,43 +24,31 @@ const steps: Step[] = [
     title: "Discovery & Alignment",
     body: "We invest time to understand your business, culture, and talent objectives before we engage any search.",
     Icon: ClipboardList,
-    accent:
-      "from-violet-500/45 via-violet-400/18 to-accent/32 dark:from-violet-500/22 dark:via-transparent dark:to-accent/16",
   },
   {
     n: 2,
     title: "Targeted Search & Assessment",
     body: "We identify and evaluate high-calibre candidates through rigorous, human-led assessment—what great looks like for your context, not what a model scores highest.",
     Icon: Radar,
-    accent:
-      "from-accent/40 via-cyan-400/20 to-cyan-500/35 dark:from-accent/18 dark:via-transparent dark:to-cyan-500/18",
   },
   {
     n: 3,
     title: "Transparent Process & Collaboration",
     body: "Our teams provide continuous updates, market insight, and collaborative support from shortlist to offer and onboarding.",
     Icon: UserCheck,
-    accent:
-      "from-cyan-500/38 via-accent/22 to-accent/38 dark:from-cyan-500/16 dark:via-transparent dark:to-accent/18",
   },
   {
     n: 4,
     title: "Long-Term Partnership",
     body: "We’re not just filling roles—we’re building talent strategies that support sustainable growth and organisational impact.",
     Icon: Handshake,
-    accent:
-      "from-accent/42 via-violet-400/22 to-violet-500/40 dark:from-accent/22 dark:via-transparent dark:to-violet-500/16",
   },
 ];
 
 function StepArt({ variant, idSuffix, animate }: { variant: 1 | 2 | 3 | 4; idSuffix: string; animate: boolean }) {
   const stroke = "currentColor";
-  const labelFill = "currentColor";
   const m1 = `hiw-m1-${idSuffix}`;
   const m2 = `hiw-m2-${idSuffix}`;
-  const labelStyle = { font: "600 6px var(--font-sans-jakarta), system-ui, sans-serif", fill: labelFill, opacity: 1 } as const;
-  const labelSm = { ...labelStyle, font: "600 5.5px var(--font-sans-jakarta), system-ui, sans-serif" } as const;
-  const labelXs = { ...labelStyle, font: "600 5px var(--font-sans-jakarta), system-ui, sans-serif" } as const;
   return (
     <svg
       className={`${sectionDecoSvgClassName(animate)} hiw-step-art-svg transition-[color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]`}
@@ -75,7 +62,7 @@ function StepArt({ variant, idSuffix, animate }: { variant: 1 | 2 | 3 | 4; idSuf
           <rect x="22" y="22" width="156" height="78" rx="10" stroke={stroke} strokeWidth="1.15" />
           <path d="M34 36h108" stroke={stroke} strokeWidth="1.5" strokeLinecap="round" />
           <path d="M34 36v-6h12v6" stroke={stroke} strokeWidth="1" strokeLinejoin="round" />
-          <text x="50" y="34" style={{ ...labelStyle, font: "600 6.5px var(--font-sans-jakarta), system-ui, sans-serif" }}>
+          <text x="50" y="34" className="hiw-label-md">
             Search mandate
           </text>
           <path d="M34 50h92M34 60h76M34 70h84" stroke={stroke} strokeWidth="0.9" strokeLinecap="round" opacity="0.85" />
@@ -84,7 +71,7 @@ function StepArt({ variant, idSuffix, animate }: { variant: 1 | 2 | 3 | 4; idSuf
             <rect x="142" y="44" width="36" height="22" rx="4" />
             <path d="M150 52h20M150 58h14" strokeLinecap="round" />
           </g>
-          <text x="144" y="42" style={labelSm}>
+          <text x="144" y="42" className="hiw-label-sm">
             Success criteria
           </text>
           <g stroke={stroke} strokeWidth="1.05">
@@ -105,7 +92,7 @@ function StepArt({ variant, idSuffix, animate }: { variant: 1 | 2 | 3 | 4; idSuf
           >
             <MotionDash active={animate} dur="2.6s" />
           </path>
-          <text x="32" y="114" style={labelXs}>
+          <text x="32" y="114" className="hiw-label-xs">
             Client · Hiring lead · Search partner
           </text>
         </>
@@ -131,13 +118,13 @@ function StepArt({ variant, idSuffix, animate }: { variant: 1 | 2 | 3 | 4; idSuf
             <circle cx="148" cy="42" r="9" />
             <path d="M148 36v12M142 42h12" strokeLinecap="round" />
           </g>
-          <text x="44" y="58" style={labelSm}>
+          <text x="44" y="58" className="hiw-label-sm">
             US
           </text>
-          <text x="88" y="58" style={labelSm}>
+          <text x="88" y="58" className="hiw-label-sm">
             UK · EU
           </text>
-          <text x="132" y="58" style={labelSm}>
+          <text x="132" y="58" className="hiw-label-sm">
             UAE · Asia
           </text>
           <circle cx="100" cy="78" r="22" stroke={stroke} strokeWidth="1.15" opacity="0.9" />
@@ -160,7 +147,7 @@ function StepArt({ variant, idSuffix, animate }: { variant: 1 | 2 | 3 | 4; idSuf
               <MotionDash active={animate} dur="2.4s" />
             </path>
           </g>
-          <text x="68" y="112" style={labelXs}>
+          <text x="68" y="112" className="hiw-label-xs">
             Passive talent · market mapping
           </text>
         </>
@@ -183,13 +170,13 @@ function StepArt({ variant, idSuffix, animate }: { variant: 1 | 2 | 3 | 4; idSuf
               />
             </marker>
           </defs>
-          <text x="22" y="58" style={labelStyle}>
+          <text x="22" y="58">
             Screen
           </text>
-          <text x="80" y="58" style={labelStyle}>
+          <text x="80" y="58">
             Interview
           </text>
-          <text x="128" y="58" style={labelStyle}>
+          <text x="128" y="58">
             Shortlist
           </text>
           <path
@@ -204,7 +191,7 @@ function StepArt({ variant, idSuffix, animate }: { variant: 1 | 2 | 3 | 4; idSuf
           </path>
           <path d="M100 24v16" stroke={stroke} strokeWidth="1" strokeLinecap="round" opacity="0.55" />
           <rect x="76" y="16" width="48" height="14" rx="4" stroke={stroke} strokeWidth="0.95" />
-          <text x="82" y="25" style={labelSm}>
+          <text x="82" y="25" className="hiw-label-sm">
             Shortlist
           </text>
           <g stroke={stroke} strokeWidth="0.9" opacity="0.8">
@@ -213,7 +200,7 @@ function StepArt({ variant, idSuffix, animate }: { variant: 1 | 2 | 3 | 4; idSuf
             <circle cx="100" cy="104" r="4" />
             <circle cx="144" cy="104" r="4" />
           </g>
-          <text x="52" y="116" style={labelXs}>
+          <text x="52" y="116" className="hiw-label-xs">
             Client visibility · weekly cadence
           </text>
         </>
@@ -244,13 +231,13 @@ function StepArt({ variant, idSuffix, animate }: { variant: 1 | 2 | 3 | 4; idSuf
               />
             </marker>
           </defs>
-          <text x="28" y="98" style={labelXs}>
+          <text x="28" y="98" className="hiw-label-xs">
             Offer
           </text>
-          <text x="86" y="86" style={labelXs}>
+          <text x="86" y="86" className="hiw-label-xs">
             Onboard
           </text>
-          <text x="132" y="98" style={labelXs}>
+          <text x="132" y="98" className="hiw-label-xs">
             Retained partner
           </text>
           <path d="M36 38h128" stroke={stroke} strokeWidth="1" strokeLinecap="round" opacity="0.4" />
@@ -271,7 +258,7 @@ function StepArt({ variant, idSuffix, animate }: { variant: 1 | 2 | 3 | 4; idSuf
           <circle cx="164" cy="38" r="3.5" fill="currentColor" className="text-success/52 dark:text-success/42 transition-colors duration-500">
             <MotionPulse active={animate} begin="0.45s" />
           </circle>
-          <text x="34" y="30" style={labelXs}>
+          <text x="34" y="30" className="hiw-label-xs">
             Impact over time
           </text>
         </>
@@ -306,7 +293,7 @@ function StepCard({
       whileHover={surfaceCardWhileHover(liteMotion)}
     >
       <div
-        className={`relative h-36 overflow-hidden bg-gradient-to-br ${step.accent} via-surface/55 dark:via-slate-900/20 to-slate-50/30 dark:to-transparent transition-colors duration-500`}
+        className="surface-gradient-field surface-gradient-field--process relative h-36 overflow-hidden"
       >
         <StepArt variant={v} idSuffix={`${step.n}`} animate={inView && !reduced} />
         <div className="step-card-header-scrim pointer-events-none absolute inset-0" aria-hidden />

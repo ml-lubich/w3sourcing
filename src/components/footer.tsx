@@ -35,7 +35,6 @@ const footerLinks = [
   { label: "Compare", href: "#compare" },
   { label: "Testimonials", href: "#testimonials" },
   { label: "FAQ", href: "#faq" },
-  { label: "Contact", href: "#contact" },
 ];
 
 const sectors = [
@@ -171,7 +170,7 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
                 href="https://www.linkedin.com/in/perrybarrow/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-black/[0.06] hover:bg-accent/90 dark:bg-white/5 shadow-[0_4px_14px_rgb(15_23_42_/_0.08)] dark:shadow-[0_4px_14px_rgb(0_0_0_/_0.25)] hover:shadow-[0_8px_22px_rgb(79_70_229_/_0.35)] flex items-center justify-center transition-all duration-200"
+                className="w-10 h-10 rounded-xl bg-black/[0.06] hover:bg-accent/90 dark:bg-white/5 shadow-[0_4px_14px_rgb(15_23_42_/_0.08)] dark:shadow-[0_4px_14px_rgb(0_0_0_/_0.25)] hover:shadow-[0_10px_24px_color-mix(in_srgb,var(--accent)_36%,transparent)] flex items-center justify-center transition-all duration-200"
                 aria-label="LinkedIn — Perry Barrow"
               >
                 <svg className="w-4 h-4 text-foreground dark:text-white" fill="currentColor" viewBox="0 0 24 24">

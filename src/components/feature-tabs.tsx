@@ -44,26 +44,26 @@ const featureSections: FeatureSection[] = [
     headlineAccent: "others miss",
     accentColor: "text-accent",
     description:
-      "Our proprietary network and deep sector expertise let us identify and engage exceptional candidates who aren't actively looking—relationships and judgment that no automation pipeline can substitute for.",
+      "Our proprietary network and deep sector expertise let us identify and engage exceptional candidates who aren't actively looking, including portfolio-calibre operators, technical leaders, and senior advisers no automation pipeline can substitute for.",
     tabs: [
       {
         label: "Executive Search",
         title: "Precision headhunting for leadership roles",
-        body: "We map entire markets to find the exact candidate profile your organisation needs, from C-suite to VP-level hires.",
+        body: "We map entire markets to find the exact candidate profile your organisation needs, from C-suite and VP-level hires to portfolio-company operators.",
         bullets: [
-          "Comprehensive market mapping across Tech, Legal & Finance",
-          "Access to passive candidates through trusted relationships—not inbox automation alone",
-          "Average time-to-shortlist of just 14 days",
+          "Comprehensive market mapping across VC-backed Tech, Legal & Finance",
+          "Access to passive candidates through trusted relationships, warm context, and operator networks",
+          "Shortlist timelines calibrated to your mandate urgency",
         ],
       },
       {
         label: "Talent Pipeline",
         title: "Build a continuous pipeline of pre-vetted talent",
-        body: "Stay ahead of hiring needs with a curated bench of candidates ready to interview at short notice.",
+        body: "Stay ahead of hiring needs with a curated bench of candidates ready to interview at short notice as the company, fund, or practice enters its next stage.",
         bullets: [
           "Ongoing relationship management with top-tier candidates",
           "Real-time market intelligence and salary benchmarking",
-          "Quarterly talent reports tailored to your sector",
+          "Quarterly talent reports tailored to your sector and growth stage",
         ],
       },
     ],
@@ -95,7 +95,7 @@ const featureSections: FeatureSection[] = [
         bullets: [
           "Deep-dive into your team dynamics and culture",
           "Values-based interview frameworks",
-          "98% retention rate at 12-month mark",
+          "Long-term fit focus supported by structured follow-ups",
         ],
       },
     ],
@@ -108,7 +108,7 @@ const featureSections: FeatureSection[] = [
     headlineAccent: "that stick",
     accentColor: "text-accent",
     description:
-      "From offer negotiation to onboarding support, we ensure every placement is set up for long-term success.",
+      "From offer negotiation to onboarding support, we help every placement land with the context senior candidates expect from serious companies, funds, and firms.",
     tabs: [
       {
         label: "Offer Management",
@@ -117,7 +117,7 @@ const featureSections: FeatureSection[] = [
         bullets: [
           "Salary benchmarking against live market data",
           "Stakeholder alignment on compensation packages",
-          "95% offer acceptance rate across all sectors",
+          "Consistent offer-close support across complex mandates",
         ],
       },
       {
@@ -127,7 +127,7 @@ const featureSections: FeatureSection[] = [
         bullets: [
           "30/60/90 day structured check-in programme",
           "Dedicated account manager for ongoing support",
-          "Free replacement guarantee for 12 months",
+          "Mandate-specific replacement terms available by agreement",
         ],
       },
     ],

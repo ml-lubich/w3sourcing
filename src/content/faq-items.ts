@@ -6,7 +6,7 @@ export type FaqItem = Readonly<{
 export const faqItems: readonly FaqItem[] = [
   {
     q: "What sectors do you specialise in?",
-    a: "We focus exclusively on three high-impact sectors: Technology (VC-backed and scale-ups), Legal (Magic Circle, US elite, and in-house), and Banking & Finance (investment banking, private equity, risk and compliance). That depth lets us judge calibre and fit in ways broad tools cannot—so you see candidates other generalist firms simply can't reach.",
+    a: "We focus exclusively on three high-impact sectors: Technology (VC-backed, fund-backed, and scale-up), Legal (Magic Circle, US elite, and in-house), and Banking & Finance (investment banking, private equity, risk and compliance). That depth lets us judge calibre and fit in ways broad tools cannot, so you see candidates other generalist firms simply can't reach.",
   },
   {
     q: "How quickly can you fill a role?",
@@ -22,10 +22,10 @@ export const faqItems: readonly FaqItem[] = [
   },
   {
     q: "What makes W3 Sourcing different from other recruiters?",
-    a: "Three things: deep sector expertise (our consultants are former industry practitioners), a genuinely global network built over 12+ years, and an honest, consultative approach. We also believe outstanding hires still need human taste—automation can widen the funnel, but it doesn't steward your brand or know who will truly thrive. We'll tell you when a search is unrealistic and help you recalibrate—that candour is why 98% of our clients come back.",
+    a: "Three things: deep sector expertise (our consultants are former industry practitioners), a genuinely global network built over 12+ years, and an honest, consultative approach for VC-backed, legal, and finance mandates. We also believe outstanding hires still need human taste. Automation can widen the funnel, but it doesn't steward your brand, read founder-market fit, or know who will truly thrive. We'll tell you when a search is unrealistic and help you recalibrate, even when the advice is uncomfortable.",
   },
   {
-    q: "Do you offer any guarantees?",
-    a: "Yes. All placements come with a 12-month free replacement guarantee. If a candidate leaves or doesn't work out within the first year, we'll conduct a replacement search at no additional cost. Our 98% retention rate means we rarely need to use it.",
+    q: "Do you offer post-placement support?",
+    a: "Yes. We stay involved after placement with structured check-ins and practical onboarding support. For selected mandates, replacement terms can be agreed in advance based on role scope and engagement model.",
   },
 ];

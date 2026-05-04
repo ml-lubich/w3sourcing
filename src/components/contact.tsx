@@ -13,6 +13,7 @@ import {
 } from "@/content/offices";
 import { surfaceCardWhileHover, surfaceRevealEnterTransition } from "@/lib/surface-reveal-motion";
 
+/** @deprecated Direct email CTAs now replace the home-page contact form. */
 export function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -56,8 +57,8 @@ export function Contact() {
             />
           </h2>
           <p className="mt-4 text-text-secondary text-lg max-w-2xl mx-auto">
-            Whether you&apos;re scaling a team, exploring new opportunities, or planning strategic leadership hires,
-            W3 Sourcing is your partner for outcomes that need taste and accountability—not software acting alone.
+            Whether you&apos;re scaling a VC-backed team, exploring new opportunities, or planning strategic leadership hires,
+            W3 Sourcing is your partner for outcomes that need taste, market context, and accountability, not software acting alone.
           </p>
         </div>
 
@@ -129,7 +130,7 @@ export function Contact() {
                         <input
                           type={field.type}
                           required
-                          className="glass-control w-full rounded-xl px-4 py-3 text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/25 focus:shadow-[0_4px_18px_rgb(79_70_229_/_0.14)] transition-all"
+                          className="glass-control w-full rounded-xl px-4 py-3 text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/25 focus:shadow-[0_6px_22px_color-mix(in_srgb,var(--accent)_24%,transparent)] transition-all"
                           placeholder={field.placeholder}
                         />
                       </div>
@@ -143,7 +144,7 @@ export function Contact() {
                     <input
                       type="email"
                       required
-                      className="glass-control w-full rounded-xl px-4 py-3 text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/25 focus:shadow-[0_4px_18px_rgb(79_70_229_/_0.14)] transition-all"
+                      className="glass-control w-full rounded-xl px-4 py-3 text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/25 focus:shadow-[0_6px_22px_color-mix(in_srgb,var(--accent)_24%,transparent)] transition-all"
                       placeholder="john@company.com"
                     />
                   </div>
@@ -152,7 +153,10 @@ export function Contact() {
                     <label className="block text-sm font-medium text-primary mb-1.5">
                       I&apos;m looking for...
                     </label>
-                    <select className="glass-control w-full rounded-xl px-4 py-3 text-sm text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent/25 focus:shadow-[0_4px_18px_rgb(79_70_229_/_0.14)] transition-all">
+                    <select
+                      aria-label="Contact intent"
+                      className="glass-control w-full rounded-xl px-4 py-3 text-sm text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent/25 focus:shadow-[0_6px_22px_color-mix(in_srgb,var(--accent)_24%,transparent)] transition-all"
+                    >
                       <option>Hiring talent for my team</option>
                       <option>Exploring career opportunities</option>
                       <option>Partnership or collaboration</option>
@@ -167,14 +171,14 @@ export function Contact() {
                     <textarea
                       rows={4}
                       required
-                      className="glass-control w-full rounded-xl px-4 py-3 text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/25 focus:shadow-[0_4px_18px_rgb(79_70_229_/_0.14)] transition-all resize-none"
+                      className="glass-control w-full rounded-xl px-4 py-3 text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/25 focus:shadow-[0_6px_22px_color-mix(in_srgb,var(--accent)_24%,transparent)] transition-all resize-none"
                       placeholder="Tell us about your requirements..."
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="bg-accent text-white font-semibold text-sm py-3 px-8 rounded-xl shadow-[0_4px_16px_rgb(79_70_229_/_0.25)] transition-all duration-200 hover:bg-accent-hover inline-flex items-center gap-2"
+                    className="bg-accent text-white font-semibold text-sm py-3 px-8 rounded-xl shadow-[0_10px_28px_color-mix(in_srgb,var(--accent)_36%,transparent)] transition-all duration-200 hover:bg-accent-hover inline-flex items-center gap-2"
                   >
                     Send Message
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -194,15 +198,17 @@ export function Contact() {
                   <path d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                 </svg>
               </div>
-              <h4 className="font-semibold text-primary mb-1 inline-block max-w-full">
+              <h4 className="font-semibold text-primary mb-1 block max-w-full">
                 <SplitWords as="span" text="Email Us" stagger={0.05} animate={headingSplit} />
               </h4>
-              <a
-                href="mailto:info@w3sourcing.com"
-                className="text-accent text-sm hover:underline"
-              >
-                info@w3sourcing.com
-              </a>
+              <p>
+                <a
+                  href="mailto:info@w3sourcing.com"
+                  className="text-accent text-sm hover:underline"
+                >
+                  info@w3sourcing.com
+                </a>
+              </p>
             </div>
 
             <div className="glass-panel rounded-xl p-6 transition-all duration-300">
