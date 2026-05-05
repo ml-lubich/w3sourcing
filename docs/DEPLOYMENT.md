@@ -34,7 +34,7 @@ If `NEXT_PUBLIC_SITE_URL` is unset, the app falls back to **`VERCEL_URL`** on Ve
 1. Connect the Git repository; root directory = repo root (where `package.json` and `bun.lock` live).
 2. **`vercel.json`** sets **`installCommand`** to `bun install --frozen-lockfile` and **`buildCommand`** to `bun run ci && bun run smoke:routes:ci` so installs and builds use Bun, every deployment runs lint, tests, the production build, and route smoke without a second `next build` (see `docs/TESTING.md`).
 3. In the Vercel dashboard, avoid overriding Install Command / Build Command unless they stay Bun-equivalent (otherwise you can undo `vercel.json`).
-4. Deploy; in build logs, confirm the install step runs **`bun install`** (frozen lockfile) and the build step completes tests plus route smoke.
+4. Deploy; in build logs, confirm the install step runs **`bun install`** (frozen lockfile) and the build step completes tests plus route smoke. The route smoke includes `/opengraph-image`, `/llms.txt`, `/robots.txt`, `/sitemap.xml`, and key favicon/manifest assets so social previews, AI crawler discovery, and crawler routes are verified before Vercel publishes the deployment.
 
 ### Tailwind v4 and the production CSS bundle
 

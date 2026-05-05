@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Geist, Instrument_Serif } from "next/font/google";
 import { AppMotionConfig } from "@/components/app-motion-config";
@@ -38,6 +38,7 @@ export const metadata: Metadata = {
   metadataBase: siteUrl,
   manifest: "/images/favicon/site.webmanifest",
   icons: {
+    shortcut: ["/images/favicon/favicon.ico"],
     icon: [
       { url: "/images/favicon/favicon.ico", sizes: "48x48" },
       {
@@ -109,7 +110,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: defaultTitle,
     description: defaultDescription,
-    images: ["/opengraph-image"],
+    images: [{ url: "/opengraph-image", alt: ogImageAlt }],
   },
   robots: {
     index: true,
@@ -125,6 +126,14 @@ export const metadata: Metadata = {
   ...(googleVerification
     ? { verification: { google: googleVerification } }
     : {}),
+};
+
+export const viewport: Viewport = {
+  colorScheme: "light dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b1120" },
+  ],
 };
 
 export default function RootLayout({

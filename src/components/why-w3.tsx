@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Globe2, Handshake, Scale, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { ResilientImage } from "@/components/resilient-image";
 import { SplitWords } from "@/components/split-words";
 import { WhyW3AnimatedArt } from "@/components/section-animated-art";
 import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
@@ -19,6 +20,8 @@ type Pillar = {
   Icon: LucideIcon;
   art: WhyArt;
   tone: string;
+  photoSrc: string;
+  photoAlt: string;
 };
 
 const pillars: Pillar[] = [
@@ -29,6 +32,8 @@ const pillars: Pillar[] = [
     Icon: Sparkles,
     art: "expertise",
     tone: "surface-gradient-field--venture",
+    photoSrc: "/images/perry_assets/10.png",
+    photoAlt: "Boardroom strategy meeting photo",
   },
   {
     title: "Global Reach, Local Insight",
@@ -37,6 +42,8 @@ const pillars: Pillar[] = [
     Icon: Globe2,
     art: "global",
     tone: "surface-gradient-field--process",
+    photoSrc: "/images/perry_assets/12.png",
+    photoAlt: "International business networking event photo",
   },
   {
     title: "Human-Led & Relationship-Driven",
@@ -45,6 +52,8 @@ const pillars: Pillar[] = [
     Icon: Handshake,
     art: "relationship",
     tone: "surface-gradient-field--process",
+    photoSrc: "/images/perry_assets/14.png",
+    photoAlt: "Interview meeting photo with three professionals",
   },
   {
     title: "Commitment to Ethics & Confidentiality",
@@ -53,6 +62,8 @@ const pillars: Pillar[] = [
     Icon: Scale,
     art: "ethics",
     tone: "surface-gradient-field--trust",
+    photoSrc: "/images/perry_assets/15.png",
+    photoAlt: "Professional conference conversation photo",
   },
 ];
 
@@ -103,6 +114,32 @@ export function WhyW3() {
           </h2>
         </div>
 
+        <ul
+          className="why-w3-art-rail mb-8 grid gap-4 list-none p-0 sm:grid-cols-4 md:mb-10"
+          aria-hidden
+        >
+          {pillars.map((pillar, i) => (
+            <motion.li
+              key={`${pillar.title}-art`}
+              className={`glass-panel surface-gradient-field ${pillar.tone} relative h-24 overflow-hidden rounded-2xl sm:h-28`}
+              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 14 }}
+              animate={visible ? { opacity: 1, y: 0 } : reduced ? { opacity: 0 } : { opacity: 0, y: 14 }}
+              transition={surfaceRevealEnterTransition(liteMotion, reduced, { delay: 0.04 * i })}
+            >
+              <WhyW3AnimatedArt
+                variant={pillar.art}
+                idSuffix={`w3-rail-${i}`}
+                animate={visible && !reduced}
+              />
+              <div className="absolute bottom-3 left-4">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 bg-white/85 text-accent-hover shadow-[0_4px_16px_rgb(15_23_42_/_0.08)] backdrop-blur-md dark:border-transparent dark:bg-white/[0.1] dark:text-accent dark:shadow-[0_6px_20px_rgb(0_0_0_/_0.35)]">
+                  <pillar.Icon className="size-[1.15rem] section-card-icon-glow" strokeWidth={2} aria-hidden />
+                </span>
+              </div>
+            </motion.li>
+          ))}
+        </ul>
+
         <ul className="grid sm:grid-cols-2 gap-6 lg:gap-8 list-none p-0 m-0">
           {pillars.map((pillar, i) => (
             <li key={pillar.title}>
@@ -119,19 +156,20 @@ export function WhyW3() {
                 transition={surfaceRevealEnterTransition(liteMotion, reduced, { delay: 0.06 * i })}
               >
                 <div
-                  className={`surface-gradient-field ${pillar.tone} relative h-28 shrink-0 overflow-hidden sm:h-32`}
+                  className={`surface-gradient-field ${pillar.tone} relative h-36 shrink-0 overflow-hidden sm:h-40`}
                 >
-                  <WhyW3AnimatedArt
-                    variant={pillar.art}
-                    idSuffix={`w3-${i}`}
-                    animate={visible && !reduced}
+                  <ResilientImage
+                    src={pillar.photoSrc}
+                    alt={pillar.photoAlt}
+                    fill
+                    sizes="(min-width: 1024px) 45vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover"
+                    wrapperClassName="absolute inset-0"
+                    loading="lazy"
+                    decoding="async"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/58 via-primary/20 to-accent/24 dark:from-black/66 dark:via-black/26 dark:to-accent/22" aria-hidden />
                   <div className="why-card-header-scrim pointer-events-none absolute inset-0" aria-hidden />
-                  <div className="absolute bottom-3 left-4">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 bg-white/85 text-accent-hover shadow-[0_4px_16px_rgb(15_23_42_/_0.08)] backdrop-blur-md dark:border-transparent dark:bg-white/[0.1] dark:text-accent dark:shadow-[0_6px_20px_rgb(0_0_0_/_0.35)]">
-                      <pillar.Icon className="size-[1.15rem] section-card-icon-glow" strokeWidth={2} aria-hidden />
-                    </span>
-                  </div>
                 </div>
                 <div className="p-6 sm:p-7">
                   <h3 className="mb-1.5 text-base font-bold tracking-tight text-primary dark:text-white">

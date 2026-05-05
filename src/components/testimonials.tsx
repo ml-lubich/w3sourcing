@@ -11,8 +11,19 @@ import {
   surfaceRevealEnterTransition,
 } from "@/lib/surface-reveal-motion";
 import { useSplitWordsAnimate } from "@/lib/use-split-words-animate";
+import { ResilientImage } from "@/components/resilient-image";
 
-const testimonials = [
+type Testimonial = {
+  quote: string;
+  name: string;
+  title: string;
+  sector: string;
+  sectorColor: string;
+  photoSrc?: string;
+  photoAlt?: string;
+};
+
+const testimonials: Testimonial[] = [
   {
     quote:
       "W3 Sourcing transformed our hiring process. They understood our culture from day one and delivered three exceptional engineering leaders within six weeks.",
@@ -28,6 +39,8 @@ const testimonials = [
     title: "Managing Partner, Magic Circle Firm",
     sector: "Legal",
     sectorColor: "text-text-secondary",
+    photoSrc: "/images/perry_assets/7.png",
+    photoAlt: "Business event stage photo with Perry Barrow and partners",
   },
   {
     quote:
@@ -36,6 +49,8 @@ const testimonials = [
     title: "Head of Talent, Global Investment Bank",
     sector: "Finance",
     sectorColor: "text-success",
+    photoSrc: "/images/perry_assets/8.png",
+    photoAlt: "Networking photo with Perry Barrow and guest in blue suit",
   },
   {
     quote:
@@ -44,6 +59,8 @@ const testimonials = [
     title: "VP Engineering, AI Startup",
     sector: "Technology",
     sectorColor: "text-accent",
+    photoSrc: "/images/perry_assets/5.png",
+    photoAlt: "Business team collaborating around a laptop",
   },
   {
     quote:
@@ -52,6 +69,8 @@ const testimonials = [
     title: "CFO, European Challenger Bank",
     sector: "Finance",
     sectorColor: "text-success",
+    photoSrc: "/images/perry_assets/14.png",
+    photoAlt: "Interview meeting photo with three professionals",
   },
 ];
 
@@ -65,6 +84,8 @@ export function Testimonials() {
   const narrowViewport = useMobileLightMotion();
   const liteMotion = reduced || narrowViewport;
   const headingSplit = useSplitWordsAnimate(visible);
+  const activeTestimonial = testimonials[current];
+  const hasPhoto = Boolean(activeTestimonial.photoSrc && activeTestimonial.photoAlt);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -171,36 +192,54 @@ export function Testimonials() {
                 whileHover={surfaceCardWhileHover(liteMotion)}
                 className="glass-panel rounded-2xl p-8 sm:p-10 cursor-grab active:cursor-grabbing touch-pan-y"
               >
-                <div className="text-accent text-5xl leading-none mb-3 select-none opacity-25 font-sans">
-                  &ldquo;
-                </div>
-                <p className="text-primary text-base sm:text-lg lg:text-xl leading-relaxed mb-6 sm:mb-8">
-                  {testimonials[current].quote}
-                </p>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="glass-chip w-11 h-11 rounded-full flex items-center justify-center shrink-0">
-                      <span className="text-primary font-bold text-xs">
-                        {testimonials[current].name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </span>
-                    </div>
+                  <div className={`grid gap-6 sm:items-start ${hasPhoto ? "sm:grid-cols-[168px,1fr]" : "sm:grid-cols-1"}`}>
+                    {activeTestimonial.photoSrc && activeTestimonial.photoAlt ? (
+                      <div className="relative h-44 overflow-hidden rounded-xl border border-white/45 bg-surface/35 shadow-[0_10px_24px_rgb(15_23_42_/_0.18)] dark:border-white/12 dark:bg-white/[0.04] sm:h-full sm:min-h-[208px]">
+                        <ResilientImage
+                          src={activeTestimonial.photoSrc}
+                          alt={activeTestimonial.photoAlt}
+                          fill
+                          sizes="(min-width: 1024px) 168px, (min-width: 640px) 168px, 100vw"
+                          className="object-cover"
+                          wrapperClassName="absolute inset-0"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+                    ) : null}
                     <div>
-                      <div className="font-bold text-primary text-sm">
-                        {testimonials[current].name}
+                      <div className="text-accent text-5xl leading-none mb-3 select-none opacity-25 font-sans">
+                        &ldquo;
+                    </div>
+                      <p className="text-primary text-base sm:text-lg lg:text-xl leading-relaxed mb-6 sm:mb-8">
+                        {activeTestimonial.quote}
+                      </p>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className="glass-chip w-11 h-11 rounded-full flex items-center justify-center shrink-0">
+                            <span className="text-primary font-bold text-xs">
+                              {activeTestimonial.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")}
+                            </span>
+                          </div>
+                          <div>
+                            <div className="font-bold text-primary text-sm">
+                              {activeTestimonial.name}
+                            </div>
+                            <div className="text-text-secondary text-xs sm:text-sm">
+                              {activeTestimonial.title}
+                            </div>
+                          </div>
                       </div>
-                      <div className="text-text-secondary text-xs sm:text-sm">
-                        {testimonials[current].title}
-                      </div>
+                        <span
+                          className={`glass-chip text-xs font-semibold px-3 py-1 rounded-full self-start sm:self-auto sm:ml-auto ${activeTestimonial.sectorColor}`}
+                        >
+                          {activeTestimonial.sector}
+                        </span>
                     </div>
                   </div>
-                  <span
-                    className={`glass-chip text-xs font-semibold px-3 py-1 rounded-full self-start sm:self-auto sm:ml-auto ${testimonials[current].sectorColor}`}
-                  >
-                    {testimonials[current].sector}
-                  </span>
                 </div>
               </motion.div>
             </AnimatePresence>

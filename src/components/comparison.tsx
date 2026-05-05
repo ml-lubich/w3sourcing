@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useInView } from "framer-motion";
 import { Check, Minus, X } from "lucide-react";
+import { ResilientImage } from "@/components/resilient-image";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { SplitWords } from "@/components/split-words";
 import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
@@ -242,9 +243,6 @@ export function Comparison() {
                 Outcomes hiring leaders measure
               </span>
             </div>
-            <p className="text-sm font-semibold text-accent mb-2 tracking-tight">
-              W3 Sourcing vs popular recruiting platforms
-            </p>
             <h2 id={headingId} className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-primary tracking-tight leading-[1.12]">
               <span className="block">
                 <SplitWords
@@ -346,128 +344,128 @@ export function Comparison() {
                 setHoverCol(null);
               }}
             >
-            <table className="w-full min-w-[1040px] text-left border-collapse">
-              <caption className="sr-only">
-                Capability comparison: features as rows, providers as columns. One column is visually emphasized at a
-                time.
-              </caption>
-              <thead>
-                <tr className="border-b border-gray-border/50">
-                  <th
-                    scope="col"
-                    className="sticky left-0 z-30 py-4 pl-5 sm:pl-6 pr-4 text-xs font-semibold uppercase tracking-wider text-muted bg-surface/80 dark:bg-surface/75 backdrop-blur-md border-r border-gray-border/45 text-left"
-                  >
-                    Feature
-                  </th>
-                  <th
-                    ref={(el) => {
-                      headerRefs.current[0] = el;
-                    }}
-                    scope="col"
-                    className={`${matrixHeadW3Class(activeCol === 0)} cursor-pointer select-none`}
-                    onMouseEnter={() => {
-                      setHoverCol(0);
-                    }}
-                    tabIndex={0}
-                    onFocus={() => {
-                      setHoverCol(0);
-                    }}
-                  >
-                    <span className="block">W3</span>
-                    <span
-                      className={`block text-[10px] font-semibold uppercase tracking-wide mt-0.5 ${
-                        activeCol === 0 ? "text-accent/80" : "text-muted"
-                      }`}
-                    >
-                      Sourcing
-                    </span>
-                  </th>
-                  {platformColumns.map((col, i) => {
-                    const idx = i + 1;
-                    const active = activeCol === idx;
-                    return (
-                      <th
-                        ref={(el) => {
-                          headerRefs.current[idx] = el;
-                        }}
-                        key={col.id}
-                        scope="col"
-                        className={`${matrixHeadClass(active)} cursor-pointer select-none`}
-                        onMouseEnter={() => {
-                          setHoverCol(idx);
-                        }}
-                        tabIndex={0}
-                        onFocus={() => {
-                          setHoverCol(idx);
-                        }}
-                      >
-                        <span className="block leading-tight">{col.label}</span>
-                        <span className="block text-[10px] font-medium mt-1 leading-snug text-muted">
-                          {col.hint}
-                        </span>
-                      </th>
-                    );
-                  })}
-                </tr>
-              </thead>
-              <tbody>
-                {matrixRows.map((row) => (
-                  <tr key={row.feature} className="border-b border-gray-border/45 last:border-0">
+              <table className="w-full min-w-[1040px] text-left border-collapse">
+                <caption className="sr-only">
+                  Capability comparison: features as rows, providers as columns. One column is visually emphasized at a
+                  time.
+                </caption>
+                <thead>
+                  <tr className="border-b border-gray-border/50">
                     <th
-                      scope="row"
-                      className="sticky left-0 z-20 py-3.5 pl-5 sm:pl-6 pr-4 text-sm font-medium text-primary text-left align-middle max-w-[240px] sm:max-w-[280px] bg-surface/80 dark:bg-surface/75 backdrop-blur-md border-r border-gray-border/40 shadow-[4px_0_12px_-4px_rgb(15_23_42_/_0.08)] dark:shadow-[4px_0_12px_-4px_rgb(0_0_0_/_0.4)]"
+                      scope="col"
+                      className="sticky left-0 z-30 py-4 pl-5 sm:pl-6 pr-4 text-xs font-semibold uppercase tracking-wider text-muted bg-surface/80 dark:bg-surface/75 backdrop-blur-md border-r border-gray-border/45 text-left"
                     >
-                      {row.feature}
+                      Feature
                     </th>
-                    <td
-                      className={matrixBodyW3Class(activeCol === 0)}
+                    <th
+                      ref={(el) => {
+                        headerRefs.current[0] = el;
+                      }}
+                      scope="col"
+                      className={`${matrixHeadW3Class(activeCol === 0)} cursor-pointer select-none`}
                       onMouseEnter={() => {
                         setHoverCol(0);
                       }}
+                      tabIndex={0}
+                      onFocus={() => {
+                        setHoverCol(0);
+                      }}
                     >
-                      <CompareIcon value={row.w3} />
-                    </td>
-                    {row.platforms.map((cell, i) => {
+                        <ResilientImage
+                          src="/images/logo_w3_sourcing_wordmark.png"
+                          alt="W3 Sourcing"
+                          width={184}
+                          height={72}
+                          className="h-5 w-auto object-contain"
+                          wrapperClassName="mx-auto inline-block h-5 overflow-hidden"
+                        />
+                    </th>
+                    {platformColumns.map((col, i) => {
                       const idx = i + 1;
+                      const active = activeCol === idx;
                       return (
-                        <td
-                          key={platformColumns[i].id}
-                          className={matrixBodyCellClass(activeCol === idx)}
+                        <th
+                          ref={(el) => {
+                            headerRefs.current[idx] = el;
+                          }}
+                          key={col.id}
+                          scope="col"
+                          className={`${matrixHeadClass(active)} cursor-pointer select-none`}
                           onMouseEnter={() => {
                             setHoverCol(idx);
                           }}
+                          tabIndex={0}
+                          onFocus={() => {
+                            setHoverCol(idx);
+                          }}
                         >
-                          <CompareIcon value={cell} />
-                        </td>
+                          <span className="block leading-tight">{col.label}</span>
+                          <span className="block text-[10px] font-medium mt-1 leading-snug text-muted">
+                            {col.hint}
+                          </span>
+                        </th>
                       );
                     })}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {matrixRows.map((row) => (
+                    <tr key={row.feature} className="border-b border-gray-border/45 last:border-0">
+                      <th
+                        scope="row"
+                        className="sticky left-0 z-20 py-3.5 pl-5 sm:pl-6 pr-4 text-sm font-medium text-primary text-left align-middle max-w-[240px] sm:max-w-[280px] bg-surface/80 dark:bg-surface/75 backdrop-blur-md border-r border-gray-border/40 shadow-[4px_0_12px_-4px_rgb(15_23_42_/_0.08)] dark:shadow-[4px_0_12px_-4px_rgb(0_0_0_/_0.4)]"
+                      >
+                        {row.feature}
+                      </th>
+                      <td
+                        className={matrixBodyW3Class(activeCol === 0)}
+                        onMouseEnter={() => {
+                          setHoverCol(0);
+                        }}
+                      >
+                        <CompareIcon value={row.w3} />
+                      </td>
+                      {row.platforms.map((cell, i) => {
+                        const idx = i + 1;
+                        return (
+                          <td
+                            key={platformColumns[i].id}
+                            className={matrixBodyCellClass(activeCol === idx)}
+                            onMouseEnter={() => {
+                              setHoverCol(idx);
+                            }}
+                          >
+                            <CompareIcon value={cell} />
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 px-5 py-4 border-t border-gray-border/45 bg-gray-light/30 dark:bg-gray-light/20 text-xs text-muted">
-            <span className="inline-flex items-center gap-2">
-              <CompareIcon value="yes" />
-              Strong fit
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <CompareIcon value="partial" />
-              Partly / varies
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <CompareIcon value="no" />
-              Not the core model
-            </span>
-          </div>
+            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 px-5 py-4 border-t border-gray-border/45 bg-gray-light/30 dark:bg-gray-light/20 text-xs text-muted">
+              <span className="inline-flex items-center gap-2">
+                <CompareIcon value="yes" />
+                Strong fit
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <CompareIcon value="partial" />
+                Partly / varies
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <CompareIcon value="no" />
+                Not the core model
+              </span>
+            </div>
 
-          <p className="px-5 sm:px-8 py-4 text-xs text-muted border-t border-gray-border/45 bg-gray-light/20 dark:bg-gray-light/15 leading-relaxed">
-            Illustrative only. Product names refer to common categories of tools; features and plans change. Large
-            retained search firms can match many human rows too—W3 differentiates on boutique, principal-led access,
-            sector focus, and explicitly human discernment for leaders (not pattern-matched profiles alone). Validate any
-            vendor with your own diligence.
-          </p>
+            <p className="px-5 sm:px-8 py-4 text-xs text-muted border-t border-gray-border/45 bg-gray-light/20 dark:bg-gray-light/15 leading-relaxed">
+              Illustrative only. Product names refer to common categories of tools; features and plans change. Large
+              retained search firms can match many human rows too—W3 differentiates on boutique, principal-led access,
+              sector focus, and explicitly human discernment for leaders (not pattern-matched profiles alone). Validate any
+              vendor with your own diligence.
+            </p>
           </div>
         </ScrollReveal>
 

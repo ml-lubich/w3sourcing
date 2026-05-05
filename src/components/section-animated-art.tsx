@@ -66,30 +66,32 @@ export function PracticeAreaAnimatedArt({
     >
       {variant === "tech" && (
         <>
-          <rect x="24" y="28" width="96" height="64" rx="10" stroke={stroke} strokeWidth="1.2" opacity={0.98} />
-          <path d="M36 44h72M36 56h56M36 68h64" stroke={stroke} strokeWidth="1" strokeLinecap="round" opacity={0.88} />
+          <rect x="30" y="24" width="92" height="64" rx="12" fill="currentColor" className="text-accent/10 dark:text-accent/12" opacity={0.72} />
+          <rect x="30" y="24" width="92" height="64" rx="12" stroke={stroke} strokeWidth="1.35" opacity={0.9} />
+          <rect x="43" y="38" width="48" height="7" rx="3.5" fill="currentColor" className="text-accent/28 dark:text-accent/24" opacity={0.95} />
+          <path d="M44 56h62M44 68h44M44 80h54" stroke={stroke} strokeWidth="1.15" strokeLinecap="round" opacity={0.76} />
           <path
-            d="M128 52h48"
+            d="M118 48 C132 40 150 40 166 50"
             stroke={stroke}
-            strokeWidth="1.2"
+            strokeWidth="1.45"
             strokeLinecap="round"
-            strokeDasharray="5 7"
-            opacity={0.92}
+            strokeDasharray="4 6"
+            opacity={0.82}
           >
-            <MotionDash active={animate} dur="2.2s" />
+            <MotionDash active={animate} dur="2.6s" />
           </path>
-          <circle cx="148" cy="72" r="16" stroke={stroke} strokeWidth="1.05" opacity={0.72} />
-          <path d="M148 60v24M136 72h24" stroke={stroke} strokeWidth="0.95" strokeLinecap="round" opacity={0.8} />
-          <circle cx="44" cy="88" r="4" fill="currentColor" className="text-accent/78 dark:text-accent/65" opacity={0.95}>
+          <circle cx="168" cy="52" r="13" fill="currentColor" className="text-accent/16 dark:text-accent/18" stroke={stroke} strokeWidth="1.25" opacity={0.95} />
+          <path d="M168 44v16M160 52h16" stroke={stroke} strokeWidth="1.1" strokeLinecap="round" opacity={0.88} />
+          <circle cx="46" cy="94" r="4.5" fill="currentColor" className="text-accent/78 dark:text-accent/65" opacity={0.95}>
             <MotionPulse active={animate} begin="0s" />
           </circle>
-          <circle cx="72" cy="82" r="3.5" fill="currentColor" className="text-accent/74 dark:text-accent/58" opacity={0.95}>
+          <circle cx="82" cy="100" r="4" fill="currentColor" className="text-accent/74 dark:text-accent/58" opacity={0.95}>
             <MotionPulse active={animate} begin="0.4s" />
           </circle>
-          <circle cx="100" cy="90" r="3.5" fill="currentColor" className="text-accent/76 dark:text-accent/60" opacity={0.95}>
+          <circle cx="124" cy="92" r="4" fill="currentColor" className="text-accent/76 dark:text-accent/60" opacity={0.95}>
             <MotionPulse active={animate} begin="0.8s" />
           </circle>
-          <path d="M48 88l20-6 28 8 44-10" stroke={stroke} strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" opacity={0.62}>
+          <path d="M50 94 C68 86 88 108 120 92 C138 84 150 82 164 86" stroke={stroke} strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" opacity={0.7}>
             <MotionDash active={animate} dur="3.4s" />
           </path>
         </>
@@ -97,31 +99,37 @@ export function PracticeAreaAnimatedArt({
 
       {variant === "legal" && (
         <>
-          <path d="M100 22 L124 38 V96 H76 V38 Z" stroke={stroke} strokeWidth="1.12" strokeLinejoin="round" opacity={0.78} />
-          <path d="M88 96V52M100 96V44M112 96V52" stroke={stroke} strokeWidth="1.2" strokeLinecap="round" opacity={0.95} />
+          <path d="M100 20 L132 38 V96 H68 V38 Z" fill="currentColor" className="text-accent/9 dark:text-accent/12" opacity={0.75} />
+          <path d="M100 20 L132 38 V96 H68 V38 Z" stroke={stroke} strokeWidth="1.35" strokeLinejoin="round" opacity={0.88} />
+          <path d="M82 96V56M100 96V44M118 96V56" stroke={stroke} strokeWidth="1.5" strokeLinecap="round" opacity={0.92} />
+          <path d="M76 50h48M76 96h48" stroke={stroke} strokeWidth="1.2" strokeLinecap="round" opacity={0.64} />
           <path
-            d="M28 104h144"
+            d="M36 104h128"
             stroke={stroke}
-            strokeWidth="1.12"
+            strokeWidth="1.25"
             strokeLinecap="round"
-            strokeDasharray="6 8"
-            opacity={0.88}
+            strokeDasharray="6 9"
+            opacity={0.7}
           >
             <MotionDash active={animate} dur="3.2s" />
           </path>
-          <rect x="34" y="62" width="28" height="36" rx="4" stroke={stroke} strokeWidth="1" opacity={0.72} />
-          <rect x="138" y="62" width="28" height="36" rx="4" stroke={stroke} strokeWidth="1" opacity={0.72} />
-          <path d="M48 70h12M48 78h16M48 86h10M152 70h14M152 78h12M152 86h14" stroke={stroke} strokeWidth="0.85" strokeLinecap="round" opacity={0.62} />
+          <rect x="34" y="60" width="24" height="32" rx="6" fill="currentColor" className="text-accent/10 dark:text-accent/10" stroke={stroke} strokeWidth="1.05" opacity={0.72} />
+          <rect x="142" y="60" width="24" height="32" rx="6" fill="currentColor" className="text-accent/10 dark:text-accent/10" stroke={stroke} strokeWidth="1.05" opacity={0.72} />
+          <path d="M42 72h10M42 81h8M150 72h10M150 81h8" stroke={stroke} strokeWidth="1" strokeLinecap="round" opacity={0.6} />
+          <circle cx="100" cy="34" r="3.5" fill="currentColor" className="text-accent/72 dark:text-accent/60" opacity={0.95}>
+            <MotionPulse active={animate} begin="0.35s" />
+          </circle>
         </>
       )}
 
       {variant === "finance" && (
         <>
-          <path d="M32 88h136" stroke={stroke} strokeWidth="1" strokeLinecap="round" opacity={0.68}>
+          <rect x="32" y="28" width="136" height="64" rx="14" fill="currentColor" className="text-accent/7 dark:text-accent/10" opacity={0.72} />
+          <path d="M40 86h120" stroke={stroke} strokeWidth="1.2" strokeLinecap="round" opacity={0.58}>
             <MotionDash active={animate} dur="3s" />
           </path>
-          <g stroke={stroke} strokeLinecap="round" strokeWidth="1.08" opacity={0.92}>
-            <rect x="44" y="56" width="14" height="32" rx="3" fill="currentColor" className="text-accent/34 dark:text-accent/28" stroke={stroke}>
+          <g stroke={stroke} strokeLinecap="round" strokeWidth="1.18" opacity={0.92}>
+            <rect x="50" y="60" width="16" height="26" rx="4" fill="currentColor" className="text-accent/34 dark:text-accent/28" stroke={stroke}>
               {animate ? (
                 <animate
                   attributeName="opacity"
@@ -132,7 +140,7 @@ export function PracticeAreaAnimatedArt({
                 />
               ) : null}
             </rect>
-            <rect x="74" y="44" width="14" height="44" rx="3" fill="currentColor" className="text-accent/30 dark:text-accent/24" stroke={stroke}>
+            <rect x="78" y="48" width="16" height="38" rx="4" fill="currentColor" className="text-accent/30 dark:text-accent/24" stroke={stroke}>
               {animate ? (
                 <animate
                   attributeName="opacity"
@@ -143,7 +151,7 @@ export function PracticeAreaAnimatedArt({
                 />
               ) : null}
             </rect>
-            <rect x="104" y="50" width="14" height="38" rx="3" fill="currentColor" className="text-accent/32 dark:text-accent/26" stroke={stroke}>
+            <rect x="106" y="54" width="16" height="32" rx="4" fill="currentColor" className="text-accent/32 dark:text-accent/26" stroke={stroke}>
               {animate ? (
                 <animate
                   attributeName="opacity"
@@ -154,7 +162,7 @@ export function PracticeAreaAnimatedArt({
                 />
               ) : null}
             </rect>
-            <rect x="134" y="36" width="14" height="52" rx="3" fill="currentColor" className="text-accent/34 dark:text-accent/30" stroke={stroke}>
+            <rect x="134" y="38" width="16" height="48" rx="4" fill="currentColor" className="text-accent/34 dark:text-accent/30" stroke={stroke}>
               {animate ? (
                 <animate
                   attributeName="opacity"
@@ -167,24 +175,17 @@ export function PracticeAreaAnimatedArt({
             </rect>
           </g>
           <path
-            d="M38 78c18-12 38-8 58 4s40 10 62-8"
+            d="M44 72 C62 56 80 66 96 58 C118 46 134 50 154 38"
             stroke={stroke}
-            strokeWidth="1.3"
+            strokeWidth="1.55"
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeDasharray="4 6"
             opacity={0.88}
             className="text-success/72 dark:text-success/48"
           >
             <MotionDash active={animate} dur="2.5s" />
           </path>
-          <text
-            x="36"
-            y="28"
-            style={{ font: "600 6px var(--font-sans-jakarta), system-ui, sans-serif", fill: "currentColor", opacity: 0.55 }}
-          >
-            IB · Risk · Corporate finance
-          </text>
+          <path d="M154 38l-14-1M154 38l-6 12" stroke={stroke} strokeWidth="1.45" strokeLinecap="round" opacity={0.86} />
         </>
       )}
     </svg>
@@ -214,47 +215,28 @@ export function WhyW3AnimatedArt({
     >
       {variant === "expertise" && (
         <>
-          <circle cx="52" cy="44" r="5" stroke={stroke} strokeWidth="1.1" opacity={0.95}>
+          <path d="M52 82 C68 48 100 34 148 42" stroke={stroke} strokeWidth="1.25" strokeLinecap="round" strokeDasharray="5 7" opacity={0.58}>
+            <MotionDash active={animate} dur="3.6s" />
+          </path>
+          <circle cx="58" cy="76" r="13" fill="currentColor" className="text-accent/10 dark:text-accent/12" stroke={stroke} strokeWidth="1.2" opacity={0.82} />
+          <circle cx="100" cy="48" r="17" fill="currentColor" className="text-accent/12 dark:text-accent/14" stroke={stroke} strokeWidth="1.25" opacity={0.9} />
+          <circle cx="150" cy="42" r="12" fill="currentColor" className="text-accent/10 dark:text-accent/12" stroke={stroke} strokeWidth="1.2" opacity={0.82} />
+          <circle cx="58" cy="76" r="3.5" fill="currentColor" className="text-accent/76 dark:text-accent/64" opacity={0.95}>
             <MotionPulse active={animate} />
           </circle>
-          <circle cx="100" cy="32" r="5" stroke={stroke} strokeWidth="1.1" opacity={0.95}>
+          <circle cx="100" cy="48" r="4.5" fill="currentColor" className="text-accent/80 dark:text-accent/66" opacity={0.95}>
             <MotionPulse active={animate} begin="0.5s" />
           </circle>
-          <circle cx="148" cy="44" r="5" stroke={stroke} strokeWidth="1.1" opacity={0.95}>
+          <circle cx="150" cy="42" r="3.5" fill="currentColor" className="text-accent/76 dark:text-accent/64" opacity={0.95}>
             <MotionPulse active={animate} begin="1s" />
           </circle>
-          <circle cx="76" cy="78" r="5" stroke={stroke} strokeWidth="1.1" opacity={0.95}>
-            <MotionPulse active={animate} begin="0.25s" />
-          </circle>
-          <circle cx="124" cy="78" r="5" stroke={stroke} strokeWidth="1.1" opacity={0.95}>
-            <MotionPulse active={animate} begin="0.75s" />
-          </circle>
-          <path
-            d="M56 44 L96 36 M104 36 L144 44 M58 48 L72 74 M128 48 L120 74 M80 78 L116 78 M100 38 L100 70"
-            stroke={stroke}
-            strokeWidth="1"
-            strokeLinecap="round"
-            opacity={0.78}
-            strokeDasharray="4 5"
-          >
-            <MotionDash active={animate} dur="3.4s" />
-          </path>
-          <path d="M40 96h120" stroke={stroke} strokeWidth="0.9" strokeLinecap="round" opacity={0.58}>
-            <MotionDash active={animate} dur="4.2s" />
-          </path>
-          <text
-            x="42"
-            y="110"
-            style={{ font: "600 5.5px var(--font-sans-jakarta), system-ui, sans-serif", fill: "currentColor", opacity: 0.52 }}
-          >
-            Sector maps · mandate depth
-          </text>
+          <path d="M88 48h24M100 36v24M48 92h104" stroke={stroke} strokeWidth="1.1" strokeLinecap="round" opacity={0.56} />
         </>
       )}
 
       {variant === "global" && (
         <>
-          <circle cx="100" cy="58" r="36" stroke={stroke} strokeWidth="1.12" opacity={0.78}>
+          <circle cx="100" cy="58" r="34" fill="currentColor" className="text-accent/8 dark:text-accent/12" stroke={stroke} strokeWidth="1.28" opacity={0.84}>
             {animate ? (
               <animate attributeName="opacity" values="0.72;0.95;0.72" dur="3.2s" repeatCount="indefinite" />
             ) : null}
@@ -271,21 +253,24 @@ export function WhyW3AnimatedArt({
                   repeatCount="indefinite"
                 />
               ) : null}
-              <ellipse cx="0" cy="0" rx="36" ry="14" stroke={stroke} strokeWidth="1" opacity={0.68} strokeDasharray="3 5">
+              <ellipse cx="0" cy="0" rx="42" ry="13" stroke={stroke} strokeWidth="1.1" opacity={0.66} strokeDasharray="4 7">
                 <MotionDash active={animate} dur="2.6s" />
               </ellipse>
             </g>
           </g>
-          <circle cx="72" cy="52" r="3" fill="currentColor" className="text-accent/78 dark:text-accent/65" opacity={0.95}>
+          <path d="M66 64 C82 48 106 72 134 48" stroke={stroke} strokeWidth="1.05" strokeLinecap="round" strokeDasharray="3 6" opacity={0.58}>
+            <MotionDash active={animate} dur="3.1s" />
+          </path>
+          <circle cx="72" cy="52" r="3.5" fill="currentColor" className="text-accent/78 dark:text-accent/65" opacity={0.95}>
             <MotionPulse active={animate} begin="0s" />
           </circle>
-          <circle cx="100" cy="40" r="3" fill="currentColor" className="text-accent/76 dark:text-accent/62" opacity={0.95}>
+          <circle cx="100" cy="40" r="3.5" fill="currentColor" className="text-accent/76 dark:text-accent/62" opacity={0.95}>
             <MotionPulse active={animate} begin="0.3s" />
           </circle>
-          <circle cx="128" cy="52" r="3" fill="currentColor" className="text-accent/78 dark:text-accent/65" opacity={0.95}>
+          <circle cx="128" cy="52" r="3.5" fill="currentColor" className="text-accent/78 dark:text-accent/65" opacity={0.95}>
             <MotionPulse active={animate} begin="0.6s" />
           </circle>
-          <circle cx="118" cy="72" r="3" fill="currentColor" className="text-accent/72 dark:text-accent/58" opacity={0.95}>
+          <circle cx="118" cy="72" r="3.5" fill="currentColor" className="text-accent/72 dark:text-accent/58" opacity={0.95}>
             <MotionPulse active={animate} begin="0.9s" />
           </circle>
           <path
@@ -298,52 +283,41 @@ export function WhyW3AnimatedArt({
           >
             <MotionDash active={animate} dur="2.8s" />
           </path>
-          <text
-            x="54"
-            y="104"
-            style={{ font: "600 5.5px var(--font-sans-jakarta), system-ui, sans-serif", fill: "currentColor", opacity: 0.52 }}
-          >
-            US · UK · EU · UAE · Asia
-          </text>
         </>
       )}
 
       {variant === "relationship" && (
         <>
-          <g stroke={stroke} strokeWidth="1.05" opacity={0.92}>
-            <circle cx="64" cy="48" r="12" />
-            <path d="M52 60c0 8 6 14 12 14s12-6 12-14" strokeLinecap="round" />
-            <circle cx="136" cy="48" r="12" />
-            <path d="M124 60c0 8 6 14 12 14s12-6 12-14" strokeLinecap="round" />
+          <g stroke={stroke} strokeWidth="1.25" opacity={0.9}>
+            <circle cx="66" cy="44" r="13" fill="currentColor" className="text-accent/8 dark:text-accent/10" />
+            <path d="M52 64c2-10 8-15 14-15s12 5 14 15" strokeLinecap="round" />
+            <circle cx="134" cy="44" r="13" fill="currentColor" className="text-accent/8 dark:text-accent/10" />
+            <path d="M120 64c2-10 8-15 14-15s12 5 14 15" strokeLinecap="round" />
           </g>
           <path
-            d="M76 52 Q100 72 124 52"
+            d="M80 58 C92 76 108 76 120 58"
             stroke={stroke}
-            strokeWidth="1.2"
+            strokeWidth="1.55"
             strokeLinecap="round"
             fill="none"
-            opacity={0.78}
-            strokeDasharray="3 5"
+            opacity={0.82}
+            strokeDasharray="4 6"
           >
             <MotionDash active={animate} dur="2.4s" />
           </path>
-          <circle cx="100" cy="62" r="4" fill="currentColor" className="text-accent/76 dark:text-accent/58" opacity={0.95}>
+          <rect x="86" y="74" width="28" height="9" rx="4.5" fill="currentColor" className="text-accent/24 dark:text-accent/18" opacity={0.9} />
+          <path d="M84 84h32" stroke={stroke} strokeWidth="1.2" strokeLinecap="round" opacity={0.7} />
+          <circle cx="100" cy="62" r="4.5" fill="currentColor" className="text-accent/76 dark:text-accent/58" opacity={0.95}>
             <MotionPulse active={animate} begin="0.2s" />
           </circle>
-          <text
-            x="58"
-            y="96"
-            style={{ font: "600 5.5px var(--font-sans-jakarta), system-ui, sans-serif", fill: "currentColor", opacity: 0.52 }}
-          >
-            Consultation · partnership
-          </text>
         </>
       )}
 
       {variant === "ethics" && (
         <>
-          <g stroke={stroke} strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" opacity={0.9}>
-            <path d="M100 22 L124 40 V64 Q100 92 76 64 V40 Z" />
+          <g stroke={stroke} strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" opacity={0.9}>
+            <path d="M100 20 L128 38 V62 Q100 92 72 62 V38 Z" fill="currentColor" className="text-accent/9 dark:text-accent/12" />
+            <path d="M88 58l9 9 17-22" strokeWidth="1.65" opacity={0.92} />
           </g>
           <g transform="translate(100 54)">
             <g>
@@ -356,30 +330,23 @@ export function WhyW3AnimatedArt({
                   repeatCount="indefinite"
                 />
               ) : null}
-              <line x1="-32" y1="0" x2="32" y2="0" stroke={stroke} strokeWidth="1.05" strokeLinecap="round" opacity={0.82} />
-              <line x1="-22" y1="0" x2="-22" y2="18" stroke={stroke} strokeWidth="1" opacity={0.75} />
-              <line x1="22" y1="0" x2="22" y2="18" stroke={stroke} strokeWidth="1" opacity={0.75} />
-              <ellipse cx="-22" cy="26" rx="16" ry="5" stroke={stroke} strokeWidth="0.95" opacity={0.8} />
-              <ellipse cx="22" cy="26" rx="16" ry="5" stroke={stroke} strokeWidth="0.95" opacity={0.8} />
+              <line x1="-34" y1="14" x2="34" y2="14" stroke={stroke} strokeWidth="1.1" strokeLinecap="round" opacity={0.66} />
+              <line x1="-24" y1="14" x2="-24" y2="30" stroke={stroke} strokeWidth="1" opacity={0.62} />
+              <line x1="24" y1="14" x2="24" y2="30" stroke={stroke} strokeWidth="1" opacity={0.62} />
+              <ellipse cx="-24" cy="36" rx="15" ry="5" fill="currentColor" className="text-accent/8 dark:text-accent/10" stroke={stroke} strokeWidth="1" opacity={0.72} />
+              <ellipse cx="24" cy="36" rx="15" ry="5" fill="currentColor" className="text-accent/8 dark:text-accent/10" stroke={stroke} strokeWidth="1" opacity={0.72} />
             </g>
           </g>
           <path
-            d="M32 96h136"
+            d="M50 100h100"
             stroke={stroke}
-            strokeWidth="0.9"
+            strokeWidth="1.05"
             strokeLinecap="round"
             strokeDasharray="5 7"
-            opacity={0.65}
+            opacity={0.5}
           >
             <MotionDash active={animate} dur="3s" />
           </path>
-          <text
-            x="40"
-            y="112"
-            style={{ font: "600 5px var(--font-sans-jakarta), system-ui, sans-serif", fill: "currentColor", opacity: 0.52 }}
-          >
-            Confidentiality · fair · inclusive
-          </text>
         </>
       )}
     </svg>

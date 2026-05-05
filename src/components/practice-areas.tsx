@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { ResilientImage } from "@/components/resilient-image";
 import { SplitWords } from "@/components/split-words";
 import { PracticeAreaAnimatedArt } from "@/components/section-animated-art";
 import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
@@ -32,6 +33,8 @@ const areas = [
       "We partner with accelerator-backed, VC-backed, and growth-stage technology companies from seed through pre-IPO to build exceptional teams, from founding engineers through senior leadership, for on-site, hybrid, and remote mandates. Technical screens can narrow lists; we add the founder-market instinct for who will lead, scale culture, and endure globally.",
     art: "tech" as const,
     tone: "surface-gradient-field--venture",
+    photoSrc: "/images/perry_assets/5.png",
+    photoAlt: "Business team collaborating around a laptop",
   },
   {
     title: "Legal Recruitment",
@@ -39,6 +42,8 @@ const areas = [
       "Serving top U.S. and U.K. law firms, we recruit outstanding legal professionals from associate through partner levels. Practitioner insight and network access meet human judgment on who can carry the book—not keyword similarity alone.",
     art: "legal" as const,
     tone: "surface-gradient-field--trust",
+    photoSrc: "/images/perry_assets/7.png",
+    photoAlt: "Business event stage photo with Perry Barrow and partners",
   },
   {
     title: "Banking & Finance Recruitment",
@@ -46,6 +51,8 @@ const areas = [
       "For global financial institutions and multinational corporations, we provide specialist recruitment support across investment banking, corporate finance, risk and compliance, and related disciplines. Regulated, high-stakes mandates need partners who read risk and calibre—not algorithms optimising for volume.",
     art: "finance" as const,
     tone: "surface-gradient-field--finance",
+    photoSrc: "/images/perry_assets/8.png",
+    photoAlt: "Networking photo with Perry Barrow and guest in blue suit",
   },
 ];
 
@@ -58,9 +65,8 @@ function PracticeAreaCard(props: {
   headingSplit: boolean;
   liteMotion: boolean;
   reduced: boolean;
-  artAnimate: boolean;
 }) {
-  const { area, index: i, visible, headingSplit, liteMotion, reduced, artAnimate } = props;
+  const { area, index: i, visible, headingSplit, liteMotion, reduced } = props;
   const tiltEnabled = !liteMotion;
   const tilt = usePointerTilt3d({ enabled: tiltEnabled, maxTiltDeg: 7, liftPx: 14 });
 
@@ -93,9 +99,19 @@ function PracticeAreaCard(props: {
         >
           <article className="glass-panel flex h-full flex-col overflow-hidden rounded-2xl shadow-[0_20px_48px_rgb(15_23_42_/_0.05)] dark:shadow-[0_24px_60px_rgb(0_0_0_/_0.3)] transition-[box-shadow,transform] duration-300 ease-out hover:shadow-[0_28px_56px_rgb(15_23_42_/_0.09)] dark:hover:shadow-[0_32px_72px_rgb(0_0_0_/_0.38)]">
             <div
-              className={`surface-gradient-field ${area.tone} relative h-32 shrink-0 overflow-hidden sm:h-36`}
+              className={`surface-gradient-field ${area.tone} relative h-36 shrink-0 overflow-hidden sm:h-40`}
             >
-              <PracticeAreaAnimatedArt variant={area.art} idSuffix={`pa-${i}`} animate={artAnimate} />
+              <ResilientImage
+                src={area.photoSrc}
+                alt={area.photoAlt}
+                fill
+                sizes="(min-width: 1024px) 30vw, (min-width: 768px) 33vw, 100vw"
+                className="object-cover"
+                wrapperClassName="absolute inset-0"
+                loading="lazy"
+                decoding="async"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/56 via-primary/18 to-accent/28 dark:from-black/62 dark:via-black/24 dark:to-accent/24" aria-hidden />
               <div className="pa-card-header-scrim pointer-events-none absolute inset-0" aria-hidden />
             </div>
             <div className="p-6 sm:p-8">
@@ -242,6 +258,23 @@ export function PracticeAreas() {
           </h2>
         </div>
 
+        <ul
+          className="practice-area-art-rail mb-8 grid gap-4 list-none p-0 sm:grid-cols-3 md:mb-10"
+          aria-hidden
+        >
+          {areas.map((area, i) => (
+            <motion.li
+              key={`${area.title}-art`}
+              className={`glass-panel surface-gradient-field ${area.tone} relative h-24 overflow-hidden rounded-2xl sm:h-28`}
+              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 14 }}
+              animate={visible ? { opacity: 1, y: 0 } : reduced ? { opacity: 0 } : { opacity: 0, y: 14 }}
+              transition={surfaceRevealEnterTransition(liteMotion, reduced, { delay: 0.04 * i })}
+            >
+              <PracticeAreaAnimatedArt variant={area.art} idSuffix={`pa-rail-${i}`} animate={practiceArtAnimate} />
+            </motion.li>
+          ))}
+        </ul>
+
         <ul className="grid md:grid-cols-3 gap-6 lg:gap-8 list-none p-0 m-0">
           {areas.map((area, i) => (
             <PracticeAreaCard
@@ -252,7 +285,6 @@ export function PracticeAreas() {
               headingSplit={headingSplit}
               liteMotion={liteMotion}
               reduced={reduced}
-              artAnimate={practiceArtAnimate}
             />
           ))}
         </ul>

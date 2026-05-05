@@ -12,6 +12,17 @@ const APP_DIR = path.join(REPO_ROOT, "src", "app");
 const READY_MS = 90_000;
 const FETCH_TIMEOUT_MS = 15_000;
 
+const CRITICAL_RENDERED_ROUTES = [
+  "/opengraph-image",
+  "/llms.txt",
+  "/robots.txt",
+  "/sitemap.xml",
+  "/images/favicon/site.webmanifest",
+  "/images/favicon/favicon.ico",
+  "/images/favicon/favicon-32x32.png",
+  "/images/favicon/apple-touch-icon.png",
+] as const;
+
 async function getFreePort(): Promise<number> {
   return await new Promise((resolve, reject) => {
     const server = createServer();
@@ -170,7 +181,7 @@ async function runSmoke(mode: "dev" | "start"): Promise<void> {
     );
 
     const failures: string[] = [];
-    for (const pathname of routes) {
+    for (const pathname of [...routes, ...CRITICAL_RENDERED_ROUTES]) {
       const status = await fetchStatus(port, pathname);
       if (status === 404 || status >= 500)
         failures.push(`${pathname} -> ${String(status)}`);
@@ -182,7 +193,9 @@ async function runSmoke(mode: "dev" | "start"): Promise<void> {
       );
     }
 
-    console.log(`smoke-no-404: OK (${String(routes.length)} routes, mode=${mode})`);
+    console.log(
+      `smoke-no-404: OK (${String(routes.length)} pages + ${String(CRITICAL_RENDERED_ROUTES.length)} crawler/preview assets, mode=${mode})`,
+    );
   } finally {
     killTree(child);
     await sleep(500);

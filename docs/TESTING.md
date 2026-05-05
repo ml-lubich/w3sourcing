@@ -19,7 +19,7 @@
 
 ## Route smoke (no 404 / no 5xx)
 
-Behavioral check: discovers static `page.tsx`/`page.jsx` (and `page.ts`/`page.mdx`) under `src/app`, builds production output, starts `next start` on an ephemeral port, and GETs each route. Fails on HTTP **404** or **500+**.
+Behavioral check: discovers static `page.tsx`/`page.jsx` (and `page.ts`/`page.mdx`) under `src/app`, builds production output, starts `next start` on an ephemeral port, and GETs each route. It also GETs crawler and preview assets that must render in production: `/opengraph-image`, `/llms.txt`, `/robots.txt`, `/sitemap.xml`, `/images/favicon/site.webmanifest`, `/images/favicon/favicon.ico`, `/images/favicon/favicon-32x32.png`, and `/images/favicon/apple-touch-icon.png`. Fails on HTTP **404** or **500+**.
 
 - **Pre-commit:** `.husky/pre-commit` runs **`bun run precommit`** — **`lint`**, **`test`** (includes **`tsc --noEmit`**), **`build`**, then **`smoke:routes:ci`** (reuses the fresh **`.next`** from **`build`**; fails immediately on any 404/5xx). Commits are blocked if this step fails.
 - **Local before commit/PR:** run **`bun run test`** for a faster loop; full gate is **`bun run precommit`** or match CI with **`bun run ci`** then **`bun run smoke:routes:ci`**, GitHub Actions, or Vercel’s build pipeline.
@@ -59,3 +59,30 @@ If a deployment fails at the smoke step, check the build logs for the `smoke-no-
 ## 2026-05-04 Favicon asset contract
 
 - **`src/lib/favicon-assets-contract.test.ts`** locks the rule that site favicon metadata, Apple touch icons, Android/PWA icons, and the web manifest all resolve to `public/images/favicon/`. It also verifies the dynamic App Router icon routes stay removed and no `favicon`-named source image remains elsewhere under `public/images/`.
+
+## 2026-05-04 SEO preview rendering contract
+
+- **`src/lib/favicon-assets-contract.test.ts`** now verifies platform favicon PNG dimensions exactly match the advertised sizes and that `favicon.ico` contains multiple icon entries.
+- **`src/lib/seo-preview-contract.test.ts`** locks the SEO/social preview contract: root metadata uses the canonical site base, favicon manifest, shortcut icon, 1200x630 Open Graph PNG, Twitter summary-large image, indexable robots metadata, and viewport theme colors. It also locks that `robots.ts` allows all crawlers, common AI crawlers are explicitly allowed, `/llms.txt` exists, and the production route smoke includes crawler/preview assets, so social previews and favicon/manifest routes are rendered during deploy verification.
+
+## 2026-05-04 Decorative rail SVG contract
+
+- **`src/components/practice-areas-contract.test.ts`** and **`src/components/why-w3-contract.test.ts`** verify practice-area and Why W3 SVG rails stay separate from photo cards and remain visual-only, with no embedded `<text>` labels or aggressive mandate-style copy inside the decorative SVG component.
+
+## 2026-05-04 Practice Area Photo Contract
+
+- **`src/components/practice-areas-contract.test.ts`** locks the practice-area media rule: the three recruitment cards keep their real photos and do not import or render `PracticeAreaAnimatedArt` / `section-animated-art` over those photo headers.
+
+## 2026-05-04 Photo And SVG Separation Contracts
+
+- **`src/components/practice-areas-contract.test.ts`** now locks the updated rule that practice-area cards keep photos and `PracticeAreaAnimatedArt` in separate regions, with the animated art inside `.practice-card-art-panel` after the photo header.
+- **`src/components/why-w3-contract.test.ts`** locks the same separation for Why W3 cards: the photo header contains the real image and scrim, while `WhyW3AnimatedArt` lives in `.why-card-art-panel` below the photo.
+
+## 2026-05-04 Section-Level SVG Rail Contracts
+
+- **`src/components/practice-areas-contract.test.ts`** now locks the stricter rule that animated practice-area SVGs live in `.practice-area-art-rail` before the photo card grid, with no `.practice-card-art-panel` inside the cards.
+- **`src/components/why-w3-contract.test.ts`** locks the same rule for Why W3: animated SVGs live in `.why-w3-art-rail` before the photo card grid, with no `.why-card-art-panel` inside the cards.
+
+## 2026-05-04 Feature Workflow Photo Contract
+
+- **`src/components/feature-tabs-contract.test.ts`** locks that Source & engage, Qualify & assess, and Place & integrate each keep their workflow photo, including `/images/perry_assets/4.png` for the Qualify & assess assessment panel.

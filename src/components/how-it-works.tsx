@@ -3,6 +3,7 @@
 import { Fragment, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { SplitWords } from "@/components/split-words";
+import { ResilientImage } from "@/components/resilient-image";
 import { surfaceCardWhileHover, surfaceRevealEnterTransition } from "@/lib/surface-reveal-motion";
 import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
 import { useMobileLightMotion } from "@/lib/use-mobile-light-motion";
@@ -16,6 +17,8 @@ type Step = {
   title: string;
   body: string;
   Icon: LucideIcon;
+  photoSrc: string;
+  photoAlt: string;
 };
 
 const steps: Step[] = [
@@ -24,24 +27,32 @@ const steps: Step[] = [
     title: "Discovery & Alignment",
     body: "We invest time to understand your business, culture, and talent objectives before we engage any search.",
     Icon: ClipboardList,
+    photoSrc: "/images/perry_assets/3.png",
+    photoAlt: "Business discovery meeting with laptop and notes",
   },
   {
     n: 2,
     title: "Targeted Search & Assessment",
     body: "We identify and evaluate high-calibre candidates through rigorous, human-led assessment—what great looks like for your context, not what a model scores highest.",
     Icon: Radar,
+    photoSrc: "/images/perry_assets/4.png",
+    photoAlt: "Recruitment assessment discussion in an office",
   },
   {
     n: 3,
     title: "Transparent Process & Collaboration",
     body: "Our teams provide continuous updates, market insight, and collaborative support from shortlist to offer and onboarding.",
     Icon: UserCheck,
+    photoSrc: "/images/perry_assets/6.png",
+    photoAlt: "Professional shortlist review meeting",
   },
   {
     n: 4,
     title: "Long-Term Partnership",
     body: "We’re not just filling roles—we’re building talent strategies that support sustainable growth and organisational impact.",
     Icon: Handshake,
+    photoSrc: "/images/perry_assets/9.png",
+    photoAlt: "Long-term partnership meeting photo",
   },
 ];
 
@@ -295,6 +306,17 @@ function StepCard({
       <div
         className="surface-gradient-field surface-gradient-field--process relative h-36 overflow-hidden"
       >
+        <ResilientImage
+          src={step.photoSrc}
+          alt={step.photoAlt}
+          fill
+          sizes="(min-width: 1024px) 23vw, 100vw"
+          className="object-cover"
+          wrapperClassName="absolute inset-0"
+          loading="lazy"
+          decoding="async"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/60 via-primary/22 to-accent/22 dark:from-black/68 dark:via-black/30 dark:to-accent/20" aria-hidden />
         <StepArt variant={v} idSuffix={`${step.n}`} animate={inView && !reduced} />
         <div className="step-card-header-scrim pointer-events-none absolute inset-0" aria-hidden />
         <div className="absolute bottom-4 left-5 flex items-center gap-3">

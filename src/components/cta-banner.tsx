@@ -21,41 +21,46 @@ export function CTABanner() {
 
   return (
     <section
-      className="section-cta-gradient relative overflow-hidden py-12 sm:py-16"
+      className="section-padding section-band-glass relative overflow-hidden"
       aria-labelledby="cta-banner-heading"
     >
       <div
         ref={ref}
-        className={`relative z-10 mx-auto max-w-4xl px-6 text-center transition-all duration-700 ${
+        className={`relative z-10 mx-auto max-w-7xl px-6 transition-all duration-700 ${
           inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
-        <h2
-          id="cta-banner-heading"
-          className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-[1.15] tracking-tight mb-5"
-        >
-          <SplitWordsRich
-            className="justify-center"
-            segments={[
-              { text: "Hire with the rigour your" },
-              {
-                text: "next inflection point deserves",
-                className: "text-accent dark:text-sky-300",
-              },
-            ]}
-            stagger={0.04}
-            delayStart={0.06}
-            animate={headingSplit}
-          />
-        </h2>
-        <p className="text-text-secondary text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-          Share the mandate, market, and timeline. We&apos;ll respond with how principal-led experts would run the
-          search: sector mapping, milestones, candid feasibility, and where human judgment beats automation.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="glass-panel-liquid grid items-center gap-8 rounded-2xl px-6 py-8 sm:px-8 sm:py-10 lg:grid-cols-[1fr_auto] lg:gap-12 lg:px-10">
+          <div className="max-w-3xl">
+            <span className="glass-chip mb-5 inline-block rounded-lg px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-accent">
+              Start a conversation
+            </span>
+            <h2
+              id="cta-banner-heading"
+              className="text-3xl font-extrabold leading-[1.15] tracking-tight text-primary sm:text-4xl lg:text-5xl"
+            >
+              <SplitWordsRich
+                className="justify-start"
+                segments={[
+                  { text: "Hire with clarity for your" },
+                  {
+                    text: "next stage of growth",
+                    className: "text-accent",
+                  },
+                ]}
+                stagger={0.04}
+                delayStart={0.06}
+                animate={headingSplit}
+              />
+            </h2>
+            <p className="mt-5 max-w-2xl text-base leading-relaxed text-text-secondary sm:text-lg">
+              Tell us about the role, market, and timeline. We&apos;ll come back with practical next steps,
+              honest feasibility, and the places where experienced judgment can add the most value.
+            </p>
+          </div>
           <a
             href="mailto:info@w3sourcing.com"
-            className="inline-flex items-center gap-2 rounded-xl bg-accent px-8 py-3.5 text-base font-semibold text-white shadow-[0_10px_30px_color-mix(in_srgb,var(--accent)_44%,transparent)] transition-all duration-200 hover:bg-accent-hover"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-7 py-3.5 text-base font-semibold text-white shadow-[0_10px_30px_color-mix(in_srgb,var(--accent)_34%,transparent)] transition-all duration-200 hover:bg-accent-hover sm:w-auto"
           >
             <Mail className="size-5" strokeWidth={2} aria-hidden />
             Email us directly

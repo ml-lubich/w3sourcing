@@ -201,3 +201,43 @@ Inside arbitrary square brackets, **commas are special** (they separate multiple
 
 - Homepage copy may lean harder into VC-backed, fund-backed, portfolio-company, founder-led, growth-stage, and operator language where it describes the technology practice or the cross-market buyer context. Keep claims generic and positioning-led unless a specific client relationship is verified.
 - The venture vocabulary should support the existing premium executive-search voice: concise, credible, and human-led. Do not turn W3 into a software-product narrative or over-index on startup slang at the expense of legal and finance trust.
+
+## 2026-05-04 Hero Brand Copy Refresh
+
+- Supersedes hero wording references that mention the prior prefix sentence. The current hero display treatment is a two-line brand headline: line one "W3" and line two "Sourcing".
+- Supporting hero copy should use the positioning sentence: "Global recruitment excellence for technology, legal, and finance leaders - human-led judgment on who truly fits, for organisations across the US, UK, EU, UAE, and Asia."
+- Keep the existing accent-line implementation contract (`accentFrame.line1` + `accentFrame.line2` as one `SplitWords` phrase) so animation structure and test coverage remain stable while copy evolves.
+
+## 2026-05-04 Practice Area Photo Headers
+
+- Supersedes prior practice-area header notes that described inline SVG diagrams over the card media. Practice-area cards are photo-backed and must not place animated SVG art above those photos.
+- Keep the three card images as the visible media: business team around a laptop for VC & Growth Technology, Perry Barrow event-stage photo for Legal, and Perry Barrow networking photo for Banking & Finance.
+- Maintain the theme-aware gradient overlay and `.pa-card-header-scrim` only for readability and edge blending; do not reintroduce `PracticeAreaAnimatedArt` into `practice-areas.tsx` while these cards use real photos.
+
+## 2026-05-04 Photo And SVG Separation
+
+- Supersedes the preceding prohibition on `PracticeAreaAnimatedArt` in `practice-areas.tsx`: animated SVG art may remain, but only in a separate non-photo art panel below the image header.
+- `PracticeAreas` uses `.practice-card-art-panel`; `WhyW3` uses `.why-card-art-panel`. Neither component should render `PracticeAreaAnimatedArt` or `WhyW3AnimatedArt` inside the photo header that contains `ResilientImage`.
+
+## 2026-05-04 American Startup Copy Voice
+
+- Public-facing copy should sound like a refined Silicon Valley partner to VC-backed founders, operators, and growth teams: clear, calm, useful, and human. It can be casual in rhythm, but it should not become slangy or cute.
+- Use American English in new marketing copy: “rigor,” “behavior,” “organization,” “caliber,” and “inquiry.” Do not introduce British or Singaporean phrasing when writing new public copy.
+- Avoid unfriendly or high-pressure language. Words and constructions such as “mandate,” “deserves,” “beat automation,” “high-stakes mandate,” “candid feasibility,” and “principal-led judgment should beat...” can read cold, aggressive, or adversarial in CTA and card copy.
+- Prefer modern startup-market phrasing: “role,” “search,” “team build,” “next stage of growth,” “founder-led,” “operator,” “portfolio company,” “market map,” “clear signal,” “practical next steps,” “thoughtful calibration,” “trusted introductions,” “build with confidence,” and “scale the team.”
+- CTAs should invite, not pressure. Preferred patterns include “Start a conversation,” “Tell us what you are building,” “Share the role,” “Talk through the search,” and “Map the market.” Avoid framing that implies the reader is failing unless they act.
+- Comparisons with automation should stay generous and current: tools can widen reach and speed up workflows; W3 adds human context, relationship trust, and judgment where senior hiring needs nuance. Do not write anti-technology copy or make the site sound hostile to AI.
+- The voice should still feel premium for legal and finance readers. Startup-native phrasing must be balanced with discretion, clarity, and credibility so the brand does not read like a casual SaaS landing page.
+- Photo headers keep real photography as the dominant visual. SVG diagrams provide secondary motion in their own gradient strip so they do not obscure faces, events, or team imagery.
+
+## 2026-05-04 Section-Level SVG Rails
+
+- Supersedes the preceding card-level art-panel note: animated SVGs are decoupled from photo cards entirely and live in standalone section-level rails.
+- `PracticeAreas` renders `PracticeAreaAnimatedArt` inside `.practice-area-art-rail` before the card grid; `WhyW3` renders `WhyW3AnimatedArt` inside `.why-w3-art-rail` before its card grid.
+- Photo cards should contain the photo header, scrim, title, and copy only. Do not add animated SVG panels back into individual photo cards.
+
+## 2026-05-04 Feature Workflow Photos
+
+- All three `FeatureTabs` workflow sections are photo-backed: Source & engage uses `/images/perry_assets/13.png`, Qualify & assess uses `/images/perry_assets/4.png`, and Place & integrate uses `/images/perry_assets/18.png`.
+- The Qualify & assess photo should read as a candidate assessment / interview discussion, matching the section copy around technical assessment, culture mapping, and rigorous evaluation.
+- Decorative rail SVGs are visual only: no embedded text labels, no marketing copy, and no terminology such as “mandate.” The rails should read as polished product-style signal graphics, while the surrounding card headings carry the actual copy.

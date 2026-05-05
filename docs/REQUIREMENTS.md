@@ -61,3 +61,10 @@ We optimise for **clarity and calm**, not for gimmicks. The experience should fe
 - Direct contact CTAs must be email-first and point to `mailto:info@w3sourcing.com`; privacy-specific legal contact copy may use the legal contact address defined in `src/content/privacy-policy.ts`.
 - The privacy page must render the structured policy content from `src/content/privacy-policy.ts` rather than duplicating long-form legal copy in the route component.
 - Brand imagery must remain resilient: visible site images should use the shared `ResilientImage` contract when a loading skeleton or failure-preserving fallback is required.
+
+## 2026-05-04 American Startup Voice Requirement
+
+- New public marketing copy must use refined American English and a current VC-backed technology / startup-market voice.
+- Avoid aggressive, cold, or overly traditional executive-search phrasing such as “mandate,” “your next inflection point deserves,” “beat automation,” or language that sounds like pressure, judgment, or a formal retained-search brief.
+- Prefer warm, concise phrases that feel native to Silicon Valley operators and founders: “start a conversation,” “next stage of growth,” “founder-led teams,” “portfolio companies,” “practical next steps,” “clear signal,” “market map,” “operator judgment,” “build the team,” and “scale with confidence.”
+- Keep the tone premium and trustworthy. Startup language should feel modern and casual, but not slangy, gimmicky, regional, Singaporean, or British in spelling or idiom.

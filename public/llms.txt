@@ -1,0 +1,27 @@
+# W3 Sourcing
+
+> Human-led executive recruitment for VC-backed technology, legal, banking, and finance teams across the US, UK, EU, UAE, and Asia.
+
+W3 Sourcing helps founders, funds, and leadership teams hire senior operators with principal-led judgment, discretion, and fit.
+
+## Primary URLs
+
+- Home: https://w3sourcing.com/
+- Sitemap: https://w3sourcing.com/sitemap.xml
+- Robots: https://w3sourcing.com/robots.txt
+- Privacy: https://w3sourcing.com/privacy
+- Terms: https://w3sourcing.com/terms
+
+## Core Topics
+
+- Executive search
+- Executive recruitment
+- VC-backed company hiring
+- Technology leadership recruitment
+- Legal recruitment
+- Banking and finance recruitment
+- Global talent sourcing
+
+## Contact
+
+- Email: info@w3sourcing.com

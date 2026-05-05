@@ -43,7 +43,7 @@ const Footer = dynamic(() =>
   import("@/components/footer").then((m) => ({ default: m.Footer })),
 );
 
-const homeOgTitle = "Human-led executive search in technology, legal & banking";
+const homeOgTitle = "W3 Sourcing - Global recruitment excellence";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },

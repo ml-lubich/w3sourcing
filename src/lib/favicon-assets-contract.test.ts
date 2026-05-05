@@ -19,6 +19,27 @@ const expectedFaviconFiles = [
   "site.webmanifest",
 ] as const;
 
+const expectedPngDimensions = new Map<string, { width: number; height: number }>([
+  ["android-chrome-192x192.png", { width: 192, height: 192 }],
+  ["android-chrome-512x512.png", { width: 512, height: 512 }],
+  ["apple-touch-icon.png", { width: 180, height: 180 }],
+  ["favicon-16x16.png", { width: 16, height: 16 }],
+  ["favicon-32x32.png", { width: 32, height: 32 }],
+]);
+
+function readPngDimensions(filePath: string): { width: number; height: number } {
+  const file = readFileSync(filePath);
+  return {
+    width: file.readUInt32BE(16),
+    height: file.readUInt32BE(20),
+  };
+}
+
+function readIcoImageCount(filePath: string): number {
+  const file = readFileSync(filePath);
+  return file.readUInt16LE(4);
+}
+
 function collectFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const entryPath = path.join(dir, entry.name);
@@ -49,12 +70,32 @@ describe("favicon asset contract", () => {
     expect(existsSync(path.join(appDir, "manifest.ts"))).toBe(false);
   });
 
+  test("keeps platform favicon images at exact advertised dimensions", () => {
+    for (const [fileName, dimensions] of expectedPngDimensions) {
+      expect(readPngDimensions(path.join(faviconDir, fileName))).toEqual(dimensions);
+    }
+
+    expect(readIcoImageCount(path.join(faviconDir, "favicon.ico"))).toBeGreaterThanOrEqual(3);
+  });
+
   test("web manifest icon entries resolve to the favicon folder", () => {
     const manifestPath = path.join(faviconDir, "site.webmanifest");
     const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as {
+      name: string;
+      short_name: string;
+      description: string;
+      start_url: string;
+      scope: string;
+      display: string;
       icons: Array<{ src: string; sizes: string; type: string }>;
     };
 
+    expect(manifest.name).toBe("W3 Sourcing");
+    expect(manifest.short_name).toBe("W3 Sourcing");
+    expect(manifest.description).toContain("executive recruitment");
+    expect(manifest.start_url).toBe("/");
+    expect(manifest.scope).toBe("/");
+    expect(manifest.display).toBe("standalone");
     expect(manifest.icons.length).toBeGreaterThan(0);
     for (const icon of manifest.icons) {
       expect(icon.src.startsWith(faviconUrlPrefix)).toBe(true);

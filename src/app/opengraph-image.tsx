@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { loadBrandWordmarkDataUrl } from "./brand-wordmark";
 
 export const alt =
-  "W3 Sourcing — executive recruitment in technology, legal, and banking";
+  "W3 Sourcing - global recruitment excellence for technology, legal, and finance leaders";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const runtime = "nodejs";
@@ -49,7 +49,7 @@ export default async function OpenGraphImage() {
               lineHeight: 1.35,
             }}
           >
-            Executive recruitment across technology, legal & banking
+            Global recruitment excellence for technology, legal, and finance leaders
           </div>
           <div
             style={{

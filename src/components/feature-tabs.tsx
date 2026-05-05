@@ -17,6 +17,7 @@ import {
   SURFACE_REVEAL_EASE,
   surfaceRevealEnterTransition,
 } from "@/lib/surface-reveal-motion";
+import { ResilientImage } from "@/components/resilient-image";
 import { useSplitWordsAnimate } from "@/lib/use-split-words-animate";
 
 interface FeatureSection {
@@ -27,6 +28,8 @@ interface FeatureSection {
   headlineAccent: string;
   accentColor: string;
   description: string;
+  photoSrc?: string;
+  photoAlt?: string;
   tabs: {
     label: string;
     title: string;
@@ -45,6 +48,8 @@ const featureSections: FeatureSection[] = [
     accentColor: "text-accent",
     description:
       "Our proprietary network and deep sector expertise let us identify and engage exceptional candidates who aren't actively looking, including portfolio-calibre operators, technical leaders, and senior advisers no automation pipeline can substitute for.",
+    photoSrc: "/images/perry_assets/13.png",
+    photoAlt: "Executive sourcing conversation at a business event",
     tabs: [
       {
         label: "Executive Search",
@@ -77,6 +82,8 @@ const featureSections: FeatureSection[] = [
     accentColor: "text-accent",
     description:
       "Multi-stage screening ensures only the most qualified, culturally aligned candidates reach your interview room—with consultants who read between the lines, because software has no taste for fit.",
+    photoSrc: "/images/perry_assets/4.png",
+    photoAlt: "Recruitment assessment discussion in an office",
     tabs: [
       {
         label: "Technical Assessment",
@@ -109,6 +116,8 @@ const featureSections: FeatureSection[] = [
     accentColor: "text-accent",
     description:
       "From offer negotiation to onboarding support, we help every placement land with the context senior candidates expect from serious companies, funds, and firms.",
+    photoSrc: "/images/perry_assets/18.png",
+    photoAlt: "Professional onboarding and client partnership photo",
     tabs: [
       {
         label: "Offer Management",
@@ -380,6 +389,21 @@ function FeatureBlock({ section, index }: { section: FeatureSection; index: numb
             })}
           >
             <div className="glass-panel rounded-2xl p-5 shadow-[0_18px_44px_rgb(15_23_42_/_0.05)] sm:p-6">
+              {section.photoSrc && section.photoAlt ? (
+                <figure className="relative mb-4 aspect-[16/9] overflow-hidden rounded-xl border border-white/50 bg-surface/45 shadow-[0_14px_32px_rgb(15_23_42_/_0.12)] dark:border-white/12 dark:bg-white/[0.04]">
+                  <ResilientImage
+                    src={section.photoSrc}
+                    alt={section.photoAlt}
+                    fill
+                    sizes="(min-width: 1024px) 40vw, 100vw"
+                    className="object-cover"
+                    wrapperClassName="absolute inset-0"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/52 via-transparent to-accent/16 dark:from-black/58 dark:to-accent/14" aria-hidden />
+                </figure>
+              ) : null}
               <div className="space-y-3">
                 {section.tabs.map((tab, i) => (
                   <motion.div

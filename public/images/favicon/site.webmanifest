@@ -1,6 +1,9 @@
 {
 	"name": "W3 Sourcing",
 	"short_name": "W3 Sourcing",
+	"description": "Human-led executive recruitment across technology, legal, and banking.",
+	"start_url": "/",
+	"scope": "/",
 	"icons": [
 		{
 			"src": "/images/favicon/android-chrome-192x192.png",
@@ -15,5 +18,5 @@
 	],
 	"theme_color": "#0b2447",
 	"background_color": "#fafafa",
-	"display": "browser"
+	"display": "standalone"
 }

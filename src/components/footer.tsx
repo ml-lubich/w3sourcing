@@ -8,6 +8,7 @@ import {
   W3_SINGAPORE_ADDRESS,
   W3_SINGAPORE_REGISTRATION,
 } from "@/content/offices";
+import { ResilientImage } from "@/components/resilient-image";
 import { SplitWords } from "@/components/split-words";
 import { sectionHref } from "@/lib/section-href";
 import { useSectionLinkClick } from "@/lib/use-section-link-click";
@@ -81,13 +82,15 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
           })}
         >
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2.5 mb-5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-white text-sm font-extrabold">
-                W3
-              </span>
-              <span className="text-foreground font-bold text-lg tracking-tight">
-                Sourcing
-              </span>
+            <div className="mb-5">
+              <ResilientImage
+                src="/images/logo_w3_sourcing_wordmark.png"
+                alt="W3 Sourcing"
+                width={184}
+                height={72}
+                className="h-full w-full object-contain dark:brightness-0 dark:invert"
+                wrapperClassName="relative inline-block h-10 w-[150px] overflow-hidden rounded-md align-middle sm:w-[180px]"
+              />
             </div>
             <p className="text-text-secondary text-sm leading-relaxed max-w-xs">
               Global recruitment excellence for technology, legal, and finance leaders—human-led judgment on who truly

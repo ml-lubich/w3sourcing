@@ -54,6 +54,43 @@ const HERO_ACCENT_FRAMES = [
 ] as const;
 
 const accentRotateMs = 4200;
+const HERO_SEARCH_BURST_DURATION_MS = 1500;
+const HERO_SEARCH_BURST_LABELS = [
+  "+1 hired",
+  "+1 shortlist",
+  "+1 intro",
+  "+1 interview",
+  "+1 mandate",
+] as const;
+
+type HeroSearchBurstTone = "success" | "accent" | "sky";
+
+type HeroSearchBurst = {
+  id: number;
+  label: (typeof HERO_SEARCH_BURST_LABELS)[number];
+  x: number;
+  y: number;
+  rotate: number;
+  delay: number;
+  tone: HeroSearchBurstTone;
+};
+
+const HERO_SEARCH_BURST_TONES: readonly HeroSearchBurstTone[] = [
+  "success",
+  "accent",
+  "sky",
+  "accent",
+];
+
+function heroBurstToneClass(tone: HeroSearchBurstTone): string {
+  if (tone === "success") {
+    return "bg-emerald-500/95 text-white shadow-[0_10px_26px_rgb(5_150_105_/_0.35)]";
+  }
+  if (tone === "sky") {
+    return "bg-sky-500/95 text-white shadow-[0_10px_26px_rgb(14_165_233_/_0.34)]";
+  }
+  return "bg-accent/95 text-white shadow-[0_10px_26px_color-mix(in_srgb,var(--accent)_42%,transparent)]";
+}
 
 const FIT_BAR_WIDTH_CLASS_BY_PCT: Record<FitPct, string> = {
   89: "w-[89%]",
@@ -281,8 +318,11 @@ export function Hero() {
   const [accentIndex, setAccentIndex] = useState(0);
   const [searchIndex, setSearchIndex] = useState(0);
   const [activeRow, setActiveRow] = useState(0);
+  const [searchBursts, setSearchBursts] = useState<HeroSearchBurst[]>([]);
   const dashboardRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const burstCounterRef = useRef(0);
+  const burstTimersRef = useRef<number[]>([]);
   const reduceMotion = useHydrationSafeReducedMotion();
   const narrowViewport = useMobileLightMotion();
   const liteMotion = (reduceMotion ?? false) || narrowViewport;
@@ -295,12 +335,52 @@ export function Hero() {
   const accentFrame = HERO_ACCENT_FRAMES[accentIndex];
   const heroSrHeadline = `Global recruitment excellence ${accentFrame.line1} ${accentFrame.line2}`;
 
+  const triggerSearchBurst = () => {
+    const idBase = burstCounterRef.current;
+    const bursts: HeroSearchBurst[] = Array.from({ length: 4 }, (_, index) => {
+      const burstId = idBase + index;
+      const driftXBase = [-72, -26, 24, 74][index] ?? 0;
+      const driftXJitter = ((burstId % 3) - 1) * 7;
+      const driftY = 54 + index * 9;
+      return {
+        id: burstId,
+        label: HERO_SEARCH_BURST_LABELS[burstId % HERO_SEARCH_BURST_LABELS.length],
+        x: driftXBase + driftXJitter,
+        y: driftY,
+        rotate: -11 + index * 7,
+        delay: index * 0.05,
+        tone: HERO_SEARCH_BURST_TONES[index % HERO_SEARCH_BURST_TONES.length],
+      };
+    });
+    burstCounterRef.current += bursts.length;
+    setSearchBursts((prev) => [...prev, ...bursts]);
+
+    const removeTimer = window.setTimeout(() => {
+      setSearchBursts((prev) => {
+        const idsToRemove = new Set(bursts.map((burst) => burst.id));
+        return prev.filter((burst) => !idsToRemove.has(burst.id));
+      });
+      burstTimersRef.current = burstTimersRef.current.filter((timerId) => timerId !== removeTimer);
+    }, HERO_SEARCH_BURST_DURATION_MS + 150);
+
+    burstTimersRef.current.push(removeTimer);
+  };
+
   useEffect(() => {
     const id = window.setInterval(() => {
       if (document.visibilityState !== "visible") return;
       setAccentIndex((i) => (i + 1) % HERO_ACCENT_FRAMES.length);
     }, accentRotateMs);
     return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      for (const timerId of burstTimersRef.current) {
+        window.clearTimeout(timerId);
+      }
+      burstTimersRef.current = [];
+    };
   }, []);
 
   const currentSearch = MOCK_SEARCHES[searchIndex];
@@ -572,60 +652,109 @@ export function Hero() {
                   <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-400/90" />
                   <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-400/90" />
                 </div>
-                <motion.div
-                  className="flex-1 mx-3 h-8 sm:h-9 rounded-lg bg-gray-light dark:bg-white/[0.06] shadow-[0_2px_10px_rgb(15_23_42_/_0.06)] dark:shadow-[0_2px_14px_rgb(0_0_0_/_0.32)] flex items-center px-3 overflow-hidden min-w-0"
-                  initial={{ opacity: 0.5 }}
-                  animate={dashboardInView ? { opacity: 1 } : {}}
-                >
-                  <span className="flex min-w-0 items-center gap-2 truncate">
-                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
-                    <span className="flex min-w-0 flex-wrap items-baseline gap-x-[0.2em] text-left">
-                      {dashboardInView ? (
-                        <>
-                          <SplitWords
-                            as="span"
-                            variant="chrome"
-                            text="Search workspace"
-                            stagger={0.034}
-                            delayStart={0.06}
-                            className="text-xs font-medium text-muted dark:text-slate-400"
-                            animate={splitWordsOn}
-                          />
-                          {liteMotion ? (
-                            <span className="text-xs font-medium text-muted/75 dark:text-slate-500">·</span>
-                          ) : (
-                            <motion.span
-                              className="text-xs font-medium text-muted/75 dark:text-slate-500"
-                              initial={{ opacity: 0, y: 5, scale: 0.92 }}
-                              animate={{ opacity: 1, y: 0, scale: 1 }}
-                              transition={{
-                                type: "spring",
-                                stiffness: 440,
-                                damping: 28,
-                                delay: 0.2,
-                              }}
-                            >
-                              ·
-                            </motion.span>
-                          )}
-                          <SplitWords
-                            as="span"
-                            variant="chrome"
-                            text="Pipeline view"
-                            stagger={0.034}
-                            delayStart={0.12}
-                            className="text-xs font-semibold text-primary dark:text-white"
-                            animate={splitWordsOn}
-                          />
-                        </>
-                      ) : (
-                        <span className="text-xs font-medium text-muted dark:text-slate-400 truncate">
-                          Search workspace · Pipeline view
-                        </span>
-                      )}
+                <div className="relative flex-1 mx-3 min-w-0">
+                  <motion.div
+                    className="h-8 sm:h-9 rounded-lg bg-gray-light dark:bg-white/[0.06] shadow-[0_2px_10px_rgb(15_23_42_/_0.06)] dark:shadow-[0_2px_14px_rgb(0_0_0_/_0.32)] flex items-center px-3 min-w-0 gap-2"
+                    initial={{ opacity: 0.5 }}
+                    animate={dashboardInView ? { opacity: 1 } : {}}
+                  >
+                    <span className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">
+                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
+                      <span className="flex min-w-0 flex-wrap items-baseline gap-x-[0.2em] text-left">
+                        {dashboardInView ? (
+                          <>
+                            <SplitWords
+                              as="span"
+                              variant="chrome"
+                              text="Search workspace"
+                              stagger={0.034}
+                              delayStart={0.06}
+                              className="text-xs font-medium text-muted dark:text-slate-400"
+                              animate={splitWordsOn}
+                            />
+                            {liteMotion ? (
+                              <span className="text-xs font-medium text-muted/75 dark:text-slate-500">·</span>
+                            ) : (
+                              <motion.span
+                                className="text-xs font-medium text-muted/75 dark:text-slate-500"
+                                initial={{ opacity: 0, y: 5, scale: 0.92 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                transition={{
+                                  type: "spring",
+                                  stiffness: 440,
+                                  damping: 28,
+                                  delay: 0.2,
+                                }}
+                              >
+                                ·
+                              </motion.span>
+                            )}
+                            <SplitWords
+                              as="span"
+                              variant="chrome"
+                              text="Pipeline view"
+                              stagger={0.034}
+                              delayStart={0.12}
+                              className="text-xs font-semibold text-primary dark:text-white"
+                              animate={splitWordsOn}
+                            />
+                          </>
+                        ) : (
+                          <span className="text-xs font-medium text-muted dark:text-slate-400 truncate">
+                            Search workspace · Pipeline view
+                          </span>
+                        )}
+                      </span>
                     </span>
-                  </span>
-                </motion.div>
+                    <button
+                      type="button"
+                      onClick={triggerSearchBurst}
+                      className="group inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-accent/25 bg-white/70 text-[13px] leading-none shadow-[0_5px_14px_rgb(15_23_42_/_0.12)] transition-transform duration-150 hover:scale-[1.08] hover:border-accent/45 hover:bg-white active:scale-[0.97] dark:bg-white/[0.08] dark:hover:bg-white/[0.14]"
+                      aria-label="Trigger shortlist wins"
+                      title="Trigger shortlist wins"
+                    >
+                      <span aria-hidden>🔎</span>
+                    </button>
+                  </motion.div>
+
+                  <div className="pointer-events-none absolute right-1 top-2 z-20" aria-hidden>
+                    <AnimatePresence>
+                      {searchBursts.map((burst) => (
+                        <motion.span
+                          key={burst.id}
+                          className={`absolute right-0 top-0 inline-flex select-none whitespace-nowrap rounded-full px-2 py-1 text-[10px] font-semibold tracking-wide ${heroBurstToneClass(burst.tone)}`}
+                          initial={{ opacity: 0, scale: 0.84, x: 0, y: 0, rotate: 0 }}
+                          animate={
+                            liteMotion
+                              ? {
+                                  opacity: [0, 1, 0],
+                                  scale: [0.9, 1, 0.96],
+                                  x: burst.x * 0.55,
+                                  y: -24,
+                                  rotate: burst.rotate * 0.35,
+                                }
+                              : {
+                                  opacity: [0, 1, 1, 0],
+                                  scale: [0.84, 1, 1, 0.95],
+                                  x: burst.x,
+                                  y: -burst.y,
+                                  rotate: burst.rotate,
+                                }
+                          }
+                          exit={{ opacity: 0 }}
+                          transition={{
+                            duration: liteMotion ? 0.78 : 1.25,
+                            delay: burst.delay,
+                            times: liteMotion ? [0, 0.5, 1] : [0, 0.22, 0.78, 1],
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
+                        >
+                          {burst.label}
+                        </motion.span>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                </div>
               </div>
 
               <motion.div
