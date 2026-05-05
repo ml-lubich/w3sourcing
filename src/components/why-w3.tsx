@@ -121,7 +121,7 @@ export function WhyW3() {
           {pillars.map((pillar, i) => (
             <motion.li
               key={`${pillar.title}-art`}
-              className={`glass-panel surface-gradient-field ${pillar.tone} relative h-24 overflow-hidden rounded-2xl sm:h-28`}
+              className={`glass-panel surface-gradient-field ${pillar.tone} relative h-28 overflow-hidden rounded-2xl sm:h-32`}
               initial={reduced ? { opacity: 0 } : { opacity: 0, y: 14 }}
               animate={visible ? { opacity: 1, y: 0 } : reduced ? { opacity: 0 } : { opacity: 0, y: 14 }}
               transition={surfaceRevealEnterTransition(liteMotion, reduced, { delay: 0.04 * i })}
@@ -130,12 +130,8 @@ export function WhyW3() {
                 variant={pillar.art}
                 idSuffix={`w3-rail-${i}`}
                 animate={visible && !reduced}
+                className="section-deco-art-svg--rail"
               />
-              <div className="absolute bottom-3 left-4">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 bg-white/85 text-accent-hover shadow-[0_4px_16px_rgb(15_23_42_/_0.08)] backdrop-blur-md dark:border-transparent dark:bg-white/[0.1] dark:text-accent dark:shadow-[0_6px_20px_rgb(0_0_0_/_0.35)]">
-                  <pillar.Icon className="size-[1.15rem] section-card-icon-glow" strokeWidth={2} aria-hidden />
-                </span>
-              </div>
             </motion.li>
           ))}
         </ul>
@@ -163,7 +159,7 @@ export function WhyW3() {
                     alt={pillar.photoAlt}
                     fill
                     sizes="(min-width: 1024px) 45vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover"
+                    className="people-photo-object object-cover"
                     wrapperClassName="absolute inset-0"
                     loading="lazy"
                     decoding="async"

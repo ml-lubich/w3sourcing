@@ -200,7 +200,7 @@ export function Testimonials() {
                           alt={activeTestimonial.photoAlt}
                           fill
                           sizes="(min-width: 1024px) 168px, (min-width: 640px) 168px, 100vw"
-                          className="object-cover"
+                          className="people-photo-object object-cover"
                           wrapperClassName="absolute inset-0"
                           loading="lazy"
                           decoding="async"

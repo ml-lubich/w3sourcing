@@ -311,7 +311,7 @@ function StepCard({
           alt={step.photoAlt}
           fill
           sizes="(min-width: 1024px) 23vw, 100vw"
-          className="object-cover"
+          className="people-photo-object object-cover"
           wrapperClassName="absolute inset-0"
           loading="lazy"
           decoding="async"

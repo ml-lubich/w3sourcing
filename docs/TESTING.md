@@ -86,3 +86,11 @@ If a deployment fails at the smoke step, check the build logs for the `smoke-no-
 ## 2026-05-04 Feature Workflow Photo Contract
 
 - **`src/components/feature-tabs-contract.test.ts`** locks that Source & engage, Qualify & assess, and Place & integrate each keep their workflow photo, including `/images/perry_assets/4.png` for the Qualify & assess assessment panel.
+
+## 2026-05-04 Decorative Rail Visibility Contract
+
+- **`src/components/practice-areas-contract.test.ts`** and **`src/components/why-w3-contract.test.ts`** lock that rail SVGs use `.section-deco-art-svg--rail`, and the Why W3 rail no longer carries a clipped icon-chip overlay.
+
+## 2026-05-04 People Photo Crop Contract
+
+- **`src/components/people-photo-object-contract.test.ts`** locks the shared `.people-photo-object` focal-point utility and verifies the photo-backed content modules use it with `object-cover`.

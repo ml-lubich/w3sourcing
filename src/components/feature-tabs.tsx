@@ -396,7 +396,7 @@ function FeatureBlock({ section, index }: { section: FeatureSection; index: numb
                     alt={section.photoAlt}
                     fill
                     sizes="(min-width: 1024px) 40vw, 100vw"
-                    className="object-cover"
+                    className="people-photo-object object-cover"
                     wrapperClassName="absolute inset-0"
                     loading="lazy"
                     decoding="async"

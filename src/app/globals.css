@@ -493,6 +493,31 @@ html.dark .section-deco-art-svg.section-deco-art-svg--motion {
   animation: section-deco-art-glow-breathe 3.1s ease-in-out infinite;
 }
 
+.section-deco-art-svg--rail {
+  color: color-mix(in srgb, var(--accent) 72%, var(--primary) 28%);
+  opacity: 0.98;
+  transform: scale(1.12);
+  transform-origin: center;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent) 56%, transparent))
+    drop-shadow(0 0 26px color-mix(in srgb, #06b6d4 32%, transparent));
+}
+
+html.dark .section-deco-art-svg--rail {
+  color: color-mix(in srgb, var(--accent) 88%, white 12%);
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 72%, transparent))
+    drop-shadow(0 0 32px color-mix(in srgb, #38bdf8 42%, transparent));
+}
+
+.people-photo-object {
+  object-position: center 34%;
+}
+
+@media (max-width: 639px) {
+  .people-photo-object {
+    object-position: center 28%;
+  }
+}
+
 @keyframes section-card-icon-glow-pulse {
   0%,
   100% {

@@ -26,6 +26,7 @@
 - [Implementation corrections](#2026-05-04-implementation-corrections)
 - [Hero accent light mode contrast](#2026-05-04-hero-accent-light-mode-contrast)
 - [Trusted-by marquee row motion](#2026-05-04-trusted-by-marquee-row-motion)
+- [Footer maker credit icon](#2026-05-04-footer-maker-credit-icon)
 
 ## Direction
 
@@ -219,6 +220,10 @@ Inside arbitrary square brackets, **commas are special** (they separate multiple
 - Supersedes the preceding prohibition on `PracticeAreaAnimatedArt` in `practice-areas.tsx`: animated SVG art may remain, but only in a separate non-photo art panel below the image header.
 - `PracticeAreas` uses `.practice-card-art-panel`; `WhyW3` uses `.why-card-art-panel`. Neither component should render `PracticeAreaAnimatedArt` or `WhyW3AnimatedArt` inside the photo header that contains `ResilientImage`.
 
+## 2026-05-04 Footer Maker Credit Icon
+
+- The footer maker credit reads as “Made with love by Misha Lubich” but renders the love mark as a small neutral Lucide heart icon, not a red emoji. Keep the Misha Lubich link pointed at `https://mishalubich.com` with `noopener` and `noreferrer`.
+
 ## 2026-05-04 American Startup Copy Voice
 
 - Public-facing copy should sound like a refined Silicon Valley partner to VC-backed founders, operators, and growth teams: clear, calm, useful, and human. It can be casual in rhythm, but it should not become slangy or cute.
@@ -241,3 +246,13 @@ Inside arbitrary square brackets, **commas are special** (they separate multiple
 - All three `FeatureTabs` workflow sections are photo-backed: Source & engage uses `/images/perry_assets/13.png`, Qualify & assess uses `/images/perry_assets/4.png`, and Place & integrate uses `/images/perry_assets/18.png`.
 - The Qualify & assess photo should read as a candidate assessment / interview discussion, matching the section copy around technical assessment, culture mapping, and rigorous evaluation.
 - Decorative rail SVGs are visual only: no embedded text labels, no marketing copy, and no terminology such as “mandate.” The rails should read as polished product-style signal graphics, while the surrounding card headings carry the actual copy.
+
+## 2026-05-04 Decorative Rail Visibility
+
+- Decorative SVG rails use `.section-deco-art-svg--rail` so the artwork is brighter and larger than the smaller card-header diagrams.
+- Do not place icon chips, badges, or photo thumbnails inside the decorative rail cards. They can be clipped by the rail container and make the artwork look blocked or obstructed.
+
+## 2026-05-04 People Photo Focal Point
+
+- Photo-backed content modules use `.people-photo-object` with `object-cover` so constrained cards crop toward the upper third of the image instead of cutting through heads and faces.
+- On narrow viewports, `.people-photo-object` shifts the focal point slightly higher (`center 28%`) to preserve people in shorter mobile crops.

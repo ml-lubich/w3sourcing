@@ -20,4 +20,8 @@ describe("feature tabs media contract", () => {
     expect(src).toContain('photoSrc: "/images/perry_assets/18.png"');
     expect(src).toContain('photoAlt: "Professional onboarding and client partnership photo"');
   });
+
+  test("uses the shared people-photo focal point for feature photos", () => {
+    expect(src).toContain('className="people-photo-object object-cover"');
+  });
 });

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
+import { Heart } from "lucide-react";
 import {
   W3_LONDON_ADDRESS,
   W3_SINGAPORE_ADDRESS,
@@ -213,8 +214,11 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
             delay: reduced ? 0 : 0.2,
           })}
         >
-          <p className="text-xs text-muted leading-relaxed">
-            Made with love by{" "}
+          <p className="text-xs text-muted leading-relaxed flex items-center justify-center gap-1.5">
+            <span>Made with</span>
+            <span className="sr-only"> love </span>
+            <Heart aria-hidden="true" className="h-3.5 w-3.5 text-muted" strokeWidth={1.8} />
+            <span>by</span>
             <a
               href="https://mishalubich.com"
               target="_blank"

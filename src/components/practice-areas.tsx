@@ -106,7 +106,7 @@ function PracticeAreaCard(props: {
                 alt={area.photoAlt}
                 fill
                 sizes="(min-width: 1024px) 30vw, (min-width: 768px) 33vw, 100vw"
-                className="object-cover"
+                className="people-photo-object object-cover"
                 wrapperClassName="absolute inset-0"
                 loading="lazy"
                 decoding="async"
@@ -265,12 +265,17 @@ export function PracticeAreas() {
           {areas.map((area, i) => (
             <motion.li
               key={`${area.title}-art`}
-              className={`glass-panel surface-gradient-field ${area.tone} relative h-24 overflow-hidden rounded-2xl sm:h-28`}
+              className={`glass-panel surface-gradient-field ${area.tone} relative h-28 overflow-hidden rounded-2xl sm:h-32`}
               initial={reduced ? { opacity: 0 } : { opacity: 0, y: 14 }}
               animate={visible ? { opacity: 1, y: 0 } : reduced ? { opacity: 0 } : { opacity: 0, y: 14 }}
               transition={surfaceRevealEnterTransition(liteMotion, reduced, { delay: 0.04 * i })}
             >
-              <PracticeAreaAnimatedArt variant={area.art} idSuffix={`pa-rail-${i}`} animate={practiceArtAnimate} />
+              <PracticeAreaAnimatedArt
+                variant={area.art}
+                idSuffix={`pa-rail-${i}`}
+                animate={practiceArtAnimate}
+                className="section-deco-art-svg--rail"
+              />
             </motion.li>
           ))}
         </ul>
