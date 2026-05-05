@@ -56,13 +56,23 @@ const steps: Step[] = [
   },
 ];
 
-function StepArt({ variant, idSuffix, animate }: { variant: 1 | 2 | 3 | 4; idSuffix: string; animate: boolean }) {
+function StepArt({
+  variant,
+  idSuffix,
+  animate,
+  className,
+}: {
+  variant: 1 | 2 | 3 | 4;
+  idSuffix: string;
+  animate: boolean;
+  className?: string;
+}) {
   const stroke = "currentColor";
   const m1 = `hiw-m1-${idSuffix}`;
   const m2 = `hiw-m2-${idSuffix}`;
   return (
     <svg
-      className={`${sectionDecoSvgClassName(animate)} hiw-step-art-svg transition-[color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]`}
+      className={`${sectionDecoSvgClassName(animate, className)} hiw-step-art-svg transition-[color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]`}
       viewBox="0 0 200 120"
       fill="none"
       aria-hidden
@@ -291,7 +301,6 @@ function StepCard({
   liteMotion: boolean;
   inView: boolean;
 }) {
-  const v = (step.n as 1 | 2 | 3 | 4) ?? 1;
   const delay = reduced ? 0 : 0.08 * index;
   const headingSplit = useSplitWordsAnimate(inView);
 
@@ -304,7 +313,7 @@ function StepCard({
       whileHover={surfaceCardWhileHover(liteMotion)}
     >
       <div
-        className="surface-gradient-field surface-gradient-field--process relative h-36 overflow-hidden"
+        className="surface-gradient-field surface-gradient-field--process relative h-44 overflow-hidden sm:h-48"
       >
         <ResilientImage
           src={step.photoSrc}
@@ -316,8 +325,7 @@ function StepCard({
           loading="lazy"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/60 via-primary/22 to-accent/22 dark:from-black/68 dark:via-black/30 dark:to-accent/20" aria-hidden />
-        <StepArt variant={v} idSuffix={`${step.n}`} animate={inView && !reduced} />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/22 via-primary/6 to-accent/8 dark:from-black/30 dark:via-black/8 dark:to-accent/8" aria-hidden />
         <div className="step-card-header-scrim pointer-events-none absolute inset-0" aria-hidden />
         <div className="absolute bottom-4 left-5 flex items-center gap-3">
           <span className="hidden lg:flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200/95 bg-white/92 text-sm font-extrabold text-accent shadow-[0_6px_20px_rgb(15_23_42_/_0.1)] backdrop-blur-md dark:border-white/10 dark:bg-white/[0.08] dark:shadow-[0_6px_20px_rgb(0_0_0_/_0.32)] transition-[background-color,border-color,box-shadow] duration-500">
@@ -394,6 +402,28 @@ export function HowItWorks() {
             Discovery through placement—with transparency, expert judgment, and a long-term view the stack cannot automate.
           </p>
         </motion.div>
+
+        <ul
+          className="process-art-rail mb-8 grid gap-4 list-none p-0 sm:grid-cols-4 md:mb-10"
+          aria-hidden
+        >
+          {steps.map((step, index) => (
+            <motion.li
+              key={`${step.n}-process-art`}
+              className="glass-panel surface-gradient-field surface-gradient-field--process relative h-28 overflow-hidden rounded-2xl sm:h-32"
+              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 14 }}
+              animate={inView ? { opacity: 1, y: 0 } : reduced ? { opacity: 0 } : { opacity: 0, y: 14 }}
+              transition={surfaceRevealEnterTransition(liteMotion, reduced, { delay: 0.04 * index })}
+            >
+              <StepArt
+                variant={step.n as 1 | 2 | 3 | 4}
+                idSuffix={`process-rail-${step.n}`}
+                animate={inView && !reduced}
+                className="section-deco-art-svg--rail"
+              />
+            </motion.li>
+          ))}
+        </ul>
 
         {/* Desktop: row with chevrons */}
         <div className="hidden lg:flex flex-row items-stretch">

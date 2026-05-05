@@ -94,3 +94,7 @@ If a deployment fails at the smoke step, check the build logs for the `smoke-no-
 ## 2026-05-04 People Photo Crop Contract
 
 - **`src/components/people-photo-object-contract.test.ts`** locks the shared `.people-photo-object` focal-point utility and verifies the photo-backed content modules use it with `object-cover`.
+
+## 2026-05-04 Readable Process Photo Contract
+
+- **`src/components/how-it-works-contract.test.ts`** locks that How We Work keeps animated SVG process art in a separate rail and does not layer `StepArt` directly over process photos.

@@ -401,7 +401,7 @@ function FeatureBlock({ section, index }: { section: FeatureSection; index: numb
                     loading="lazy"
                     decoding="async"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/52 via-transparent to-accent/16 dark:from-black/58 dark:to-accent/14" aria-hidden />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/16 via-transparent to-accent/8 dark:from-black/24 dark:to-accent/8" aria-hidden />
                 </figure>
               ) : null}
               <div className="space-y-3">

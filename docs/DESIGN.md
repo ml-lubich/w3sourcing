@@ -255,4 +255,9 @@ Inside arbitrary square brackets, **commas are special** (they separate multiple
 ## 2026-05-04 People Photo Focal Point
 
 - Photo-backed content modules use `.people-photo-object` with `object-cover` so constrained cards crop toward the upper third of the image instead of cutting through heads and faces.
-- On narrow viewports, `.people-photo-object` shifts the focal point slightly higher (`center 28%`) to preserve people in shorter mobile crops.
+- On narrow viewports, `.people-photo-object` shifts the focal point higher (`center 16%`) to preserve people in shorter mobile crops.
+
+## 2026-05-04 Readable Photo Headers
+
+- Photo-backed card headers should show the actual people and setting first. Keep animated SVG diagrams in separate rail regions, not layered over the same photo crop.
+- Process, practice-area, and Why W3 photo headers use taller crops and lighter gradient washes so photos remain readable in dark mode and on mobile.

@@ -99,7 +99,7 @@ function PracticeAreaCard(props: {
         >
           <article className="glass-panel flex h-full flex-col overflow-hidden rounded-2xl shadow-[0_20px_48px_rgb(15_23_42_/_0.05)] dark:shadow-[0_24px_60px_rgb(0_0_0_/_0.3)] transition-[box-shadow,transform] duration-300 ease-out hover:shadow-[0_28px_56px_rgb(15_23_42_/_0.09)] dark:hover:shadow-[0_32px_72px_rgb(0_0_0_/_0.38)]">
             <div
-              className={`surface-gradient-field ${area.tone} relative h-36 shrink-0 overflow-hidden sm:h-40`}
+              className={`surface-gradient-field ${area.tone} relative h-44 shrink-0 overflow-hidden sm:h-48`}
             >
               <ResilientImage
                 src={area.photoSrc}
@@ -111,7 +111,7 @@ function PracticeAreaCard(props: {
                 loading="lazy"
                 decoding="async"
               />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/56 via-primary/18 to-accent/28 dark:from-black/62 dark:via-black/24 dark:to-accent/24" aria-hidden />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/6 to-accent/10 dark:from-black/28 dark:via-black/8 dark:to-accent/10" aria-hidden />
               <div className="pa-card-header-scrim pointer-events-none absolute inset-0" aria-hidden />
             </div>
             <div className="p-6 sm:p-8">

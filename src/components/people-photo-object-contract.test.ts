@@ -9,8 +9,8 @@ const globalsSrc = readFileSync(path.join(repoRoot, "src", "app", "globals.css")
 describe("people photo crop contract", () => {
   test("defines a shared focal point that protects heads on constrained crops", () => {
     expect(globalsSrc).toContain(".people-photo-object");
-    expect(globalsSrc).toContain("object-position: center 34%");
-    expect(globalsSrc).toContain("object-position: center 28%");
+    expect(globalsSrc).toContain("object-position: center 22%");
+    expect(globalsSrc).toContain("object-position: center 16%");
   });
 
   test("uses the shared focal point across photo-backed content modules", () => {

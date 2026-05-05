@@ -509,12 +509,12 @@ html.dark .section-deco-art-svg--rail {
 }
 
 .people-photo-object {
-  object-position: center 34%;
+  object-position: center 22%;
 }
 
 @media (max-width: 639px) {
   .people-photo-object {
-    object-position: center 28%;
+    object-position: center 16%;
   }
 }
 
@@ -1198,8 +1198,8 @@ html.dark ::-webkit-scrollbar-thumb {
 html.dark .pa-card-header-scrim {
   background: radial-gradient(
     ellipse 80% 70% at 50% 0%,
-    transparent 38%,
-    rgb(15 23 42 / 0.88) 100%
+    transparent 54%,
+    rgb(15 23 42 / 0.38) 100%
   );
 }
 
@@ -1214,8 +1214,8 @@ html.dark .pa-card-header-scrim {
 html.dark .why-card-header-scrim {
   background: radial-gradient(
     ellipse 85% 72% at 50% 0%,
-    transparent 36%,
-    rgb(15 23 42 / 0.9) 100%
+    transparent 54%,
+    rgb(15 23 42 / 0.4) 100%
   );
 }
 
@@ -1231,8 +1231,8 @@ html.dark .why-card-header-scrim {
 html.dark .step-card-header-scrim {
   background: radial-gradient(
     ellipse 80% 70% at 50% 0%,
-    transparent 35%,
-    rgb(15 23 42 / 0.85) 100%
+    transparent 56%,
+    rgb(15 23 42 / 0.36) 100%
   );
 }
 

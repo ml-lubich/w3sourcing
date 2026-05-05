@@ -152,7 +152,7 @@ export function WhyW3() {
                 transition={surfaceRevealEnterTransition(liteMotion, reduced, { delay: 0.06 * i })}
               >
                 <div
-                  className={`surface-gradient-field ${pillar.tone} relative h-36 shrink-0 overflow-hidden sm:h-40`}
+                  className={`surface-gradient-field ${pillar.tone} relative h-44 shrink-0 overflow-hidden sm:h-48`}
                 >
                   <ResilientImage
                     src={pillar.photoSrc}
@@ -164,7 +164,7 @@ export function WhyW3() {
                     loading="lazy"
                     decoding="async"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/58 via-primary/20 to-accent/24 dark:from-black/66 dark:via-black/26 dark:to-accent/22" aria-hidden />
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/6 to-accent/10 dark:from-black/30 dark:via-black/8 dark:to-accent/10" aria-hidden />
                   <div className="why-card-header-scrim pointer-events-none absolute inset-0" aria-hidden />
                 </div>
                 <div className="p-6 sm:p-7">
