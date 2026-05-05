@@ -47,10 +47,10 @@ const DEMO_AVATAR = (file: string) => `/images/demo-avatars/${file}`;
 
 /** Hero accent lines: cycle sector-specific appeals, then the combined positioning line. */
 const HERO_ACCENT_FRAMES = [
-  { line1: "for VC-backed", line2: "operators" },
-  { line1: "for portfolio-scale", line2: "leaders" },
-  { line1: "for Legal & Finance", line2: "operators" },
-  { line1: "for founder-led", line2: "markets" },
+  { line1: "VC-backed", line2: "operators" },
+  { line1: "portfolio-scale", line2: "leaders" },
+  { line1: "Legal & Finance", line2: "operators" },
+  { line1: "founder-led", line2: "markets" },
 ] as const;
 
 const accentRotateMs = 4200;

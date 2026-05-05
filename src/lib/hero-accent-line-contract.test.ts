@@ -22,6 +22,13 @@ describe("hero accent line contract", () => {
     expect(src).toContain("whitespace-nowrap");
   });
 
+  test("keeps rotating accent fragments free of duplicate leading prepositions", () => {
+    const framesMatch = src.match(/const HERO_ACCENT_FRAMES = \[([\s\S]*?)\] as const;/);
+
+    expect(framesMatch?.[1]).toBeDefined();
+    expect(framesMatch?.[1] ?? "").not.toMatch(/line1:\s*"for\s/i);
+  });
+
   test("does not split the accent into separate line1 and line2 blocks", () => {
     expect(src).not.toContain("text={accentFrame.line1}");
     expect(src).not.toContain("text={accentFrame.line2}");

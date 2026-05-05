@@ -182,6 +182,7 @@ Inside arbitrary square brackets, **commas are special** (they separate multiple
 ## 2026-05-04 Hero Accent Light Mode Contrast
 
 - The hero rotating accent phrase under “Executive search for” uses solid `text-accent` in light mode. Gradient clipped transparent text is dark-mode-only, because light mode must not depend on background clipping for essential headline readability.
+- Rotating hero accent fragments must not start with “for”; the fixed headline already supplies that preposition, so the rendered headline reads “Executive search for Legal & Finance operators” without duplication.
 
 ## 2026-05-04 Trusted-by Marquee Row Motion
 

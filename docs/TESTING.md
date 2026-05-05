@@ -47,6 +47,7 @@ If a deployment fails at the smoke step, check the build logs for the `smoke-no-
 ## 2026-05-04 Hero accent visibility contract
 
 - **`src/lib/hero-accent-line-contract.test.ts`** also locks the hero rotating accent copy to use a solid semantic accent in light mode and reserve clipped transparent gradient text for dark mode only, preventing the accent phrase under “Executive search for” from disappearing on the light canvas.
+- **`src/lib/hero-accent-line-contract.test.ts`** rejects rotating accent fragments that start with “for”, preventing the rendered hero headline from duplicating the fixed “Executive search for” preposition.
 
 ## 2026-05-04 Trusted-by marquee contract
 
