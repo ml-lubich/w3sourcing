@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { SplitWords } from "@/components/split-words";
 import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
 import { useMobileLightMotion } from "@/lib/use-mobile-light-motion";
@@ -15,22 +15,12 @@ import { useSplitWordsAnimate } from "@/lib/use-split-words-animate";
 const STATS_HEADLINE_PREFIX = "Outcomes hiring leaders";
 const STATS_HEADLINE_PREFIX_WORD_COUNT = STATS_HEADLINE_PREFIX.trim().split(/\s+/).length;
 
-const statStages = [
-  [
-    { value: 500, suffix: "+", label: "Placements delivered", color: "text-accent" },
-    { value: 98, suffix: "%", label: "Client retention", color: "text-success" },
-    { value: 45, suffix: "+", label: "Countries covered", color: "text-primary dark:text-white" },
-    { value: 7, suffix: " days", label: "Avg. time to signal", color: "text-muted" },
-  ],
-  [
-    { value: 12, suffix: "+", label: "Years in retained search", color: "text-accent" },
-    { value: 48, suffix: "h", label: "First slate turnaround", color: "text-success" },
-    { value: 200, suffix: "+", label: "Founder and operator partnerships", color: "text-primary dark:text-white" },
-    { value: 3, suffix: "", label: "Avg. finalists per role", color: "text-muted" },
-  ],
+const outcomeStats = [
+  { value: 500, suffix: "+", label: "Placements delivered", color: "text-accent" },
+  { value: 98, suffix: "%", label: "Client retention", color: "text-success" },
+  { value: 45, suffix: "+", label: "Countries covered", color: "text-primary dark:text-white" },
+  { value: 7, suffix: " days", label: "Avg. time to signal", color: "text-muted" },
 ];
-
-const FLIP_MS = 5200;
 const ease = [0.22, 1, 0.36, 1] as const;
 
 function AnimatedCounter({
@@ -50,42 +40,13 @@ function AnimatedCounter({
   sectionVisible: boolean;
   liteMotion: boolean;
 }) {
-  const [count, setCount] = useState(0);
-  const [popped, setPopped] = useState(false);
-  const triggered = useRef(false);
-
-  useEffect(() => {
-    if (!sectionVisible || triggered.current) return;
-    triggered.current = true;
-    const duration = 2000;
-    const start = performance.now();
-
-    const tick = (now: number) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * value));
-
-      if (progress < 1) {
-        requestAnimationFrame(tick);
-      } else {
-        setCount(value);
-        setPopped(true);
-        setTimeout(() => setPopped(false), 400);
-      }
-    };
-
-    const t = window.setTimeout(() => requestAnimationFrame(tick), delay);
-    return () => window.clearTimeout(t);
-  }, [sectionVisible, value, delay]);
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.98 }}
+      initial={{ opacity: 1, y: liteMotion ? 0 : 20, scale: liteMotion ? 1 : 0.98 }}
       animate={
         sectionVisible
           ? { opacity: 1, y: 0, scale: 1 }
-          : { opacity: 0, y: 20, scale: 0.98 }
+          : { opacity: 1, y: liteMotion ? 0 : 20, scale: liteMotion ? 1 : 0.98 }
       }
       transition={{
         duration: liteMotion ? SURFACE_REVEAL_DURATION_LITE : SURFACE_REVEAL_DURATION_FULL,
@@ -93,14 +54,12 @@ function AnimatedCounter({
         delay: delay / 1000,
       }}
       whileHover={surfaceCardWhileHover(liteMotion)}
-      className="glass-panel rounded-2xl p-8 text-center [transform-style:preserve-3d]"
+      className="glass-panel stats-outcome-card rounded-2xl p-8 text-center [transform-style:preserve-3d]"
     >
       <div
-        className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-2 tabular-nums ${color} ${
-          popped ? "animate-pop-scale" : ""
-        }`}
+        className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-2 tabular-nums ${color}`}
       >
-        {count}
+        {value}
         {suffix}
       </div>
       <div className="text-text-secondary text-sm font-medium">{label}</div>
@@ -113,7 +72,6 @@ export function Stats() {
   const [visible, setVisible] = useState(false);
   const [headlineRevealed, setHeadlineRevealed] = useState(false);
   const [cardsRevealed, setCardsRevealed] = useState(false);
-  const [stage, setStage] = useState(0);
   const reduceMotion = useHydrationSafeReducedMotion();
   const narrowViewport = useMobileLightMotion();
   const liteMotion = reduceMotion || narrowViewport;
@@ -133,21 +91,6 @@ export function Stats() {
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    if (!visible || liteMotion) return;
-    const id = window.setInterval(() => {
-      setStage((s) => (s + 1) % statStages.length);
-    }, FLIP_MS);
-    return () => window.clearInterval(id);
-  }, [visible, liteMotion]);
-
-  const activeStage = liteMotion ? 0 : stage;
-  const stats = statStages[activeStage];
-
-  const flipTransition = liteMotion
-    ? { duration: 0.01 }
-    : { duration: SURFACE_REVEAL_DURATION_FULL, ease };
 
   return (
     <section id="stats" className="section-band-glass-muted overflow-hidden py-10 md:pt-14 md:pb-8">
@@ -188,42 +131,20 @@ export function Stats() {
         </div>
 
         <div className="relative min-h-[160px] sm:min-h-[150px] perspective-[1200px]">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={activeStage}
-              initial={
-                liteMotion
-                  ? { opacity: 0, rotateX: 0, y: 0, filter: "blur(0px)" }
-                  : { opacity: 0, rotateX: 14, y: 8, filter: "blur(4px)" }
-              }
-              animate={{
-                opacity: 1,
-                rotateX: 0,
-                y: 0,
-                filter: "blur(0px)",
-              }}
-              exit={
-                liteMotion
-                  ? { opacity: 0, rotateX: 0, y: 0, filter: "blur(0px)" }
-                  : { opacity: 0, rotateX: -12, y: -6, filter: "blur(6px)" }
-              }
-              transition={flipTransition}
-              className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 [transform-style:preserve-3d]"
-            >
-              {stats.map((stat, i) => (
-                <AnimatedCounter
-                  key={`${activeStage}-${stat.label}`}
-                  value={stat.value}
-                  suffix={stat.suffix}
-                  color={stat.color}
-                  label={stat.label}
-                  delay={i * 120}
-                  sectionVisible={cardsRevealed}
-                  liteMotion={liteMotion}
-                />
-              ))}
-            </motion.div>
-          </AnimatePresence>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 [transform-style:preserve-3d]">
+            {outcomeStats.map((stat, i) => (
+              <AnimatedCounter
+                key={stat.label}
+                value={stat.value}
+                suffix={stat.suffix}
+                color={stat.color}
+                label={stat.label}
+                delay={i * 120}
+                sectionVisible={cardsRevealed}
+                liteMotion={liteMotion}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

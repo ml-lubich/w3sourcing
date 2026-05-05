@@ -10,7 +10,8 @@ describe("practice areas visual contract", () => {
   test("keeps recruitment photos and animated SVG art in separate section regions", () => {
     expect(src).toContain("<ResilientImage");
     expect(src).toContain('photoAlt: "Business team collaborating around a laptop"');
-    expect(src).toContain('photoAlt: "Business event stage photo with Perry Barrow and partners"');
+    expect(src).toContain('photoSrc: "/images/stock/legal-recruitment.jpg"');
+    expect(src).toContain('photoAlt: "Legal recruitment stock photo with law books and justice scales"');
     expect(src).toContain('photoAlt: "Networking photo with Perry Barrow and guest in blue suit"');
     expect(src).toContain('className="people-photo-object object-cover"');
     expect(src).toContain("practice-area-art-rail");

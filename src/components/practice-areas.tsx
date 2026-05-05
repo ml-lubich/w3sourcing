@@ -42,8 +42,8 @@ const areas = [
       "Serving top U.S. and U.K. law firms, we recruit outstanding legal professionals from associate through partner levels. Practitioner insight and network access meet human judgment on who can carry the book—not keyword similarity alone.",
     art: "legal" as const,
     tone: "surface-gradient-field--trust",
-    photoSrc: "/images/perry_assets/7.png",
-    photoAlt: "Business event stage photo with Perry Barrow and partners",
+    photoSrc: "/images/stock/legal-recruitment.jpg",
+    photoAlt: "Legal recruitment stock photo with law books and justice scales",
   },
   {
     title: "Banking & Finance Recruitment",

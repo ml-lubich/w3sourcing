@@ -257,8 +257,20 @@ Inside arbitrary square brackets, **commas are special** (they separate multiple
 
 - Photo-backed content modules use `.people-photo-object` with `object-cover` so constrained cards crop toward the upper third of the image instead of cutting through heads and faces.
 - On narrow viewports, `.people-photo-object` shifts the focal point higher (`center 16%`) to preserve people in shorter mobile crops.
+- Why W3 cards that need extra headroom may add `.people-photo-object--headroom`, which uses a higher focal point (`center 8%`, then `center 4%` on narrow viewports) without changing the shared crop for other site photos.
 
 ## 2026-05-04 Readable Photo Headers
 
 - Photo-backed card headers should show the actual people and setting first. Keep animated SVG diagrams in separate rail regions, not layered over the same photo crop.
 - Process, practice-area, and Why W3 photo headers use taller crops and lighter gradient washes so photos remain readable in dark mode and on mobile.
+
+## 2026-05-04 Stock Photo Replacements And Opaque Header
+
+- Requested content cards now use local stock photos under `public/images/stock/` where a generic business/legal image is preferred over `public/images/perry_assets/`: Legal Recruitment, Transparent Process & Collaboration, Source leaders others miss, and Offers and onboarding that stick.
+- Offers and onboarding uses the local stock file `public/images/stock/offers-onboarding.jpg`; keep that file replaceable without changing the component path when only the visual stock selection changes.
+- The fixed header remains frosted at the top of the page. Do not reintroduce the `--header-glass: 0` top state because it lets hero content show through the navbar.
+
+## 2026-05-04 Public Asset Structure
+
+- Next.js public assets that are referenced by UI source live under `public/images/` and are used with root-relative URLs such as `/images/logo_w3_sourcing_wordmark.png`. Do not import them from `public/` in components unless a server-side file inspection explicitly needs the filesystem path.
+- Keep the `public/` root for routable machine files only: `llms.txt`, `w3-theme-boot.js`, and the `images/` directory. Unused starter SVGs belong in `_deprecated/public-starter-assets/`, not in the shipped public root.

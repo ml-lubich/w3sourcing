@@ -48,8 +48,8 @@ const featureSections: FeatureSection[] = [
     accentColor: "text-accent",
     description:
       "Our proprietary network and deep sector expertise let us identify and engage exceptional candidates who aren't actively looking, including portfolio-calibre operators, technical leaders, and senior advisers no automation pipeline can substitute for.",
-    photoSrc: "/images/perry_assets/13.png",
-    photoAlt: "Executive sourcing conversation at a business event",
+    photoSrc: "/images/stock/source-leaders.jpg",
+    photoAlt: "Executive search stock photo in a business meeting",
     tabs: [
       {
         label: "Executive Search",
@@ -116,8 +116,8 @@ const featureSections: FeatureSection[] = [
     accentColor: "text-accent",
     description:
       "From offer negotiation to onboarding support, we help every placement land with the context senior candidates expect from serious companies, funds, and firms.",
-    photoSrc: "/images/perry_assets/18.png",
-    photoAlt: "Professional onboarding and client partnership photo",
+    photoSrc: "/images/stock/offers-onboarding.jpg",
+    photoAlt: "Onboarding stock photo with client partnership meeting",
     tabs: [
       {
         label: "Offer Management",

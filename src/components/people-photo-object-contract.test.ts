@@ -11,6 +11,9 @@ describe("people photo crop contract", () => {
     expect(globalsSrc).toContain(".people-photo-object");
     expect(globalsSrc).toContain("object-position: center 22%");
     expect(globalsSrc).toContain("object-position: center 16%");
+    expect(globalsSrc).toContain(".people-photo-object--headroom");
+    expect(globalsSrc).toContain("object-position: center 8%");
+    expect(globalsSrc).toContain("object-position: center 4%");
   });
 
   test("uses the shared focal point across photo-backed content modules", () => {
@@ -22,7 +25,7 @@ describe("people photo crop contract", () => {
       "why-w3.tsx",
     ]) {
       const src = readFileSync(path.join(componentsDir, fileName), "utf8");
-      expect(src).toContain('className="people-photo-object object-cover"');
+      expect(src).toContain("people-photo-object object-cover");
     }
   });
 });

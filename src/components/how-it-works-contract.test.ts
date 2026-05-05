@@ -11,6 +11,8 @@ describe("how it works photo contract", () => {
     expect(src).toContain("process-art-rail");
     expect(src).toContain('className="section-deco-art-svg--rail"');
     expect(src).toContain('className="people-photo-object object-cover"');
+    expect(src).toContain('photoSrc: "/images/stock/transparent-process-collaboration.jpg"');
+    expect(src).toContain('photoAlt: "Team collaboration stock photo with workshop planning"');
     expect(src).toContain("relative h-44 overflow-hidden sm:h-48");
     expect(src).not.toContain("<StepArt variant={v} idSuffix={`${step.n}`} animate={inView && !reduced} />");
   });

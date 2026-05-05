@@ -22,7 +22,10 @@ type Pillar = {
   tone: string;
   photoSrc: string;
   photoAlt: string;
+  photoObjectClassName?: string;
 };
+
+const WHY_W3_HEADROOM_PHOTO_CLASS = "people-photo-object--headroom";
 
 const pillars: Pillar[] = [
   {
@@ -34,6 +37,7 @@ const pillars: Pillar[] = [
     tone: "surface-gradient-field--venture",
     photoSrc: "/images/perry_assets/10.png",
     photoAlt: "Boardroom strategy meeting photo",
+    photoObjectClassName: WHY_W3_HEADROOM_PHOTO_CLASS,
   },
   {
     title: "Global Reach, Local Insight",
@@ -44,6 +48,7 @@ const pillars: Pillar[] = [
     tone: "surface-gradient-field--process",
     photoSrc: "/images/perry_assets/12.png",
     photoAlt: "International business networking event photo",
+    photoObjectClassName: WHY_W3_HEADROOM_PHOTO_CLASS,
   },
   {
     title: "Human-Led & Relationship-Driven",
@@ -64,6 +69,7 @@ const pillars: Pillar[] = [
     tone: "surface-gradient-field--trust",
     photoSrc: "/images/perry_assets/15.png",
     photoAlt: "Professional conference conversation photo",
+    photoObjectClassName: WHY_W3_HEADROOM_PHOTO_CLASS,
   },
 ];
 
@@ -159,7 +165,7 @@ export function WhyW3() {
                     alt={pillar.photoAlt}
                     fill
                     sizes="(min-width: 1024px) 45vw, (min-width: 640px) 50vw, 100vw"
-                    className="people-photo-object object-cover"
+                    className={`people-photo-object object-cover ${pillar.photoObjectClassName ?? ""}`.trim()}
                     wrapperClassName="absolute inset-0"
                     loading="lazy"
                     decoding="async"

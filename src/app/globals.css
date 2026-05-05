@@ -518,6 +518,16 @@ html.dark .section-deco-art-svg--rail {
   }
 }
 
+.people-photo-object--headroom {
+  object-position: center 8%;
+}
+
+@media (max-width: 639px) {
+  .people-photo-object--headroom {
+    object-position: center 4%;
+  }
+}
+
 @keyframes section-card-icon-glow-pulse {
   0%,
   100% {
@@ -608,7 +618,7 @@ html.dark .section-card-icon-glow {
   }
 }
 
-/* Frosted shell: `--header-glass` opacity on ::before (1 = full frost). At top, tints drop for a see-through bar.
+/* Frosted shell: `--header-glass` opacity on ::before (1 = full frost). Keep the top state frosted too.
    Do not set `position: relative` here — it overrides Tailwind `fixed` (same specificity, this file follows utilities)
    and makes the bar in-flow (black band above the hero instead of glass over the wash). */
 .header-bar {
@@ -623,16 +633,6 @@ html.dark .section-card-icon-glow {
     0 1px 0 color-mix(in srgb, white calc(var(--header-glass) * 70%), transparent) inset,
     0 14px 48px color-mix(in srgb, rgb(15 23 42) calc(var(--header-glass) * 7%), transparent);
   transition: box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.header-bar[data-at-top] {
-  /* True top-of-page transparency: hero (or page wash) shows through; blur/frost returns after ~12px scroll */
-  --header-tint-a: 0%;
-  --header-tint-b: 0%;
-  --header-dark-tint-a: 0%;
-  --header-dark-tint-b: 0%;
-  --header-glass: 0;
-  box-shadow: none;
 }
 
 .dark .header-bar,
@@ -653,8 +653,8 @@ html.dark .header-bar {
     color-mix(in srgb, var(--surface) var(--header-tint-a), transparent) 0%,
     color-mix(in srgb, var(--surface) var(--header-tint-b), transparent) 100%
   );
-  backdrop-filter: blur(22px) saturate(165%);
   -webkit-backdrop-filter: blur(22px) saturate(165%);
+  backdrop-filter: blur(22px) saturate(165%);
   transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -1032,6 +1032,14 @@ html.dark ::-webkit-scrollbar-thumb {
 .glass-panel > * {
   position: relative;
   z-index: 1;
+}
+
+/* Light mode only: remove white inset glow from outcome stat cards. */
+html:not(.dark) .glass-panel.stats-outcome-card {
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--primary) 5%, transparent),
+    0 10px 26px color-mix(in srgb, var(--primary) 7%, transparent),
+    0 28px 72px color-mix(in srgb, var(--primary) 11%, transparent);
 }
 
 /**

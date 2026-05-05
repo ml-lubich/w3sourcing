@@ -13,7 +13,9 @@ describe("why W3 visual contract", () => {
     expect(src).toContain('photoAlt: "International business networking event photo"');
     expect(src).toContain('photoAlt: "Interview meeting photo with three professionals"');
     expect(src).toContain('photoAlt: "Professional conference conversation photo"');
-    expect(src).toContain('className="people-photo-object object-cover"');
+    expect(src).toContain('const WHY_W3_HEADROOM_PHOTO_CLASS = "people-photo-object--headroom"');
+    expect(src).toContain('photoObjectClassName: WHY_W3_HEADROOM_PHOTO_CLASS');
+    expect(src).toContain('className={`people-photo-object object-cover ${pillar.photoObjectClassName ?? ""}`.trim()}');
     expect(src).toContain("why-w3-art-rail");
     expect(src).not.toContain("why-card-art-panel");
     expect(src).toContain("<WhyW3AnimatedArt");

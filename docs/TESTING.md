@@ -40,6 +40,7 @@ If a deployment fails at the smoke step, check the build logs for the `smoke-no-
 ## Current contract tests added for recent regressions
 
 - **`src/components/trusted-by-contract.test.ts`** keeps trusted-by company icons chrome-free: no border, background tile, or shadow reappears around favicon images.
+- **`src/components/stats-contract.test.ts`** keeps the Outcomes section on the requested visible metrics (`500+`, `98%`, `45+`, `7 days`) and locks the cards to render final values directly, with no zero-reset counter path.
 - **`src/components/trusted-by-contract.test.ts`** also keeps the two marquee rows on disjoint company lists and verifies the lower row keeps reverse-direction motion.
 - **`src/lib/hero-accent-line-contract.test.ts`** keeps the hero rotating accent as one `SplitWords` phrase so it does not regress into separately wrapped line fragments.
 - **`src/lib/split-words-hydration-contract.test.ts`** locks the unconditional `!motionMounted` guard for `SplitWords` and `SplitWordsRich`, including the `animate={false}` path that previously caused hydration drift.
@@ -95,7 +96,17 @@ If a deployment fails at the smoke step, check the build logs for the `smoke-no-
 ## 2026-05-04 People Photo Crop Contract
 
 - **`src/components/people-photo-object-contract.test.ts`** locks the shared `.people-photo-object` focal-point utility and verifies the photo-backed content modules use it with `object-cover`.
+- The same contract also locks `.people-photo-object--headroom` for Why W3 images that need extra top headroom in constrained card crops.
 
 ## 2026-05-04 Readable Process Photo Contract
 
 - **`src/components/how-it-works-contract.test.ts`** locks that How We Work keeps animated SVG process art in a separate rail and does not layer `StepArt` directly over process photos.
+
+## 2026-05-04 Stock Photo And Header Opacity Contracts
+
+- **`src/components/practice-areas-contract.test.ts`**, **`src/components/how-it-works-contract.test.ts`**, and **`src/components/feature-tabs-contract.test.ts`** lock the requested local stock-photo replacements for Legal Recruitment, Transparent Process & Collaboration, Source leaders others miss, and Offers and onboarding that stick.
+- **`src/lib/header-opacity-contract.test.ts`** locks the navbar as frosted at the top of the page by rejecting the old `--header-glass: 0` transparent state.
+
+## 2026-05-04 Public Asset Structure Contract
+
+- **`src/lib/public-assets-contract.test.ts`** locks the Next.js public asset convention: active UI images stay under `public/images/`, source `/images/...` URLs resolve to real files, and the `public/` root is reserved for routable machine files plus the `images/` directory.

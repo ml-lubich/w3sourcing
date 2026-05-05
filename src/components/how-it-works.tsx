@@ -43,8 +43,8 @@ const steps: Step[] = [
     title: "Transparent Process & Collaboration",
     body: "Our teams provide continuous updates, market insight, and collaborative support from shortlist to offer and onboarding.",
     Icon: UserCheck,
-    photoSrc: "/images/perry_assets/6.png",
-    photoAlt: "Professional shortlist review meeting",
+    photoSrc: "/images/stock/transparent-process-collaboration.jpg",
+    photoAlt: "Team collaboration stock photo with workshop planning",
   },
   {
     n: 4,
