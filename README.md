@@ -34,11 +34,61 @@ flowchart LR
 ## Table of contents
 
 - [Quick orientation](#quick-orientation)
+- [Request flow (sequence)](#request-flow-sequence)
+- [Route smoke (algorithm)](#route-smoke-algorithm)
 - [Setup (step by step)](#setup-step-by-step)
 - [Scripts](#scripts)
 - [Documentation map](#documentation-map)
 - [Project layout](#project-layout)
 - [Deploy on Vercel (step by step)](#deploy-on-vercel-step-by-step)
+
+## Request flow (sequence)
+
+```mermaid
+sequenceDiagram
+    participant V as visitor
+    participant CDN as Vercel edge
+    participant N as Next.js 16 RSC
+    participant APP as src/app
+    participant CMP as components
+    participant C as src/content
+
+    V->>CDN: GET /
+    CDN->>N: render request
+    N->>APP: route handler
+    APP->>CMP: assemble sections
+    CMP->>C: read copy / brand
+    C-->>CMP: strings
+    CMP-->>N: HTML stream
+    N-->>CDN: streamed RSC
+    CDN-->>V: HTML + assets
+```
+
+## Route smoke (algorithm)
+
+```mermaid
+flowchart LR
+    A([bun run smoke:routes])
+    B["build (unless SMOKE_SKIP_BUILD)"]
+    C["start next start"]
+    D["enumerate routes"]
+    E{"per route"}
+    F["GET URL"]
+    G{"status == 200?"}
+    H["record pass"]
+    I["record fail"]
+    J{"more routes?"}
+    K{"any failures?"}
+    L([exit 1])
+    Z([exit 0])
+    A --> B --> C --> D --> E --> F --> G
+    G -- yes --> H --> J
+    G -- no  --> I --> J
+    J -- yes --> E
+    J -- no  --> K
+    K -- yes --> L
+    K -- no  --> Z
+```
 
 ## Quick orientation
 
