@@ -2,12 +2,42 @@
 
 Next.js marketing site. **Use [Bun](https://bun.sh) for all installs and scripts** (see `packageManager` in `package.json`).
 
+```mermaid
+flowchart LR
+    VISITOR(("👤<br/>Visitor"))
+    NEXT{{"⚡ Next.js 16<br/>App Router · RSC"}}
+    APP["📄 src/app/<br/>page · privacy · terms<br/>sitemap · robots · opengraph"]
+    COMP["🧩 src/components/<br/>hero · sections · nav · footer"]
+    CONTENT[("📝 src/content/<br/>copy · brand")]
+    LIB["📚 src/lib/"]
+    SMOKE["🔍 scripts/smoke-no-404.ts<br/>route smoke"]
+    VERCEL[/"🌐 Vercel<br/>static + RSC"/]
+
+    VISITOR --> NEXT
+    NEXT --> APP
+    APP --> COMP
+    COMP --> CONTENT
+    APP --> LIB
+    NEXT --> VERCEL
+    SMOKE -. validates .-> APP
+
+    classDef io fill:#0e1116,stroke:#2f81f7,stroke-width:1.5px,color:#e6edf3;
+    classDef brain fill:#161b22,stroke:#d29922,stroke-width:1.5px,color:#e6edf3;
+    classDef tool fill:#161b22,stroke:#3fb950,stroke-width:1.5px,color:#e6edf3;
+    classDef out fill:#0e1116,stroke:#a371f7,stroke-width:1.5px,color:#e6edf3;
+    class VISITOR,CONTENT io;
+    class NEXT brain;
+    class APP,COMP,LIB,SMOKE tool;
+    class VERCEL out;
+```
+
 ## Table of contents
 
 - [Quick orientation](#quick-orientation)
 - [Setup (step by step)](#setup-step-by-step)
 - [Scripts](#scripts)
 - [Documentation map](#documentation-map)
+- [Project layout](#project-layout)
 - [Deploy on Vercel (step by step)](#deploy-on-vercel-step-by-step)
 
 ## Quick orientation
@@ -52,3 +82,17 @@ The live site experience is intentionally navigable from the header and footer: 
 3. Confirm in the deployment build log that dependencies install with **Bun**.
 
 More detail: **`docs/DEPLOYMENT.md`**.
+
+## Project layout
+
+```
+src/
+  app/             # Next.js App Router (page, privacy, terms, sitemap, robots, OG)
+  components/      # Hero, sections, nav, footer
+  content/         # Marketing copy + brand assets
+  lib/             # Shared helpers
+scripts/           # Bun helpers — run-next-dev, smoke-no-404, exec-in-repo-root
+docs/              # OVERVIEW · REQUIREMENTS · DESIGN · TESTING · DEPLOYMENT
+public/            # Static assets
+vercel.json        # Vercel build config
+```
