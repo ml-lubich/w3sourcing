@@ -42,6 +42,7 @@ flowchart LR
 - [Project layout](#project-layout)
 - [Deploy on Vercel (step by step)](#deploy-on-vercel-step-by-step)
 - [🗺️ Repository map](#️-repository-map)
+- [📊 Code composition](#-code-composition)
 
 ## Request flow (sequence)
 
@@ -184,4 +185,21 @@ mindmap
       next.config.ts
       package.json
       tsconfig.json
+```
+
+
+## 📊 Code composition
+
+File-type breakdown of source under this repo (skips `.git`, `node_modules`, build caches, lockfiles).
+
+```mermaid
+pie showData title File-type composition of w3sourcing (154 files)
+    "TypeScript" : 91
+    "Image" : 46
+    "Markdown" : 6
+    "JSON" : 3
+    "JavaScript" : 3
+    "Other" : 3
+    "Text" : 1
+    "SVG image" : 1
 ```
