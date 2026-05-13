@@ -41,6 +41,7 @@ flowchart LR
 - [Documentation map](#documentation-map)
 - [Project layout](#project-layout)
 - [Deploy on Vercel (step by step)](#deploy-on-vercel-step-by-step)
+- [🗺️ Repository map](#️-repository-map)
 
 ## Request flow (sequence)
 
@@ -145,4 +146,42 @@ scripts/           # Bun helpers — run-next-dev, smoke-no-404, exec-in-repo-ro
 docs/              # OVERVIEW · REQUIREMENTS · DESIGN · TESTING · DEPLOYMENT
 public/            # Static assets
 vercel.json        # Vercel build config
+```
+
+
+## 🗺️ Repository map
+
+Top-level layout of `w3sourcing` rendered as a Mermaid mindmap (auto-generated from the on-disk tree).
+
+```mermaid
+mindmap
+  root((w3sourcing))
+    _deprecated/
+      app-favicon-routes
+      public-starter-assets
+    docs/
+      DEPLOYMENT.md
+      DESIGN.md
+      OVERVIEW.md
+      REQUIREMENTS.md
+      TESTING.md
+    public/
+      images
+      llms.txt
+      w3-theme-boot.js
+    scripts/
+      exec-in-repo-root.ts
+      run-next-dev.ts
+      run-tests-in-root.ts
+      smoke-no-404.ts
+    src/
+      app
+      components
+      content
+      lib
+    files
+      README.md
+      next.config.ts
+      package.json
+      tsconfig.json
 ```
