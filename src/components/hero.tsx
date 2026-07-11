@@ -11,11 +11,15 @@ import {
   useTransform,
   animate,
 } from "framer-motion";
+import Link from "next/link";
 import { SplitWords } from "@/components/split-words";
 import { ResilientImage } from "@/components/resilient-image";
+import { PERRY_LINKEDIN_URL } from "@/content/contact-links";
 import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
 import { useMobileLightMotion } from "@/lib/use-mobile-light-motion";
 import { useSplitWordsAnimate } from "@/lib/use-split-words-animate";
+
+const MotionLink = motion.create(Link);
 
 type PipelineStage = "Screen" | "Interview" | "Shortlist";
 type FitPct = 89 | 90 | 91 | 92 | 93 | 94 | 95 | 96;
@@ -604,13 +608,22 @@ export function Hero() {
           animate={visible ? "visible" : "hidden"}
         >
           <motion.a
-            href="mailto:info@w3sourcing.com"
+            href={PERRY_LINKEDIN_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             variants={ctaItemVariants}
             className="w-full sm:w-auto bg-accent text-white font-semibold text-base py-3.5 px-8 rounded-xl shadow-[0_8px_30px_color-mix(in_srgb,var(--accent)_42%,transparent)] transition-all duration-200 hover:bg-accent-hover hover:scale-[1.02] active:scale-[0.99] inline-flex items-center justify-center gap-2"
           >
-            Email us
+            Message us on LinkedIn
             <ArrowRight className="size-5" strokeWidth={2} aria-hidden />
           </motion.a>
+          <MotionLink
+            href="/jobs"
+            variants={ctaItemVariants}
+            className="glass-panel glass-panel--chrome w-full sm:w-auto text-primary dark:text-white font-semibold text-base py-3.5 px-8 rounded-xl transition-all duration-200 hover:text-accent hover:shadow-[0_12px_44px_rgb(15_23_42_/_0.1)] dark:hover:text-accent dark:hover:shadow-[0_16px_48px_rgb(0_0_0_/_0.45)]"
+          >
+            View current live jobs
+          </MotionLink>
           <motion.a
             href="#practice-areas"
             variants={ctaItemVariants}

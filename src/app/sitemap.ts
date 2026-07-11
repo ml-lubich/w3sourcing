@@ -14,6 +14,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: `${origin}/jobs`,
+      lastModified,
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
       url: `${origin}/privacy`,
       lastModified,
       changeFrequency: "yearly",

@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ResilientImage } from "@/components/resilient-image";
 import { ThemeToggle } from "@/components/theme-toggle";
 
+import { PERRY_LINKEDIN_URL } from "@/content/contact-links";
 import { sectionHref } from "@/lib/section-href";
 import { isScrollSpySuppressed } from "@/lib/scroll-to-section";
 import { useSectionLinkClick } from "@/lib/use-section-link-click";
@@ -176,15 +177,23 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
               </a>
             );
           })}
+          <Link
+            href="/jobs"
+            className="nav-link-section shrink-0 whitespace-nowrap px-2 py-2 text-sm font-medium rounded-lg duration-200 lg:px-3 text-text-secondary hover:text-primary"
+          >
+            Live Jobs
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2 shrink-0">
           <ThemeToggle />
           <a
-            href="mailto:info@w3sourcing.com"
+            href={PERRY_LINKEDIN_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="hidden md:inline-flex bg-accent text-white font-semibold text-sm py-2.5 px-5 rounded-xl shadow-[0_8px_24px_color-mix(in_srgb,var(--accent)_30%,transparent)] transition-all duration-200 hover:bg-accent-hover"
           >
-            Email us
+            Message us on LinkedIn
           </a>
           <button
             type="button"
@@ -241,12 +250,21 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
                   </a>
                 );
               })}
+              <Link
+                href="/jobs"
+                onClick={() => setMobileOpen(false)}
+                className="nav-link-section transition-colors py-3 font-medium rounded-row-highlight px-3 -mx-1 text-text-secondary hover:text-accent hover:bg-gray-light/70 dark:hover:bg-white/[0.06]"
+              >
+                Live Jobs
+              </Link>
               <a
-                href="mailto:info@w3sourcing.com"
+                href={PERRY_LINKEDIN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setMobileOpen(false)}
                 className="bg-accent text-white font-semibold text-sm py-3 px-6 rounded-xl text-center shadow-[0_10px_28px_color-mix(in_srgb,var(--accent)_36%,transparent)] transition-all duration-200 hover:bg-accent-hover hover:shadow-[0_14px_34px_color-mix(in_srgb,var(--accent)_42%,transparent)]"
               >
-                Email us
+                Message us on LinkedIn
               </a>
             </nav>
           </motion.div>

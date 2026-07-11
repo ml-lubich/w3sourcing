@@ -5,6 +5,7 @@ import { useInView } from "framer-motion";
 import { Check, Minus, X } from "lucide-react";
 import { ResilientImage } from "@/components/resilient-image";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { PERRY_LINKEDIN_URL } from "@/content/contact-links";
 import { SplitWords } from "@/components/split-words";
 import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
 import { useMobileLightMotion } from "@/lib/use-mobile-light-motion";
@@ -284,10 +285,12 @@ export function Comparison() {
               Jump to the matrix
             </a>
             <a
-              href="mailto:info@w3sourcing.com"
+              href={PERRY_LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_color-mix(in_srgb,var(--accent)_34%,transparent)] transition-colors hover:bg-accent-hover"
             >
-              Email us
+              Message us on LinkedIn
             </a>
           </div>
         </ScrollReveal>
@@ -487,10 +490,12 @@ export function Comparison() {
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
               <a
-                href="mailto:info@w3sourcing.com"
+                href={PERRY_LINKEDIN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-accent text-white font-semibold text-sm py-3 px-6 rounded-xl shadow-[0_10px_30px_color-mix(in_srgb,var(--accent)_34%,transparent)] transition-colors hover:bg-accent-hover"
               >
-                Email us
+                Message us on LinkedIn
               </a>
               <a
                 href="#testimonials"

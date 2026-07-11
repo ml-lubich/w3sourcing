@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPageShell } from "@/components/legal-page-shell";
+import { PERRY_LINKEDIN_URL } from "@/content/contact-links";
 
 export const metadata: Metadata = {
   title: "Page not found",
   description:
-    "The page you requested is missing or the link may be incorrect. Return to W3 Sourcing or email us directly.",
+    "The page you requested is missing or the link may be incorrect. Return to W3 Sourcing or message us on LinkedIn.",
   robots: { index: false, follow: true },
 };
 
@@ -33,7 +34,7 @@ export default function NotFound() {
           </h1>
           <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-[0.9375rem]">
             The link may be outdated, or the page may have moved. Head back to the home page or
-            email us directly—we&apos;ll help you find what you need.
+            message us on LinkedIn—we&apos;ll help you find what you need.
           </p>
           <div className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:justify-center">
             <Link
@@ -43,10 +44,12 @@ export default function NotFound() {
               Back to home
             </Link>
             <a
-              href="mailto:info@w3sourcing.com"
+              href={PERRY_LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="glass-panel glass-panel--chrome inline-flex items-center justify-center rounded-xl px-6 py-3 text-sm font-semibold text-primary transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
-              Email us
+              Message us on LinkedIn
             </a>
           </div>
         </div>

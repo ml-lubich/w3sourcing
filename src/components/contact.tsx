@@ -6,6 +6,7 @@ import { SplitWords, SplitWordsRich } from "@/components/split-words";
 import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
 import { useMobileLightMotion } from "@/lib/use-mobile-light-motion";
 import { useSplitWordsAnimate } from "@/lib/use-split-words-animate";
+import { PERRY_LINKEDIN_URL } from "@/content/contact-links";
 import {
   W3_LONDON_ADDRESS,
   W3_SINGAPORE_ADDRESS,
@@ -199,14 +200,16 @@ export function Contact() {
                 </svg>
               </div>
               <h4 className="font-semibold text-primary mb-1 block max-w-full">
-                <SplitWords as="span" text="Email Us" stagger={0.05} animate={headingSplit} />
+                <SplitWords as="span" text="Message Us on LinkedIn" stagger={0.05} animate={headingSplit} />
               </h4>
               <p>
                 <a
-                  href="mailto:info@w3sourcing.com"
+                  href={PERRY_LINKEDIN_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-accent text-sm hover:underline"
                 >
-                  info@w3sourcing.com
+                  linkedin.com/in/perrybarrow
                 </a>
               </p>
             </div>

@@ -11,6 +11,7 @@ import {
 } from "@/content/offices";
 import { ResilientImage } from "@/components/resilient-image";
 import { SplitWords } from "@/components/split-words";
+import { PERRY_LINKEDIN_URL } from "@/content/contact-links";
 import { sectionHref } from "@/lib/section-href";
 import { useSectionLinkClick } from "@/lib/use-section-link-click";
 import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
@@ -141,11 +142,19 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
             </h4>
             <div className="space-y-5 text-sm text-text-secondary leading-relaxed">
               <a
-                href="mailto:info@w3sourcing.com"
+                href={PERRY_LINKEDIN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="block text-accent hover:text-foreground transition-colors font-medium"
               >
-                info@w3sourcing.com
+                Message us on LinkedIn
               </a>
+              <Link
+                href="/jobs"
+                className="block text-accent hover:text-foreground transition-colors font-medium"
+              >
+                View current live jobs
+              </Link>
               <p className="text-muted text-xs font-semibold uppercase tracking-wider">London</p>
               <address className="not-italic">
                 {W3_LONDON_ADDRESS.map((line) => (
@@ -171,7 +180,7 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
             </div>
             <div className="mt-6 flex gap-3">
               <a
-                href="https://www.linkedin.com/in/perrybarrow/"
+                href={PERRY_LINKEDIN_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-xl bg-black/[0.06] hover:bg-accent/90 dark:bg-white/5 shadow-[0_4px_14px_rgb(15_23_42_/_0.08)] dark:shadow-[0_4px_14px_rgb(0_0_0_/_0.25)] hover:shadow-[0_10px_24px_color-mix(in_srgb,var(--accent)_36%,transparent)] flex items-center justify-center transition-all duration-200"
