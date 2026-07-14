@@ -8,7 +8,7 @@ import { loadLiveJobs } from "@/lib/jobs";
 export const metadata: Metadata = {
   title: "Live jobs",
   description:
-    "Browse the current live roles W3 Sourcing is recruiting for — search by title, company, or tech stack, then message Perry Barrow directly about any role.",
+    "Browse the current live roles W3 Sourcing is recruiting for — search by title, reference, or tech stack, then message Perry Barrow directly about any role.",
 };
 
 export default function JobsPage() {

@@ -23,13 +23,21 @@ describe("live jobs page contract", () => {
     expect(src).toContain("Load more");
   });
 
-  test("every job card offers LinkedIn DM, prefilled email, and job description actions", () => {
+  test("every job card offers LinkedIn DM and prefilled email as the contact actions", () => {
     const src = readFileSync(path.join(componentsDir, "jobs-explorer.tsx"), "utf8");
     expect(src).toContain("PERRY_LINKEDIN_URL");
     expect(src).toContain("DM Perry on LinkedIn");
     expect(src).toContain("buildJobMailtoHref");
     expect(src).toContain("Email about this role");
-    expect(src).toContain("View job description");
+    expect(src).toContain("For further details, contact Perry");
+  });
+
+  test("job cards expose no client identifiers (company, website, or Paraform link)", () => {
+    const src = readFileSync(path.join(componentsDir, "jobs-explorer.tsx"), "utf8");
+    expect(src).not.toContain("job.company");
+    expect(src).not.toContain("job.website");
+    expect(src).not.toContain("job.link");
+    expect(src).not.toContain("job.oneLiner");
   });
 
   test("/jobs is in the sitemap", () => {

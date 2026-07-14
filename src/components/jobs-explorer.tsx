@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowUpRight, Mail, MapPin, Search } from "lucide-react";
+import { Mail, MapPin, Search } from "lucide-react";
 
 import { PERRY_LINKEDIN_URL } from "@/content/contact-links";
 import { buildJobMailtoHref, filterJobs, type LiveJob } from "@/lib/jobs";
@@ -89,7 +89,7 @@ export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
                 setQuery(e.target.value);
                 resetPaging();
               }}
-              placeholder="Search by job title, company, tech stack, or location…"
+              placeholder="Search by job title, ref, tech stack, or location…"
               className="glass-control w-full rounded-xl py-3 pl-10 pr-4 text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/25 transition-all"
             />
           </label>
@@ -158,27 +158,18 @@ export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
             const chips = techStackChips(job.techStack);
             return (
               <article
-                key={job.link}
+                key={job.ref}
                 className="glass-panel flex flex-col rounded-2xl p-6 transition-all duration-300 hover:shadow-[0_16px_44px_rgb(15_23_42_/_0.1)] dark:hover:shadow-[0_16px_44px_rgb(0_0_0_/_0.4)]"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <h3 className="text-base font-bold leading-snug text-primary">{job.role}</h3>
-                    <p className="mt-1 text-sm font-semibold text-accent">
-                      {job.website ? (
-                        <a
-                          href={job.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:underline"
-                        >
-                          {job.company}
-                        </a>
-                      ) : (
-                        job.company
-                      )}
+                    <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold text-accent">
+                      <span className="glass-chip rounded-md px-2 py-0.5 text-[11px] font-semibold tracking-wide text-text-secondary">
+                        {job.ref}
+                      </span>
                       {job.sector ? (
-                        <span className="font-medium text-muted"> · {job.sector}</span>
+                        <span className="font-medium text-muted">{job.sector}</span>
                       ) : null}
                     </p>
                   </div>
@@ -204,10 +195,6 @@ export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
                   ) : null}
                 </div>
 
-                {job.oneLiner ? (
-                  <p className="mt-3 text-sm leading-relaxed text-text-secondary">{job.oneLiner}</p>
-                ) : null}
-
                 {chips.length > 0 ? (
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {chips.map((chip) => (
@@ -225,21 +212,15 @@ export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
                   <p className="mt-3 text-xs text-muted">Visa: {job.visa}</p>
                 ) : null}
 
-                <div className="mt-5 flex flex-wrap gap-2 pt-1">
-                  <a
-                    href={job.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-accent px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-accent-hover"
-                  >
-                    View job description
-                    <ArrowUpRight className="size-3.5" strokeWidth={2} aria-hidden />
-                  </a>
+                <div className="mt-5 flex flex-wrap items-center gap-2 pt-1">
+                  <span className="mr-1 text-xs font-medium text-muted">
+                    For further details, contact Perry:
+                  </span>
                   <a
                     href={PERRY_LINKEDIN_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="glass-panel glass-panel--chrome inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-semibold text-primary transition-colors hover:text-accent"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-accent px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-accent-hover"
                   >
                     <LinkedInGlyph className="size-3.5" />
                     DM Perry on LinkedIn
