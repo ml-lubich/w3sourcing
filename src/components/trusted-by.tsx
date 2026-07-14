@@ -33,6 +33,43 @@ const bottomRowCompanies: readonly CompanyEntry[] = [
   { name: "Tiger Global", mark: "TG", domain: "tigerglobal.com" },
 ];
 
+const thirdRowCompanies: readonly CompanyEntry[] = [
+  { name: "Bain Capital", mark: "BC", domain: "baincapital.com" },
+  { name: "Index Ventures", mark: "IX", domain: "indexventures.com" },
+  { name: "Citadel", mark: "CT", domain: "citadel.com" },
+  { name: "Kirkland & Ellis", mark: "KE", domain: "kirkland.com" },
+  { name: "Databricks", mark: "DB", domain: "databricks.com" },
+  { name: "Lightspeed", mark: "LS", domain: "lsvp.com" },
+  { name: "Point72", mark: "P7", domain: "point72.com" },
+  { name: "Herbert Smith Freehills", mark: "HS", domain: "hsf.com" },
+  { name: "General Catalyst", mark: "GC", domain: "generalcatalyst.com" },
+];
+
+const fourthRowCompanies: readonly CompanyEntry[] = [
+  { name: "Blackstone", mark: "BX", domain: "blackstone.com" },
+  { name: "Founders Fund", mark: "FD", domain: "foundersfund.com" },
+  { name: "Two Sigma", mark: "2S", domain: "twosigma.com" },
+  { name: "Latham & Watkins", mark: "LW", domain: "lw.com" },
+  { name: "Anthropic", mark: "AN", domain: "anthropic.com" },
+  { name: "Greylock", mark: "GL", domain: "greylock.com" },
+  { name: "Bridgewater", mark: "BW", domain: "bridgewater.com" },
+  { name: "Insight Partners", mark: "IP", domain: "insightpartners.com" },
+  { name: "Norton Rose Fulbright", mark: "NR", domain: "nortonrosefulbright.com" },
+];
+
+/** Four right-to-left rows; varied speeds + start offsets keep them from marching in lockstep. */
+const marqueeRows: readonly {
+  companies: readonly CompanyEntry[];
+  copyKey: string;
+  durationClassName: string;
+  offset: string;
+}[] = [
+  { companies: topRowCompanies, copyKey: "trusted-row-1", durationClassName: "[animation-duration:74s]", offset: "" },
+  { companies: bottomRowCompanies, copyKey: "trusted-row-2", durationClassName: "[animation-duration:88s]", offset: "-translate-x-10" },
+  { companies: thirdRowCompanies, copyKey: "trusted-row-3", durationClassName: "[animation-duration:100s]", offset: "-translate-x-20" },
+  { companies: fourthRowCompanies, copyKey: "trusted-row-4", durationClassName: "[animation-duration:112s]", offset: "-translate-x-6" },
+];
+
 function companyIconUrl(domain: string): string {
   return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
 }
@@ -172,7 +209,7 @@ export function TrustedBy() {
         className={`relative z-[1] mb-8 md:mb-10 text-center transition-all duration-[680ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${revealed}`}
       >
         <span className="inline-block max-w-[min(40rem,92vw)] text-balance text-[0.6875rem] font-semibold uppercase leading-relaxed tracking-[0.16em] text-muted/72 sm:text-xs dark:text-muted/42">
-          Trusted by VC-backed operators, fund leaders, finance teams, and law firms when leadership hires need judgment
+          Operators, funds, finance teams, and law firms across the leadership searches we are working on
         </span>
       </div>
 
@@ -186,34 +223,24 @@ export function TrustedBy() {
           className={`pointer-events-none absolute inset-y-0 right-0 z-[2] w-16 bg-gradient-to-l sm:w-24 md:w-36 ${edgeScrimClass}`}
         />
 
-        <div
-          className={`mb-4 transition-all delay-75 duration-[820ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${revealed}`}
-        >
-          <div className={`relative flex overflow-hidden ${marqueeMaskClass}`}>
-            <MarqueeTrack
-              companies={topRowCompanies}
-              copyKey="trusted-row-top"
-              reverse={false}
-              durationClassName="[animation-duration:78s]"
-              active={marqueeActive}
-            />
+        {marqueeRows.map((row, i) => (
+          <div
+            key={row.copyKey}
+            className={`${i > 0 ? "mt-4" : ""} transition-all duration-[820ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${revealed}`}
+            style={{ transitionDelay: `${75 + i * 90}ms` }}
+          >
+            <div className={`relative flex overflow-hidden ${marqueeMaskClass}`}>
+              <MarqueeTrack
+                companies={row.companies}
+                copyKey={row.copyKey}
+                reverse={false}
+                durationClassName={row.durationClassName}
+                active={marqueeActive}
+                className={row.offset}
+              />
+            </div>
           </div>
-        </div>
-
-        <div
-          className={`transition-all delay-200 duration-[820ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${revealed}`}
-        >
-          <div className={`relative flex overflow-hidden ${marqueeMaskClass}`}>
-            <MarqueeTrack
-              companies={bottomRowCompanies}
-              copyKey="trusted-row-bottom"
-              reverse
-              durationClassName="[animation-duration:96s]"
-              active={marqueeActive}
-              className="-translate-x-12"
-            />
-          </div>
-        </div>
+        ))}
       </div>
     </section>
   );

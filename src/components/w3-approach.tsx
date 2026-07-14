@@ -1,8 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Bot, Compass, ShieldCheck, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { useRef } from "react";
 
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { SplitWords } from "@/components/split-words";
@@ -106,7 +107,7 @@ function BeatRow({ beat, index }: { beat: Beat; index: number }) {
       {index < beats.length - 1 ? (
         <div
           aria-hidden
-          className="ml-6 mt-5 h-6 w-px bg-gradient-to-b from-gray-border/70 to-transparent md:ml-6 dark:from-white/10"
+          className="ml-6 mt-5 h-6 w-px bg-gradient-to-b from-gray-border/70 to-transparent md:hidden dark:from-white/10"
         />
       ) : null}
     </ScrollReveal>
@@ -115,6 +116,14 @@ function BeatRow({ beat, index }: { beat: Beat; index: number }) {
 
 export function W3Approach() {
   const headingSplit = useSplitWordsAnimate(true);
+  const reduced = useHydrationSafeReducedMotion();
+  const beatsRef = useRef<HTMLDivElement>(null);
+  // Draw the chapter spine as the reader scrolls the beats into and through view.
+  const { scrollYProgress } = useScroll({
+    target: beatsRef,
+    offset: ["start 0.7", "end 0.6"],
+  });
+  const spineScaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
     <section
@@ -146,7 +155,18 @@ export function W3Approach() {
           </p>
         </ScrollReveal>
 
-        <div className="space-y-6">
+        <div ref={beatsRef} className="relative space-y-6">
+          {/* Chapter spine — a faint rail that fills with accent as the story is read. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute bottom-3 left-6 top-3 hidden w-px md:block"
+          >
+            <div className="absolute inset-0 bg-gray-border/45 dark:bg-white/[0.07]" />
+            <motion.div
+              className="absolute inset-x-0 top-0 h-full origin-top bg-gradient-to-b from-accent via-accent/70 to-accent/20"
+              style={{ scaleY: reduced ? 1 : spineScaleY }}
+            />
+          </div>
           {beats.map((beat, i) => (
             <BeatRow key={beat.chapter} beat={beat} index={i} />
           ))}

@@ -6,7 +6,10 @@ import { SplitWordsRich } from "@/components/split-words";
 import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
 import { useMobileLightMotion } from "@/lib/use-mobile-light-motion";
 import {
+  SURFACE_REVEAL_DURATION_FULL,
   SURFACE_REVEAL_DURATION_LITE,
+  SURFACE_REVEAL_DURATION_REDUCED,
+  SURFACE_REVEAL_EASE,
   surfaceCardWhileHover,
   surfaceRevealEnterTransition,
 } from "@/lib/surface-reveal-motion";
@@ -86,6 +89,22 @@ export function Testimonials() {
   const headingSplit = useSplitWordsAnimate(visible);
   const activeTestimonial = testimonials[current];
   const hasPhoto = Boolean(activeTestimonial.photoSrc && activeTestimonial.photoAlt);
+
+  // One-card-at-a-time flip. `mode="wait"` keeps it strictly sequential (the
+  // current card flips out, then the next flips in) and every card resolves to
+  // rotateY:0 / opacity:1 so none can get stuck mid-transition and "not show up".
+  // Reduced-motion users get a plain crossfade instead of a 3D spin.
+  const flip = !reduced;
+  const flipDuration = reduced
+    ? SURFACE_REVEAL_DURATION_REDUCED
+    : liteMotion
+      ? SURFACE_REVEAL_DURATION_LITE
+      : SURFACE_REVEAL_DURATION_FULL;
+  const cardVariants = {
+    enter: (dir: number) => (flip ? { opacity: 0, rotateY: dir * 90 } : { opacity: 0 }),
+    center: flip ? { opacity: 1, rotateY: 0 } : { opacity: 1 },
+    exit: (dir: number) => (flip ? { opacity: 0, rotateY: dir * -90 } : { opacity: 0 }),
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -176,20 +195,25 @@ export function Testimonials() {
             delay: reduced ? 0 : 0.1,
           })}
         >
-          <div className="relative min-h-[320px] sm:min-h-[260px]">
+          <div
+            className="relative min-h-[320px] sm:min-h-[260px]"
+            style={{ perspective: flip ? 1400 : undefined }}
+          >
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={current}
                 custom={direction}
-                initial={{ opacity: 0, x: direction * 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: direction * -40 }}
-                transition={{ duration: SURFACE_REVEAL_DURATION_LITE }}
+                variants={cardVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: flipDuration, ease: SURFACE_REVEAL_EASE }}
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.1}
                 onDragEnd={handleDragEnd}
                 whileHover={surfaceCardWhileHover(liteMotion)}
+                style={{ transformStyle: "preserve-3d", backfaceVisibility: "hidden" }}
                 className="glass-panel rounded-2xl p-8 sm:p-10 cursor-grab active:cursor-grabbing touch-pan-y"
               >
                   <div className={`grid gap-6 sm:items-start ${hasPhoto ? "sm:grid-cols-[168px,1fr]" : "sm:grid-cols-1"}`}>

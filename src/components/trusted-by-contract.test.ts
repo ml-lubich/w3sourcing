@@ -26,27 +26,32 @@ describe("trusted-by visual contract", () => {
     expect(src).not.toContain("dark:bg-white/[0.06]");
   });
 
-  test("keeps marquee rows on disjoint company lists", () => {
-    const topNames = extractCompanyField("topRowCompanies", "name");
-    const bottomNames = extractCompanyField("bottomRowCompanies", "name");
-    const topDomains = extractCompanyField("topRowCompanies", "domain");
-    const bottomDomains = extractCompanyField("bottomRowCompanies", "domain");
+  test("keeps all four marquee rows on disjoint company lists", () => {
+    const arrays = [
+      "topRowCompanies",
+      "bottomRowCompanies",
+      "thirdRowCompanies",
+      "fourthRowCompanies",
+    ];
+    const allNames = arrays.flatMap((a) => extractCompanyField(a, "name"));
+    const allDomains = arrays.flatMap((a) => extractCompanyField(a, "domain"));
 
-    expect(topNames.length).toBeGreaterThan(0);
-    expect(bottomNames.length).toBeGreaterThan(0);
-    expect(new Set([...topNames, ...bottomNames]).size).toBe(topNames.length + bottomNames.length);
-    expect(new Set([...topDomains, ...bottomDomains]).size).toBe(
-      topDomains.length + bottomDomains.length,
-    );
+    for (const a of arrays) {
+      expect(extractCompanyField(a, "name").length).toBeGreaterThan(0);
+    }
+    // No company or domain repeats across the four rows.
+    expect(new Set(allNames).size).toBe(allNames.length);
+    expect(new Set(allDomains).size).toBe(allDomains.length);
   });
 
-  test("keeps the second marquee row moving in the opposite direction", () => {
+  test("renders four rows, all scrolling right-to-left", () => {
     expect(src).toContain("function MarqueeTrack");
-    expect(src).toContain('reverse ? "[animation-direction:reverse]" : ""');
-    expect(src).toContain("companies={topRowCompanies}");
-    expect(src).toContain("companies={bottomRowCompanies}");
+    // Four rows wired through the marqueeRows config.
+    const rowKeys = [...src.matchAll(/copyKey: "trusted-row-\d"/g)];
+    expect(rowKeys.length).toBe(4);
+    // Every row scrolls the same direction (right-to-left = reverse={false});
+    // no row opts into the reversed animation direction.
     expect(src).toContain("reverse={false}");
-    expect(src).toContain("reverse\n");
-    expect(src).toContain('className="-translate-x-12"');
+    expect(src).not.toMatch(/<MarqueeTrack[\s\S]*?\breverse\b(?!=\{false\})/);
   });
 });
