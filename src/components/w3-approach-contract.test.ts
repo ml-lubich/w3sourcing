@@ -36,6 +36,21 @@ describe("W3 approach narrative contract", () => {
     expect(src).toContain("PERRY_LINKEDIN_URL");
     expect(src).toContain('"/jobs"');
   });
+
+  test("the chapter spine is scroll-driven", () => {
+    expect(src).toContain("useScroll");
+    expect(src).toContain("spineScaleY");
+  });
+
+  test("nodes sit above the drawn line (opaque backing + z-order)", () => {
+    // The icon/number rail is lifted above the absolute spine…
+    expect(src).toMatch(/relative z-10 flex items-center gap-4/);
+    // …and each node carries an opaque backing so the line threads *behind*
+    // it instead of showing through the translucent glass or bisecting text.
+    expect(src).toContain("bg-background");
+    // Per-beat connectors only show on mobile; the spine owns md+.
+    expect(src).toContain("md:hidden");
+  });
 });
 
 describe("homepage wires in both new sections", () => {

@@ -44,14 +44,18 @@ describe("trusted-by visual contract", () => {
     expect(new Set(allDomains).size).toBe(allDomains.length);
   });
 
-  test("renders four rows, all scrolling right-to-left", () => {
+  test("renders four rows with alternating scroll direction", () => {
     expect(src).toContain("function MarqueeTrack");
     // Four rows wired through the marqueeRows config.
     const rowKeys = [...src.matchAll(/copyKey: "trusted-row-\d"/g)];
     expect(rowKeys.length).toBe(4);
-    // Every row scrolls the same direction (right-to-left = reverse={false});
-    // no row opts into the reversed animation direction.
-    expect(src).toContain("reverse={false}");
-    expect(src).not.toMatch(/<MarqueeTrack[\s\S]*?\breverse\b(?!=\{false\})/);
+    // Direction alternates per row: 1 left, 2 right, 3 left, 4 right.
+    expect(src).toContain("reverse={i % 2 === 1}");
+  });
+
+  test("drops the extra rows on mobile for performance", () => {
+    // Rows 3 and 4 (index >= 2) are hidden below md so mobile animates fewer
+    // tracks and loads fewer logos.
+    expect(src).toContain('i >= 2 ? "hidden md:block"');
   });
 });

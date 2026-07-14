@@ -226,14 +226,14 @@ export function TrustedBy() {
         {marqueeRows.map((row, i) => (
           <div
             key={row.copyKey}
-            className={`${i > 0 ? "mt-4" : ""} transition-all duration-[820ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${revealed}`}
+            className={`${i > 0 ? "mt-4" : ""} ${i >= 2 ? "hidden md:block" : ""} transition-all duration-[820ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${revealed}`}
             style={{ transitionDelay: `${75 + i * 90}ms` }}
           >
             <div className={`relative flex overflow-hidden ${marqueeMaskClass}`}>
               <MarqueeTrack
                 companies={row.companies}
                 copyKey={row.copyKey}
-                reverse={false}
+                reverse={i % 2 === 1}
                 durationClassName={row.durationClassName}
                 active={marqueeActive}
                 className={row.offset}

@@ -72,9 +72,9 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
       ref={footerRef}
       className="bg-footer text-foreground overflow-hidden shadow-[0_-12px_40px_rgb(15_23_42_/_0.07)] dark:shadow-[0_-12px_40px_rgb(0_0_0_/_0.35)]"
     >
-      <div className="mx-auto max-w-7xl px-6 py-16 md:py-20">
+      <div className="mx-auto max-w-7xl px-6 py-12 md:py-14">
         <motion.div
-          className="grid grid-cols-2 md:grid-cols-4 gap-10 sm:gap-12"
+          className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-10 sm:gap-x-10"
           initial={reduced ? false : { opacity: 0, y: liteMotion ? 10 : 16 }}
           animate={
             footerRevealVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: liteMotion ? 10 : 16 }
@@ -84,7 +84,7 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
           })}
         >
           <div className="col-span-2 md:col-span-1">
-            <div className="mb-5">
+            <div className="mb-4">
               <ResilientImage
                 src="/images/logo_w3_sourcing_wordmark.png"
                 alt="W3 Sourcing"
@@ -101,10 +101,10 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
           </div>
 
           <div>
-            <h4 className="text-muted text-xs font-semibold tracking-[0.12em] uppercase mb-5 inline-block max-w-full">
+            <h4 className="text-muted text-xs font-semibold tracking-[0.12em] uppercase mb-4 inline-block max-w-full">
               <SplitWords as="span" text="Company" stagger={0.06} animate={footSplit} />
             </h4>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2.5">
               {footerLinks.map((link) => (
                 <a
                   key={link.href}
@@ -119,10 +119,10 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
           </div>
 
           <div>
-            <h4 className="text-muted text-xs font-semibold tracking-[0.12em] uppercase mb-5 inline-block max-w-full">
+            <h4 className="text-muted text-xs font-semibold tracking-[0.12em] uppercase mb-4 inline-block max-w-full">
               <SplitWords as="span" text="Practices" stagger={0.06} animate={footSplit} />
             </h4>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2.5">
               {sectors.map((link) => (
                 <a
                   key={link.label}
@@ -137,10 +137,10 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
           </div>
 
           <div>
-            <h4 className="text-muted text-xs font-semibold tracking-[0.12em] uppercase mb-5 inline-block max-w-full">
+            <h4 className="text-muted text-xs font-semibold tracking-[0.12em] uppercase mb-4 inline-block max-w-full">
               <SplitWords as="span" text="Offices" stagger={0.06} animate={footSplit} />
             </h4>
-            <div className="space-y-5 text-sm text-text-secondary leading-relaxed">
+            <div className="space-y-4 text-sm text-text-secondary leading-relaxed">
               <a
                 href={PERRY_LINKEDIN_URL}
                 target="_blank"
@@ -178,7 +178,7 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
               </p>
               <p className="text-muted text-sm pt-1">US · UK · EU · UAE · Asia</p>
             </div>
-            <div className="mt-6 flex gap-3">
+            <div className="mt-5 flex gap-3">
               <a
                 href={PERRY_LINKEDIN_URL}
                 target="_blank"
@@ -195,7 +195,7 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
         </motion.div>
 
         <motion.div
-          className="mt-16 pt-8 border-t border-gray-border dark:border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4"
+          className="mt-10 pt-6 border-t border-gray-border dark:border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4"
           initial={reduced ? false : { opacity: 0 }}
           animate={footerRevealVisible ? { opacity: 1 } : { opacity: 0 }}
           transition={surfaceRevealEnterTransition(liteMotion, reduced, {
@@ -216,7 +216,7 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
         </motion.div>
 
         <motion.div
-          className="mt-6 text-center"
+          className="mt-4 text-center"
           initial={reduced ? false : { opacity: 0 }}
           animate={footerRevealVisible ? { opacity: 1 } : { opacity: 0 }}
           transition={surfaceRevealEnterTransition(liteMotion, reduced, {
