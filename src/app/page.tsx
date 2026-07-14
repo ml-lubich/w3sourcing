@@ -17,6 +17,12 @@ const PracticeAreas = dynamic(() =>
 const WhyW3 = dynamic(() =>
   import("@/components/why-w3").then((m) => ({ default: m.WhyW3 })),
 );
+const W3Approach = dynamic(() =>
+  import("@/components/w3-approach").then((m) => ({ default: m.W3Approach })),
+);
+const ExpertiseStorm = dynamic(() =>
+  import("@/components/expertise-storm").then((m) => ({ default: m.ExpertiseStorm })),
+);
 const HowItWorks = dynamic(() =>
   import("@/components/how-it-works").then((m) => ({ default: m.HowItWorks })),
 );
@@ -86,10 +92,16 @@ export default function Home() {
           <WhyW3 />
         </ScrollReveal>
         <ScrollReveal>
+          <W3Approach />
+        </ScrollReveal>
+        <ScrollReveal>
           <HowItWorks />
         </ScrollReveal>
         <ScrollReveal>
           <IndustriesFunctions />
+        </ScrollReveal>
+        <ScrollReveal>
+          <ExpertiseStorm />
         </ScrollReveal>
         <ScrollReveal>
           <FeatureTabs />

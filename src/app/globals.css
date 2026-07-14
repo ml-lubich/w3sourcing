@@ -1266,3 +1266,78 @@ html.dark .step-card-header-scrim {
 .dark .section-glass-ambient.section-industries-ambient::after {
   opacity: 0.32;
 }
+
+/* ──────────────────────────────────────────────────────────── */
+/*  Expertise Storm — 3D carousel of competency pills (lg+).     */
+/*  One shared --storm-angle (set by a single rAF loop) drives   */
+/*  every pill: cos() sweeps it across the page, sin() carries   */
+/*  it into and out of the page (translateZ). Pills translate,   */
+/*  never turn, so labels stay upright. Drag to spin either way. */
+/* ──────────────────────────────────────────────────────────── */
+.expertise-storm {
+  /* Soft radial vignette so pills dissolve at the edges instead of
+     hard-clipping against the masked border box. */
+  -webkit-mask-image: radial-gradient(ellipse 92% 96% at 50% 50%, #000 66%, transparent 99%);
+  mask-image: radial-gradient(ellipse 92% 96% at 50% 50%, #000 66%, transparent 99%);
+  /* Pointer drags spin the field; never let them scroll the page. */
+  touch-action: none;
+}
+
+/* The scene fills the storm. perspective scales pills up as they swing out of
+   the page and down as they recede; preserve-3d depth-sorts them against each
+   other and the centre title (planted at translateZ(0)). JS writes
+   --storm-angle each frame — transform-only, no layout. --storm-k shrinks every
+   ring radius on narrower screens so the outer pills stay inside the mask. */
+.expertise-storm-3d {
+  position: absolute;
+  inset: 0;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  --storm-k: 0.78;
+}
+@media (min-width: 1280px) {
+  .expertise-storm-3d { --storm-k: 0.9; }
+}
+@media (min-width: 1536px) {
+  .expertise-storm-3d { --storm-k: 1; }
+}
+
+/* Each pill's spot on its ring, derived from the one shared angle. The ring
+   revolves around the page's VERTICAL axis, seen edge-on: cos() sweeps the pill
+   across the page, sin() (--d) drives it into/out of the page via translateZ,
+   and the vertical term is a sliver of wobble (0.1px — mirrors RING_SQUASH in
+   expertise-storm.tsx, keep in sync) around the ring tier --ry. +1 = swung out
+   toward the viewer (big, bright, in front of the title), −1 = receded behind. */
+.expertise-orbit-item {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  --d: sin(var(--storm-angle, 0deg) + var(--phase, 0deg));
+  transform: translate(-50%, -50%)
+    translate3d(
+      calc(cos(var(--storm-angle, 0deg) + var(--phase, 0deg)) * var(--rx, 0) * var(--storm-k, 1) * 1px),
+      calc(var(--d) * var(--rx, 0) * var(--storm-k, 1) * 0.1px + var(--ry, 0px)),
+      calc(var(--d) * var(--rx, 0) * var(--storm-k, 1) * 0.55px)
+    )
+    scale(var(--rs, 1));
+  /* Depth cue is opacity only (compositor-cheap, stays transform/opacity-only
+     per-frame): receding pills fade, near pills reach full. Light theme leans
+     on opacity so pills never turn muddy-grey against the bright surface;
+     dark theme uses a slightly wider range for the same read without a
+     per-frame filter re-rasterization. */
+  opacity: calc(0.5 + 0.25 * (var(--d) + 1));
+  will-change: transform;
+}
+html.dark .expertise-orbit-item {
+  opacity: calc(0.42 + 0.29 * (var(--d) + 1));
+}
+
+/* Hover is a pure light-up — no transform, which under perspective would read
+   as the pill sliding out from under the cursor. */
+.expertise-orbit-item:has(.expertise-pill:hover) {
+  opacity: 1;
+}
+.expertise-pill {
+  white-space: nowrap;
+  box-shadow: 0 8px 24px -14px color-mix(in srgb, var(--accent) 40%, transparent);
+}
