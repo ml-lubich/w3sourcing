@@ -67,13 +67,14 @@ function BeatRow({ beat, index }: { beat: Beat; index: number }) {
       <div className="grid gap-5 md:grid-cols-[auto_1fr] md:gap-8">
         <div className="relative z-10 flex items-center gap-4 md:flex-col md:items-center md:gap-2">
           <span className="relative flex size-12 shrink-0 items-center justify-center rounded-2xl text-accent">
-            {/* Opaque backing occludes the spine so the node reads as a bead the line threads through. */}
-            <span aria-hidden className="absolute inset-0 rounded-2xl bg-background" />
+            {/* Opaque backing (md+ only, where the spine runs) occludes the line
+                so the node reads as a bead the line threads through. */}
+            <span aria-hidden className="absolute inset-0 hidden rounded-2xl bg-background md:block" />
             <span className="glass-panel relative flex size-12 items-center justify-center rounded-2xl">
               <Icon className="size-5" strokeWidth={2} aria-hidden />
             </span>
           </span>
-          <span className="relative rounded-md bg-background px-1.5 font-mono text-sm font-semibold tracking-[0.2em] text-muted md:mt-1">
+          <span className="relative font-mono text-sm font-semibold tracking-[0.2em] text-muted md:mt-1 md:rounded-md md:bg-background md:px-1.5">
             {beat.chapter}
           </span>
         </div>
