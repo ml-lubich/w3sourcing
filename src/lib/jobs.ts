@@ -104,6 +104,8 @@ export type JobFilters = {
   query?: string;
   roleGroup?: string;
   workplace?: string;
+  sector?: string;
+  visa?: string;
 };
 
 export function filterJobs(jobs: LiveJob[], filters: JobFilters): LiveJob[] {
@@ -111,6 +113,8 @@ export function filterJobs(jobs: LiveJob[], filters: JobFilters): LiveJob[] {
   return jobs.filter((job) => {
     if (filters.roleGroup && job.roleGroup !== filters.roleGroup) return false;
     if (filters.workplace && job.workplace !== filters.workplace) return false;
+    if (filters.sector && job.sector !== filters.sector) return false;
+    if (filters.visa && job.visa !== filters.visa) return false;
     if (!query) return true;
     const haystack = [
       job.ref,
@@ -120,6 +124,8 @@ export function filterJobs(jobs: LiveJob[], filters: JobFilters): LiveJob[] {
       job.sector,
       job.roleType,
       job.roleGroup,
+      job.workplace,
+      job.visa,
     ]
       .filter(Boolean)
       .join(" ")

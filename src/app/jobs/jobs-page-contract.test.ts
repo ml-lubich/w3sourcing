@@ -10,17 +10,54 @@ describe("live jobs page contract", () => {
   test("/jobs page exists with metadata and renders the explorer", () => {
     const src = readFileSync(path.join(jobsDir, "page.tsx"), "utf8");
     expect(src).toContain("export const metadata");
-    expect(src.toLowerCase()).toContain("live jobs");
+    expect(src).toContain('title: "Jobs"');
+    expect(src).toMatch(/>\s*Jobs\s*</);
     expect(src).toContain("JobsExplorer");
     expect(src).toContain("loadLiveJobs");
+    expect(src).not.toContain("open mandates, refreshed from our live pipeline");
   });
 
-  test("explorer is interactive: search, filters, incremental loading", () => {
+  test("explorer uses branded custom listbox filters instead of native selects", () => {
     const src = readFileSync(path.join(componentsDir, "jobs-explorer.tsx"), "utf8");
     expect(src).toContain('"use client"');
     expect(src).toContain("filterJobs");
     expect(src).toContain('type="search"');
-    expect(src).toContain("Load more");
+    expect(src).not.toContain("<select");
+    expect(src).toContain('aria-haspopup="listbox"');
+    expect(src).toContain('role="listbox"');
+    expect(src).toContain('role="option"');
+  });
+
+  test("explorer offers sector and visa filters in addition to role group and workplace", () => {
+    const src = readFileSync(path.join(componentsDir, "jobs-explorer.tsx"), "utf8");
+    expect(src).toContain("setRoleGroup");
+    expect(src).toContain("setWorkplace");
+    expect(src).toContain("setSector");
+    expect(src).toContain("setVisa");
+    expect(src).toContain("sector: sector || undefined");
+    expect(src).toContain("visa: visa || undefined");
+  });
+
+  test("more jobs load from an intersection sentinel without pagination controls", () => {
+    const src = readFileSync(path.join(componentsDir, "jobs-explorer.tsx"), "utf8");
+    expect(src).toContain("IntersectionObserver");
+    expect(src).toContain("loadMoreRef");
+    expect(src).not.toContain("Load more");
+  });
+
+  test("incremental loading renders accessible shimmer card placeholders", () => {
+    const src = readFileSync(path.join(componentsDir, "jobs-explorer.tsx"), "utf8");
+    expect(src).toContain("isLoadingMore");
+    expect(src).toContain("animate-pulse");
+    expect(src).toContain('aria-hidden="true"');
+  });
+
+  test("job cards expose stable share links with a clipboard fallback", () => {
+    const src = readFileSync(path.join(componentsDir, "jobs-explorer.tsx"), "utf8");
+    expect(src).toContain("navigator.share");
+    expect(src).toContain("navigator.clipboard.writeText");
+    expect(src).toContain("Share role");
+    expect(src).toContain("job.ref");
   });
 
   test("every job card offers LinkedIn DM and prefilled email as the contact actions", () => {
@@ -40,6 +77,26 @@ describe("live jobs page contract", () => {
     expect(src).not.toContain("job.oneLiner");
   });
 
+  test("job cards do not render posted-date pills", () => {
+    const src = readFileSync(path.join(componentsDir, "jobs-explorer.tsx"), "utf8");
+    expect(src).not.toContain("formatPostedDate");
+    expect(src).not.toContain("job.postedDate");
+  });
+
+  // `.glass-panel > *` in globals.css sets position:relative and z-index:1 on every direct
+  // child, and outranks Tailwind utilities in the cascade. Both guards below broke the page.
+  test("the card glow decoration is nested, not a direct child of the glass panel", () => {
+    const src = readFileSync(path.join(componentsDir, "jobs-explorer.tsx"), "utf8");
+    expect(src.indexOf("blur-3xl")).toBeGreaterThan(
+      src.indexOf("relative flex h-full flex-col"),
+    );
+  });
+
+  test("the filter grid carries an inline z-index so open popovers stay on top", () => {
+    const src = readFileSync(path.join(componentsDir, "jobs-explorer.tsx"), "utf8");
+    expect(src).toContain("style={{ zIndex: 30 }}");
+  });
+
   test("/jobs is in the sitemap", () => {
     const src = readFileSync(path.join(appDir, "sitemap.ts"), "utf8");
     expect(src).toContain("/jobs");
@@ -52,5 +109,9 @@ describe("live jobs page contract", () => {
     }
     const hero = readFileSync(path.join(componentsDir, "hero.tsx"), "utf8");
     expect(hero).toContain("View current live jobs");
+
+    const header = readFileSync(path.join(componentsDir, "header.tsx"), "utf8");
+    expect(header).not.toContain("Live Jobs");
+    expect(header.match(/>\s*Jobs\s*</g)).toHaveLength(2);
   });
 });

@@ -62,6 +62,14 @@ We optimise for **clarity and calm**, not for gimmicks. The experience should fe
 - The privacy page must render the structured policy content from `src/content/privacy-policy.ts` rather than duplicating long-form legal copy in the route component.
 - Brand imagery must remain resilient: visible site images should use the shared `ResilientImage` contract when a loading skeleton or failure-preserving fallback is required.
 
+## 2026-07-29 Jobs Explorer Requirements
+
+- `/jobs` must provide free-text search plus role-group, workplace, sector, and visa-availability filters without exposing client identifiers.
+- Job results must load progressively as the reader scrolls, without numbered pagination or a manual load-more button.
+- Progressive batches must show non-content shimmer placeholders while loading, and reduced-motion preferences must be respected.
+- Posted dates may determine result order but must not be rendered on public job cards.
+- Each public job card must have a stable link target and a share action with clipboard fallback, without exposing client identifiers.
+
 ## 2026-05-04 American Startup Voice Requirement
 
 - New public marketing copy must use refined American English and a current VC-backed technology / startup-market voice.

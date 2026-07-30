@@ -128,10 +128,14 @@ describe("filterJobs", () => {
     expect(filterJobs(sample, { query: "seattle" })).toHaveLength(1);
   });
 
-  test("applies role-group and workplace filters, empty query browses all", () => {
+  test("applies role-group, workplace, sector, and visa filters", () => {
     expect(filterJobs(sample, {})).toHaveLength(2);
     expect(filterJobs(sample, { roleGroup: "Engineering - AI/ML" })).toHaveLength(2);
     expect(filterJobs(sample, { workplace: "Remote" })).toHaveLength(0);
+    expect(filterJobs(sample, { sector: "AI" })).toHaveLength(1);
+    expect(filterJobs(sample, { sector: "AI" })[0].ref).toBe("W3-AAAAAA");
+    expect(filterJobs(sample, { visa: "Available" })).toHaveLength(1);
+    expect(filterJobs(sample, { visa: "Available" })[0].ref).toBe("W3-BBBBBB");
   });
 });
 

@@ -274,3 +274,15 @@ Inside arbitrary square brackets, **commas are special** (they separate multiple
 
 - Next.js public assets that are referenced by UI source live under `public/images/` and are used with root-relative URLs such as `/images/logo_w3_sourcing_wordmark.png`. Do not import them from `public/` in components unless a server-side file inspection explicitly needs the filesystem path.
 - Keep the `public/` root for routable machine files only: `llms.txt`, `w3-theme-boot.js`, and the `images/` directory. Unused starter SVGs belong in `_deprecated/public-starter-assets/`, not in the shipped public root.
+
+## 2026-07-29 Jobs Page Labels And Card Chrome
+
+- Page metadata, the page eyebrow, and header navigation label the `/jobs` route **Jobs**.
+- Job cards do not show posted-date pills. Posted dates remain available to the data layer for newest-first ordering.
+- The jobs explorer uses W3-styled, keyboard-accessible popover filters instead of browser-native select menus. Filter triggers should read as part of the glass control system and expose selected values clearly.
+- Search spans role titles, references, skills, locations, sectors, role types, and role groups. Filters cover role group, workplace, sector, and visa availability, with a visible clear-all action when refinements are active.
+- Results append automatically in bounded batches as the reader approaches the end of the rendered grid. There is no numbered pagination or manual “Load more” control.
+- While the next batch is being prepared, card-shaped shimmer placeholders preserve the two-column grid rhythm. Shimmer motion must stop under `prefers-reduced-motion`.
+- Job cards use restrained W3 accent depth, icon-led metadata, and a brief entrance treatment for newly appended results. Motion must remain subtle and stop under `prefers-reduced-motion`.
+- Each card includes a **Share role** action. Use the platform share sheet when available; otherwise copy a stable `/jobs#…` link to that card and show concise success feedback.
+- `.glass-panel > *` in `globals.css` forces `position: relative; z-index: 1` on every direct child and outranks Tailwind utilities. Direct children of a glass panel therefore cannot use `absolute` or escape the stacking context with `z-*`; nest them one level deeper, or set `z-index` inline. Popover surfaces over a glass panel must be opaque, not translucent, or page content reads through them.

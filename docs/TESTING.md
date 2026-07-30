@@ -39,6 +39,7 @@ If a deployment fails at the smoke step, check the build logs for the `smoke-no-
 
 ## Current contract tests added for recent regressions
 
+- **`src/app/jobs/jobs-page-contract.test.ts`** locks the `/jobs` explorer contract: W3-styled listbox filters, sector/visa refinements, intersection-driven incremental loading, reduced-motion-safe shimmer placeholders, stable per-role sharing with clipboard fallback, no public posted-date pills, and the concise **Jobs** navigation/page label. **`src/lib/jobs.test.ts`** covers the corresponding role-group, workplace, sector, and visa filtering behavior.
 - **`src/components/trusted-by-contract.test.ts`** keeps trusted-by company icons chrome-free: no border, background tile, or shadow reappears around favicon images.
 - **`src/components/stats-contract.test.ts`** keeps the Outcomes section on the requested visible metrics (`500+`, `98%`, `45+`, `7 days`) and locks the cards to render final values directly, with no zero-reset counter path.
 - **`src/components/trusted-by-contract.test.ts`** also keeps the two marquee rows on disjoint company lists and verifies the lower row keeps reverse-direction motion.

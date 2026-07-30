@@ -181,7 +181,7 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
             href="/jobs"
             className="nav-link-section shrink-0 whitespace-nowrap px-2 py-2 text-sm font-medium rounded-lg duration-200 lg:px-3 text-text-secondary hover:text-primary"
           >
-            Live Jobs
+            Jobs
           </Link>
         </nav>
 
@@ -255,7 +255,7 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
                 onClick={() => setMobileOpen(false)}
                 className="nav-link-section transition-colors py-3 font-medium rounded-row-highlight px-3 -mx-1 text-text-secondary hover:text-accent hover:bg-gray-light/70 dark:hover:bg-white/[0.06]"
               >
-                Live Jobs
+                Jobs
               </Link>
               <a
                 href={PERRY_LINKEDIN_URL}
