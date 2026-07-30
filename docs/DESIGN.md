@@ -286,3 +286,10 @@ Inside arbitrary square brackets, **commas are special** (they separate multiple
 - Job cards use restrained W3 accent depth, icon-led metadata, and a brief entrance treatment for newly appended results. Motion must remain subtle and stop under `prefers-reduced-motion`.
 - Each card includes a **Share role** action. Use the platform share sheet when available; otherwise copy a stable `/jobs#…` link to that card and show concise success feedback.
 - `.glass-panel > *` in `globals.css` forces `position: relative; z-index: 1` on every direct child and outranks Tailwind utilities. Direct children of a glass panel therefore cannot use `absolute` or escape the stacking context with `z-*`; nest them one level deeper, or set `z-index` inline. Popover surfaces over a glass panel must be opaque, not translucent, or page content reads through them.
+
+## 2026-07-30 Footer Column Balance
+
+- The footer grid is 12 columns on `md`: brand (3), Company (3), Practices (2), Offices (4). Thin vertical rules (`md:border-l`, `border-gray-border` / `dark:white/[0.06]`) separate the four groups on desktop and are absent on mobile.
+- The Company list renders in two sub-columns (`md:grid-rows-5 md:grid-flow-col`), and the London and Singapore addresses sit side by side, so no group leaves a large trailing void. Singapore's UEN/EA sits with the Singapore address, not as a separate block.
+- The "Message us on LinkedIn" and "View current live jobs" CTAs and the LinkedIn social icon belong to the brand column — they are not offices and must not render under the **Offices** heading. Exactly one LinkedIn social icon.
+- The bottom bar (`mt-10 pt-6`) and the centered maker credit (`mt-4 text-center`) below it are unchanged; see [Footer maker credit icon](#2026-05-04-footer-maker-credit-icon).

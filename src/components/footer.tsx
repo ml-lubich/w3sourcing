@@ -74,7 +74,7 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
     >
       <div className="mx-auto max-w-7xl px-6 py-12 md:py-14">
         <motion.div
-          className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-10 sm:gap-x-10"
+          className="grid grid-cols-2 md:grid-cols-12 gap-x-8 gap-y-10 sm:gap-x-10"
           initial={reduced ? false : { opacity: 0, y: liteMotion ? 10 : 16 }}
           animate={
             footerRevealVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: liteMotion ? 10 : 16 }
@@ -83,7 +83,7 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
             delay: reduced ? 0 : 0.06,
           })}
         >
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-2 md:col-span-3">
             <div className="mb-4">
               <ResilientImage
                 src="/images/logo_w3_sourcing_wordmark.png"
@@ -98,13 +98,42 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
               Global recruitment excellence for technology, legal, and finance leaders—human-led judgment on who truly
               fits, for organisations across the US, UK, EU, UAE, and Asia.
             </p>
+            <div className="mt-6 flex flex-col items-start gap-2.5 text-sm">
+              <a
+                href={PERRY_LINKEDIN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent hover:text-foreground transition-colors font-medium"
+              >
+                Message us on LinkedIn
+              </a>
+              <Link
+                href="/jobs"
+                className="text-accent hover:text-foreground transition-colors font-medium"
+              >
+                View current live jobs
+              </Link>
+            </div>
+            <div className="mt-6 flex gap-3">
+              <a
+                href={PERRY_LINKEDIN_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-black/[0.06] hover:bg-accent/90 dark:bg-white/5 shadow-[0_4px_14px_rgb(15_23_42_/_0.08)] dark:shadow-[0_4px_14px_rgb(0_0_0_/_0.25)] hover:shadow-[0_10px_24px_color-mix(in_srgb,var(--accent)_36%,transparent)] flex items-center justify-center transition-all duration-200"
+                aria-label="LinkedIn — Perry Barrow"
+              >
+                <svg className="w-4 h-4 text-foreground dark:text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </svg>
+              </a>
+            </div>
           </div>
 
-          <div>
+          <div className="md:col-span-3 md:border-l md:border-gray-border md:pl-8 dark:md:border-white/[0.06]">
             <h4 className="text-muted text-xs font-semibold tracking-[0.12em] uppercase mb-4 inline-block max-w-full">
               <SplitWords as="span" text="Company" stagger={0.06} animate={footSplit} />
             </h4>
-            <div className="flex flex-col gap-2.5">
+            <div className="grid gap-2.5 md:grid-rows-5 md:grid-flow-col md:gap-x-6">
               {footerLinks.map((link) => (
                 <a
                   key={link.href}
@@ -118,7 +147,7 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
             </div>
           </div>
 
-          <div>
+          <div className="md:col-span-2 md:border-l md:border-gray-border md:pl-8 dark:md:border-white/[0.06]">
             <h4 className="text-muted text-xs font-semibold tracking-[0.12em] uppercase mb-4 inline-block max-w-full">
               <SplitWords as="span" text="Practices" stagger={0.06} animate={footSplit} />
             </h4>
@@ -136,61 +165,38 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
             </div>
           </div>
 
-          <div>
+          <div className="col-span-2 md:col-span-4 md:border-l md:border-gray-border md:pl-8 dark:md:border-white/[0.06]">
             <h4 className="text-muted text-xs font-semibold tracking-[0.12em] uppercase mb-4 inline-block max-w-full">
               <SplitWords as="span" text="Offices" stagger={0.06} animate={footSplit} />
             </h4>
-            <div className="space-y-4 text-sm text-text-secondary leading-relaxed">
-              <a
-                href={PERRY_LINKEDIN_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-accent hover:text-foreground transition-colors font-medium"
-              >
-                Message us on LinkedIn
-              </a>
-              <Link
-                href="/jobs"
-                className="block text-accent hover:text-foreground transition-colors font-medium"
-              >
-                View current live jobs
-              </Link>
-              <p className="text-muted text-xs font-semibold uppercase tracking-wider">London</p>
-              <address className="not-italic">
-                {W3_LONDON_ADDRESS.map((line) => (
-                  <span key={line} className="block">
-                    {line}
-                  </span>
-                ))}
-              </address>
-              <p className="text-muted text-xs font-semibold uppercase tracking-wider pt-1">Singapore</p>
-              <address className="not-italic">
-                {W3_SINGAPORE_ADDRESS.map((line) => (
-                  <span key={line} className="block">
-                    {line}
-                  </span>
-                ))}
-              </address>
-              <p className="text-muted text-xs pt-1">
-                UEN: {W3_SINGAPORE_REGISTRATION.uen}
-                <br />
-                EA: {W3_SINGAPORE_REGISTRATION.ea}
-              </p>
-              <p className="text-muted text-sm pt-1">US · UK · EU · UAE · Asia</p>
+            <div className="grid gap-x-6 gap-y-5 text-sm text-text-secondary leading-relaxed sm:grid-cols-2">
+              <div>
+                <p className="text-muted text-xs font-semibold uppercase tracking-wider">London</p>
+                <address className="not-italic mt-1.5">
+                  {W3_LONDON_ADDRESS.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </address>
+              </div>
+              <div>
+                <p className="text-muted text-xs font-semibold uppercase tracking-wider">Singapore</p>
+                <address className="not-italic mt-1.5">
+                  {W3_SINGAPORE_ADDRESS.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </address>
+                <p className="text-muted text-xs mt-2">
+                  UEN: {W3_SINGAPORE_REGISTRATION.uen}
+                  <br />
+                  EA: {W3_SINGAPORE_REGISTRATION.ea}
+                </p>
+              </div>
             </div>
-            <div className="mt-5 flex gap-3">
-              <a
-                href={PERRY_LINKEDIN_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-black/[0.06] hover:bg-accent/90 dark:bg-white/5 shadow-[0_4px_14px_rgb(15_23_42_/_0.08)] dark:shadow-[0_4px_14px_rgb(0_0_0_/_0.25)] hover:shadow-[0_10px_24px_color-mix(in_srgb,var(--accent)_36%,transparent)] flex items-center justify-center transition-all duration-200"
-                aria-label="LinkedIn — Perry Barrow"
-              >
-                <svg className="w-4 h-4 text-foreground dark:text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                </svg>
-              </a>
-            </div>
+            <p className="text-muted text-sm mt-5">US · UK · EU · UAE · Asia</p>
           </div>
         </motion.div>
 
