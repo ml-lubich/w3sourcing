@@ -287,6 +287,11 @@ Inside arbitrary square brackets, **commas are special** (they separate multiple
 - Each card includes a **Share role** action. Use the platform share sheet when available; otherwise copy a stable `/jobs#…` link to that card and show concise success feedback.
 - `.glass-panel > *` in `globals.css` forces `position: relative; z-index: 1` on every direct child and outranks Tailwind utilities. Direct children of a glass panel therefore cannot use `absolute` or escape the stacking context with `z-*`; nest them one level deeper, or set `z-index` inline. Popover surfaces over a glass panel must be opaque, not translucent, or page content reads through them.
 
+## 2026-07-30 Header Nav Breakpoint
+
+- The desktop link row, the desktop CTA, the hamburger button, and the mobile sheet all switch at **`xl` (1280px)**, not `md`. Nine links plus the theme toggle and the CTA do not fit below ~1280px; at `md`–`lg` the row clipped mid-word and ran under the toggle. Below `xl` the nav is a hamburger sheet. `overflow-x-auto` stays on the row as a safety net.
+- The header CTA reads **DM us on LinkedIn** with a LinkedIn glyph and an up-right arrow — deliberately shorter than the body CTAs ("Message us on LinkedIn") to keep the row within budget. Body and footer CTAs keep the longer label.
+
 ## 2026-07-30 Footer Column Balance
 
 - The footer grid is 12 columns on `md`: brand (3), Company (3), Practices (2), Offices (4). Thin vertical rules (`md:border-l`, `border-gray-border` / `dark:white/[0.06]`) separate the four groups on desktop and are absent on mobile.
