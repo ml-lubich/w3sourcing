@@ -68,6 +68,7 @@ We optimise for **clarity and calm**, not for gimmicks. The experience should fe
 - Job results must load progressively as the reader scrolls, without numbered pagination or a manual load-more button.
 - Progressive batches must show non-content shimmer placeholders while loading, and reduced-motion preferences must be respected.
 - Posted dates may determine result order but must not be rendered on public job cards.
+- The W3 map (`#expertise`, lg+) must read as a dense field: no pill may sweep through the centre title's keep-out band, and scatter that lands inside it is reflected outward rather than clamped to the edge (clamping parks a tier on one line, where pills overlap). Pills are real buttons; clicking one freezes the field and flips out an opaque panel anchored to that pill, naming its practice, its sibling areas, and a link to live roles. Escape or a press outside closes it.
 - Each public job card must have a stable link target and a share action with clipboard fallback, without exposing client identifiers.
 
 ## 2026-08-06 Self-Serve Jobs Management Requirements

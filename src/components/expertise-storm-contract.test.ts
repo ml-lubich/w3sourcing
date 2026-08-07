@@ -2,7 +2,9 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-import { expertiseAreas, expertiseClusters } from "@/content/expertise-areas";
+import { areaCluster, expertiseAreas, expertiseClusters } from "@/content/expertise-areas";
+
+import { keepOutOfTitleBand } from "./expertise-storm";
 
 const componentsDir = import.meta.dirname;
 const src = readFileSync(path.join(componentsDir, "expertise-storm.tsx"), "utf8");
@@ -87,5 +89,72 @@ describe("expertise storm styling hooks", () => {
     const stormBlock = css.slice(css.indexOf(".expertise-storm"));
     // filter:brightness() driven by the per-frame --d forces re-rasterization.
     expect(stormBlock).not.toMatch(/filter:\s*brightness/);
+  });
+});
+
+/* ── 2026-08-07 map overhaul: density, keep-out band, click-to-open panel ── */
+
+describe("W3 map layout", () => {
+  test("pushes a pill out of the centre band instead of parking it on the edge", () => {
+    // Clamping to the band edge parked a whole tier on one line, where the
+    // pills then overlapped each other on the way past.
+    const a = keepOutOfTitleBand(10, -120);
+    const b = keepOutOfTitleBand(40, -120);
+    expect(Math.abs(a)).toBeGreaterThanOrEqual(92);
+    expect(Math.abs(b)).toBeGreaterThanOrEqual(92);
+    expect(a).not.toBe(b);
+  });
+
+  test("reflects toward its own tier's side of the title", () => {
+    expect(keepOutOfTitleBand(20, -120)).toBeLessThan(0);
+    expect(keepOutOfTitleBand(-20, 120)).toBeGreaterThan(0);
+  });
+
+  test("leaves an offset that already clears the band alone", () => {
+    expect(keepOutOfTitleBand(-180, -120)).toBe(-180);
+  });
+});
+
+describe("W3 map density and panel content", () => {
+  test("carries enough areas to read as a dense field", () => {
+    expect(expertiseAreas.length).toBeGreaterThanOrEqual(60);
+  });
+
+  test("every area resolves to the cluster its panel names", () => {
+    for (const area of expertiseAreas) {
+      expect(areaCluster.get(area)).toBeDefined();
+    }
+    expect(areaCluster.get("Litigation")?.label).toBe("Legal");
+  });
+
+  test("clusters stay non-empty so a panel always has siblings to offer", () => {
+    for (const cluster of expertiseClusters) {
+      expect(cluster.items.length).toBeGreaterThan(1);
+    }
+  });
+});
+
+describe("W3 map interaction contract", () => {
+  test("pills are real buttons that open a panel, not decoration", () => {
+    expect(src).toContain("openPill");
+    expect(src).toContain('role="dialog"');
+    // The field freezes while a panel is open so the panel stays on its pill.
+    expect(src).toContain("pausedRef.current = open !== null");
+  });
+
+  test("the panel closes on Escape and on a press outside it", () => {
+    expect(src).toContain('event.key === "Escape"');
+    expect(src).toContain("setOpen(null)");
+    expect(src).toContain("event.stopPropagation()");
+  });
+
+  test("the panel is opaque, not the frosted panel used elsewhere", () => {
+    const css = readFileSync(
+      path.join(componentsDir, "..", "app", "globals.css"),
+      "utf8",
+    );
+    expect(src).not.toContain("expertise-panel glass-panel");
+    expect(css).toContain(".expertise-panel");
+    expect(css).toContain("background-color: var(--surface)");
   });
 });

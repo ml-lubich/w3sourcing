@@ -26,6 +26,14 @@ export const expertiseClusters: readonly ExpertiseCluster[] = [
       "Data & Analytics",
       "Platform / SRE",
       "Security",
+      "Research Engineering",
+      "Applied Science",
+      "Mobile / iOS & Android",
+      "DevOps & Cloud",
+      "Data Engineering",
+      "Embedded & Robotics",
+      "Quality & Test",
+      "Engineering Leadership",
     ],
   },
   {
@@ -36,6 +44,13 @@ export const expertiseClusters: readonly ExpertiseCluster[] = [
       "Sales Leadership",
       "Marketing & Growth",
       "Operations & Strategy",
+      "Account Executives",
+      "Customer Success",
+      "Solutions Engineering",
+      "Partnerships",
+      "Revenue Operations",
+      "Product Marketing",
+      "Chief of Staff",
     ],
   },
   {
@@ -47,6 +62,11 @@ export const expertiseClusters: readonly ExpertiseCluster[] = [
       "Litigation",
       "Regulatory & Compliance",
       "IP & Tech Transactions",
+      "Employment Law",
+      "Real Estate Law",
+      "Funds & Investment",
+      "Associates",
+      "Legal Operations",
     ],
   },
   {
@@ -59,11 +79,23 @@ export const expertiseClusters: readonly ExpertiseCluster[] = [
       "Venture Capital",
       "Private Equity",
       "Treasury & FP&A",
+      "Risk & Controls",
+      "Quantitative Research",
+      "Corporate Finance",
+      "Wealth Management",
+      "Financial Crime",
     ],
   },
   {
     label: "Leadership",
-    items: ["Executive Search", "C-Suite", "Board & Advisory"],
+    items: [
+      "Executive Search",
+      "C-Suite",
+      "Board & Advisory",
+      "Non-Executive Directors",
+      "Founder Hires",
+      "Interim Leadership",
+    ],
   },
   {
     label: "How W3 Works",
@@ -75,6 +107,9 @@ export const expertiseClusters: readonly ExpertiseCluster[] = [
       "Cross-Border Hiring",
       "AI-Assisted Sourcing",
       "Human-Led Judgment",
+      "Succession Planning",
+      "Compensation Benchmarking",
+      "Diversity Sourcing",
     ],
   },
 ] as const;
@@ -82,4 +117,15 @@ export const expertiseClusters: readonly ExpertiseCluster[] = [
 /** Flat, de-duplicated list the desktop storm places on its rings. */
 export const expertiseAreas: readonly string[] = Array.from(
   new Set(expertiseClusters.flatMap((c) => c.items)),
+);
+
+/**
+ * Which cluster an area belongs to, for the panel that opens when a pill on
+ * the map is clicked. Derived from the clusters above so the two can never
+ * drift apart.
+ */
+export const areaCluster: ReadonlyMap<string, ExpertiseCluster> = new Map(
+  expertiseClusters.flatMap((cluster) =>
+    cluster.items.map((item) => [item, cluster] as const),
+  ),
 );
