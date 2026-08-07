@@ -4,12 +4,15 @@ import { PERRY_EMAIL } from "@/content/contact-links";
 import {
   buildJobMailtoHref,
   filterJobs,
-  loadLiveJobs,
   type LiveJob,
 } from "./jobs";
+import { loadLiveJobs } from "./jobs-server";
+
+// No Supabase credentials under `bun test`, so this exercises the committed
+// Paraform export — the same masking path the database rows go through.
+const jobs = await loadLiveJobs();
 
 describe("live jobs dataset", () => {
-  const jobs = loadLiveJobs();
 
   test("serves the full Paraform roles export", () => {
     expect(jobs.length).toBeGreaterThan(900);
@@ -29,6 +32,7 @@ describe("live jobs dataset", () => {
 
   test("is sorted newest-first by posted date", () => {
     const dated = jobs.filter((j) => j.postedDate);
+
     for (let i = 1; i < dated.length; i++) {
       expect(dated[i - 1].postedDate! >= dated[i].postedDate!).toBe(true);
     }
@@ -37,6 +41,7 @@ describe("live jobs dataset", () => {
   test("only masked, public-safe fields are exposed (no client identifiers)", () => {
     const allowedKeys = new Set([
       "ref",
+      "hot",
       "role",
       "roleGroup",
       "roleType",
@@ -84,6 +89,7 @@ describe("live jobs dataset", () => {
 const sample: LiveJob[] = [
   {
     ref: "W3-AAAAAA",
+    hot: false,
     role: "Product Engineer (Senior/Staff)",
     roleGroup: "Engineering - AI/ML",
     roleType: "Product Engineer",
@@ -100,6 +106,7 @@ const sample: LiveJob[] = [
   },
   {
     ref: "W3-BBBBBB",
+    hot: false,
     role: "RL Research Engineer",
     roleGroup: "Engineering - AI/ML",
     roleType: "Research Engineer",

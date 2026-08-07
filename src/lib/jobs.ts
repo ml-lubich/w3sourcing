@@ -1,13 +1,14 @@
 import { PERRY_EMAIL } from "@/content/contact-links";
-import liveJobsData from "@/content/live-jobs.json";
 
 /**
- * Raw Paraform export row. This shape is server-only — it carries client-
- * identifying fields (company, website, Paraform link, taglines) that must
- * never reach the browser. `loadLiveJobs` masks it down to {@link LiveJob}
- * before anything is handed to a client component.
+ * Raw job row, as stored in Supabase (and as exported by Paraform). This shape
+ * is server-only — it carries client-identifying fields (company, website,
+ * Paraform link, taglines) that must never reach the browser. `maskJobs` cuts
+ * it down to {@link LiveJob} before anything is handed to a client component.
  */
-type RawJob = {
+export type RawJob = {
+  ref?: string;
+  hot?: boolean;
   company: string;
   role: string;
   roleGroup: string | null;
@@ -36,6 +37,8 @@ type RawJob = {
  */
 export type LiveJob = {
   ref: string;
+  /** Perry's "New Hot Job" flag — badges the card and floats it to the top. */
+  hot: boolean;
   role: string;
   roleGroup: string | null;
   roleType: string | null;
@@ -58,11 +61,18 @@ const WORKPLACE_LABELS: Record<string, string> = {
 
 /**
  * Stable, human-quotable reference from the Paraform role id (unique per role,
- * so refs never collide and don't shift when the pipeline refreshes).
+ * so refs never collide and don't shift when the pipeline refreshes). Re-
+ * importing the same export therefore updates roles in place instead of
+ * duplicating them.
  */
-function toRef(link: string): string {
+export function toRef(link: string): string {
   const id = link.split("/").filter(Boolean).pop() ?? link;
   return `W3-${id.slice(-6).toUpperCase()}`;
+}
+
+/** Reference for a role typed in by hand, with no Paraform link to derive from. */
+export function newRef(): string {
+  return `W3-${crypto.randomUUID().replaceAll("-", "").slice(-6).toUpperCase()}`;
 }
 
 /**
@@ -76,9 +86,15 @@ function toVisaStatus(visa: string | null): string | null {
   return status || null;
 }
 
-export function loadLiveJobs(): LiveJob[] {
-  const jobs: LiveJob[] = (liveJobsData as RawJob[]).map((job) => ({
-    ref: toRef(job.link),
+/**
+ * Strip every client identifier and order the board: Perry's hot roles first,
+ * then newest posted date. Pure and synchronous so the privacy contract can be
+ * tested without a database.
+ */
+export function maskJobs(rawJobs: RawJob[]): LiveJob[] {
+  const jobs: LiveJob[] = rawJobs.map((job) => ({
+    ref: job.ref ?? toRef(job.link),
+    hot: job.hot === true,
     role: job.role,
     roleGroup: job.roleGroup,
     roleType: job.roleType,
@@ -94,6 +110,7 @@ export function loadLiveJobs(): LiveJob[] {
     hiringCount: job.hiringCount,
   }));
   return jobs.sort((a, b) => {
+    if (a.hot !== b.hot) return a.hot ? -1 : 1;
     if (!a.postedDate) return b.postedDate ? 1 : 0;
     if (!b.postedDate) return -1;
     return b.postedDate.localeCompare(a.postedDate);

@@ -6,6 +6,7 @@
 - [Local](#local)
 - [SEO (canonical URL)](#seo-canonical-url)
 - [Vercel](#vercel)
+- [Jobs database (Supabase)](#jobs-database-supabase)
 - [CI (GitHub Actions)](#ci-github-actions)
 
 ## Toolchain
@@ -39,6 +40,17 @@ If `NEXT_PUBLIC_SITE_URL` is unset, the app falls back to **`VERCEL_URL`** on Ve
 ### Tailwind v4 and the production CSS bundle
 
 `src/app/globals.css` imports Tailwind with **`@import "tailwindcss" source("../..");`** so class detection is anchored at the **app root** (relative to the stylesheet), not only `process.cwd()`. If that import used the default base and the build’s working directory did not match the app root, Tailwind could emit a tiny CSS chunk with almost no utilities—pages would look unstyled on Vercel while `bun run build` looked fine locally. After changing Tailwind entry or app layout paths, keep that `source(..)` segment aligned with the repo layout.
+
+## Jobs database (Supabase)
+
+`/jobs` and `/admin` read and write one Supabase table. Without these variables the app still builds and serves the committed Paraform export (`src/content/live-jobs.json`), and `/admin` renders a "not configured" panel instead of failing.
+
+1. **Provision:** `vercel integration add supabase --no-claim` (accept the Marketplace terms in the browser the first time). This connects the resource to the project and injects `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and the `POSTGRES_*` connection strings across all environments.
+2. **Set the editor password:** `vercel env add ADMIN_PASSWORD production` (repeat for `preview` / `development`). This is the single shared password for `/admin`; changing it signs every existing session out.
+3. **Create the table and load the export:** `vercel env pull .env.local --yes` then `bun run jobs:seed`. The seed applies `supabase/schema.sql` (idempotent) and upserts every role by W3 reference.
+4. Redeploy so the running functions pick up the new variables.
+
+**Access model:** the table has RLS enabled with **no policies**, so the anon key that ships to browsers cannot read or write it. Every query goes through the service-role key in server-only code (`src/lib/jobs-store.ts`), which must never be imported from a client component.
 
 ## CI (GitHub Actions)
 

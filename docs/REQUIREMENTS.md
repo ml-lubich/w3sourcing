@@ -70,6 +70,18 @@ We optimise for **clarity and calm**, not for gimmicks. The experience should fe
 - Posted dates may determine result order but must not be rendered on public job cards.
 - Each public job card must have a stable link target and a share action with clipboard fallback, without exposing client identifiers.
 
+## 2026-08-06 Self-Serve Jobs Management Requirements
+
+Perry publishes and closes roles himself; adding a role must never require a developer, a commit, or a deploy.
+
+- The editor lives at `/admin` behind a single shared password (`ADMIN_PASSWORD`). It must be `noindex`, unlinked from public navigation, and must re-check the session inside every mutating server action — the page-level check is not access control.
+- Roles can be added **one at a time** through a form, or in bulk by **CSV** (file upload or pasted rows). Only the role title is required; every other field is optional and may be left blank.
+- CSV headers are matched by alias (`job title`, `location`, `comp`, … all resolve), unknown columns are ignored and reported, and unreadable rows are reported by line number instead of being silently dropped.
+- Rows carrying an ATS link that already exists update that role in place rather than creating a duplicate, so a refreshed export can be re-imported safely.
+- Any role can be flagged a **hot job**. Hot roles carry a badge on the public card and sort above everything else, newest-first ordering applying within each group.
+- Closed roles are removed outright from `/admin`; the public board must reflect an add, edit, removal, or hot flag immediately, not on the next deploy.
+- The privacy contract from the Jobs Explorer requirements still holds for every route into the data: company, website, ATS link, tagline, and free-text visa notes stay server-side, whether a role came from the Paraform export, the form, or a CSV.
+
 ## 2026-05-04 American Startup Voice Requirement
 
 - New public marketing copy must use refined American English and a current VC-backed technology / startup-market voice.

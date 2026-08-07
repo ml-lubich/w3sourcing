@@ -66,6 +66,8 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ["lucide-react"],
+    /** A full ATS export uploaded at /admin runs to a few hundred KB of CSV. */
+    serverActions: { bodySizeLimit: "8mb" },
   },
 };
 

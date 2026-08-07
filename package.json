@@ -11,11 +11,13 @@
     "ci": "bun run lint && bun run test && bun run build",
     "precommit": "bun run lint && bun run test && bun run build && bun run smoke:routes:ci",
     "test": "bun scripts/run-tests-in-root.ts",
+    "jobs:seed": "bun scripts/exec-in-repo-root.ts bun scripts/seed-jobs.ts",
     "smoke:routes": "bun run scripts/smoke-no-404.ts",
     "smoke:routes:ci": "SMOKE_SKIP_BUILD=1 bun run scripts/smoke-no-404.ts",
     "smoke:routes:dev": "SMOKE_MODE=dev bun run scripts/smoke-no-404.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.2",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.7.0",
     "next": "16.2.1",

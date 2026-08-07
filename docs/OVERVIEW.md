@@ -17,7 +17,7 @@
 
 This repository is the marketing front end for **W3 Sourcing**: a global executive recruitment firm operating across technology, legal, and banking and finance. The product is a **single, scroll-based landing experience** that should feel as careful and deliberate as a senior search mandate—clear structure, calm motion, and copy that honours the fact that hiring is never only software; it is judgment, relationships, and discretion.
 
-There is **no application server or database** in this repo. The site is built for **static hosting** (for example Vercel): fast pages, predictable behaviour, and minimal moving parts behind the scenes.
+The marketing pages are **static** (fast, predictable, few moving parts). The one exception is the jobs board: `/jobs` and the `/admin` editor read and write a **Supabase Postgres** table so Perry can publish and close roles himself, without a developer or a deploy. Everything else still renders without a database.
 
 ## Brand and audience
 
@@ -41,8 +41,10 @@ Canonical registration and office details used in the UI live in `src/content/of
 | Path       | Purpose |
 | ---------- | ------- |
 | `/`        | Home: full landing with all sections and header/footer section navigation (see below). |
+| `/jobs`    | Public jobs board (masked roles, filters, infinite scroll). ISR, 60s. |
 | `/privacy` | Privacy policy (uses `LegalPageShell`; header/footer with root section links). |
 | `/terms`   | Terms of use (same shell pattern). |
+| `/admin`   | Password-gated jobs editor for Perry (add / edit / remove / flag hot, CSV import). `noindex`, unlinked, always dynamic. |
 
 Contact is **direct email-first** in the current public journey: header, hero, comparison, 404, footer, and final CTA actions should resolve to `mailto:info@w3sourcing.com`. The deprecated `#contact` form component remains in the tree for implementation history only.
 
@@ -80,6 +82,7 @@ The previous home-page `#contact` form is deprecated and no longer rendered in t
 - `bun run lint` — ESLint.
 - `bun run test` — unit tests under `src/` plus `tsc --noEmit` (see `docs/TESTING.md`).
 - `bun run smoke:routes` — route smoke (build + production server + GET each route); variants `smoke:routes:dev` and `smoke:routes:ci` are documented in `docs/TESTING.md`.
+- `bun run jobs:seed` — one-time Supabase setup: applies `supabase/schema.sql` and loads `src/content/live-jobs.json` into the jobs table (needs `vercel env pull .env.local` first).
 
 **Before you commit:** run **`bun run test`** locally when you change app or lib code; Vercel runs **`bun run ci`** and **`bun run smoke:routes:ci`** on deploy (see `docs/TESTING.md`).
 

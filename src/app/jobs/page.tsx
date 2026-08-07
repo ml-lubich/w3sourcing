@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { JobsExplorer } from "@/components/jobs-explorer";
 import { LegalPageShell } from "@/components/legal-page-shell";
-import { loadLiveJobs } from "@/lib/jobs";
+import { loadLiveJobs } from "@/lib/jobs-server";
 
 export const metadata: Metadata = {
   title: "Jobs",
@@ -10,8 +10,14 @@ export const metadata: Metadata = {
     "Browse the current live roles W3 Sourcing is recruiting for — search by title, reference, or tech stack, then message Perry Barrow directly about any role.",
 };
 
-export default function JobsPage() {
-  const jobs = loadLiveJobs();
+/**
+ * Rebuilt at most once a minute; admin edits call `revalidatePath("/jobs")`, so
+ * Perry's changes are live immediately rather than on the next window.
+ */
+export const revalidate = 60;
+
+export default async function JobsPage() {
+  const jobs = await loadLiveJobs();
 
   return (
     <LegalPageShell>

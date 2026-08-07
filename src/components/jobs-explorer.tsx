@@ -17,6 +17,7 @@ import {
   ChevronDown,
   CircleDollarSign,
   Clock3,
+  Flame,
   Mail,
   MapPin,
   Search,
@@ -561,6 +562,12 @@ export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
                           >
                             {job.ref}
                           </a>
+                          {job.hot ? (
+                            <span className="inline-flex items-center gap-1 rounded-md bg-orange-500/12 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-orange-600 dark:text-orange-400">
+                              <Flame className="size-3" aria-hidden />
+                              Hot
+                            </span>
+                          ) : null}
                           {job.sector ? (
                             <span className="inline-flex items-center gap-1 text-xs font-medium text-accent">
                               <Sparkles className="size-3" aria-hidden />
