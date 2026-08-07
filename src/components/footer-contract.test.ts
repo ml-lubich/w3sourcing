@@ -23,21 +23,33 @@ describe("footer spacing contract (tight vertical rhythm)", () => {
 });
 
 describe("footer column contract (even columns, no dead space)", () => {
-  test("separates the four groups with vertical rules on desktop only", () => {
-    expect(src.match(/md:border-l/g)).toHaveLength(3);
+  test("separates the groups after the brand with vertical rules on desktop only", () => {
+    // Three link columns (built from one shared component) plus Offices.
+    expect(src.match(/md:border-l/g)).toHaveLength(2);
     expect(src).not.toContain("\nborder-l");
   });
 
-  test("splits the long Company list into two sub-columns", () => {
-    expect(src).toContain("md:grid-rows-5 md:grid-flow-col");
+  test("builds every link column from one component so the headings share a baseline", () => {
+    // The old layout hand-rolled each column, and a 10-link Company list next
+    // to a 3-link Practices list left the rules running past empty space.
+    expect(src).toContain("function FooterColumn");
+    expect(src.match(/<FooterColumn/g)).toHaveLength(3);
+    expect(src).not.toContain("md:grid-rows-5 md:grid-flow-col");
   });
 
-  test("sets the office addresses side by side instead of stacked", () => {
-    expect(src).toContain("sm:grid-cols-2");
+  test("spans the twelve-column grid exactly once", () => {
+    // brand 3 + three link columns at 2 + offices 3.
+    expect(src).toContain("md:col-span-3");
+    expect(src).toContain("md:col-span-2 md:border-l");
+  });
+
+  test("keeps the office addresses side by side until the column narrows", () => {
+    expect(src).toContain("sm:grid-cols-2 md:grid-cols-1");
     expect(src).not.toContain("space-y-4 text-sm text-text-secondary");
   });
 
-  test("files the contact CTAs in the brand column, not under the Offices heading", () => {
+  test("opens on the contact band, above every reference column", () => {
+    expect(src.indexOf("Start a conversation")).toBeLessThan(src.indexOf('text="Offices"'));
     expect(src.indexOf("View current live jobs")).toBeLessThan(src.indexOf('text="Offices"'));
   });
 

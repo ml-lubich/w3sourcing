@@ -27,24 +27,50 @@ export type FooterProps = {
   sectionLinksFromRoot?: boolean;
 };
 
-const footerLinks = [
-  { label: "Practices", href: "#practice-areas" },
-  { label: "Leadership", href: "#leadership" },
-  { label: "Process", href: "#process" },
-  { label: "Why W3", href: "#why-w3" },
-  { label: "Industries", href: "#industries" },
-  { label: "Methodology", href: "#features" },
-  { label: "Results", href: "#stats" },
-  { label: "Compare", href: "#compare" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "FAQ", href: "#faq" },
+const sectors = [
+  { label: "Technology", href: "#practice-areas" },
+  { label: "Legal", href: "#practice-areas" },
+  { label: "Finance", href: "#practice-areas" },
+  { label: "Industries & functions", href: "#industries" },
+  { label: "Areas we cover", href: "#expertise" },
 ];
 
-const sectors = [
-  { label: "Technology", href: "#industries" },
-  { label: "Legal", href: "#industries" },
-  { label: "Finance", href: "#industries" },
+/** Split so every column carries a comparable list and the headings align. */
+const companyLinks = [
+  { label: "Leadership", href: "#leadership" },
+  { label: "Why W3", href: "#why-w3" },
+  { label: "Process", href: "#process" },
+  { label: "Methodology", href: "#features" },
+  { label: "Compare", href: "#compare" },
 ];
+
+const exploreLinks = [
+  { label: "Results", href: "#stats" },
+  { label: "Testimonials", href: "#testimonials" },
+  { label: "FAQ", href: "#faq" },
+  { label: "Practices", href: "#practice-areas" },
+];
+
+/** One link column. Every column is built the same way so the headings sit on
+ *  a single baseline and the lists share a rhythm. */
+function FooterColumn({
+  title,
+  animate,
+  children,
+}: {
+  title: string;
+  animate: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="md:col-span-2 md:border-l md:border-gray-border md:pl-8 dark:md:border-white/[0.06]">
+      <h4 className="text-muted text-xs font-semibold tracking-[0.12em] uppercase mb-4 inline-block max-w-full">
+        <SplitWords as="span" text={title} stagger={0.06} animate={animate} />
+      </h4>
+      <div className="flex flex-col gap-2.5">{children}</div>
+    </div>
+  );
+}
 
 export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
   const onSectionLinkClick = useSectionLinkClick(sectionLinksFromRoot);
@@ -73,8 +99,47 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
       className="bg-footer text-foreground overflow-hidden shadow-[0_-12px_40px_rgb(15_23_42_/_0.07)] dark:shadow-[0_-12px_40px_rgb(0_0_0_/_0.35)]"
     >
       <div className="mx-auto max-w-7xl px-6 py-12 md:py-14">
+        {/* The footer opens on the ask, the way a good closing line does —
+            everything below it is reference material. */}
         <motion.div
-          className="grid grid-cols-2 md:grid-cols-12 gap-x-8 gap-y-10 sm:gap-x-10"
+          className="footer-cta flex flex-col gap-5 rounded-2xl px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:px-8"
+          initial={reduced ? false : { opacity: 0, y: liteMotion ? 8 : 14 }}
+          animate={
+            footerRevealVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: liteMotion ? 8 : 14 }
+          }
+          transition={surfaceRevealEnterTransition(liteMotion, reduced)}
+        >
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
+              Start a conversation
+            </p>
+            <p className="mt-1.5 text-lg font-bold leading-snug text-foreground sm:text-xl">
+              Hiring, or open to hearing what is out there?
+            </p>
+            <p className="mt-1 text-sm text-text-secondary">
+              Perry reads and answers every message himself.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href={PERRY_LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_28px_-12px_color-mix(in_srgb,var(--accent)_70%,transparent)] transition-[background-color,transform] hover:bg-accent-hover motion-safe:hover:-translate-y-0.5"
+            >
+              Message us on LinkedIn
+            </a>
+            <Link
+              href="/jobs"
+              className="inline-flex items-center gap-2 rounded-xl border border-gray-border px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:text-accent dark:border-white/15"
+            >
+              View current live jobs
+            </Link>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="mt-12 grid grid-cols-2 gap-x-8 gap-y-10 sm:gap-x-10 md:grid-cols-12"
           initial={reduced ? false : { opacity: 0, y: liteMotion ? 10 : 16 }}
           animate={
             footerRevealVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: liteMotion ? 10 : 16 }
@@ -98,23 +163,8 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
               Global recruitment excellence for technology, legal, and finance leaders—human-led judgment on who truly
               fits, for organisations across the US, UK, EU, UAE, and Asia.
             </p>
-            <div className="mt-6 flex flex-col items-start gap-2.5 text-sm">
-              <a
-                href={PERRY_LINKEDIN_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent hover:text-foreground transition-colors font-medium"
-              >
-                Message us on LinkedIn
-              </a>
-              <Link
-                href="/jobs"
-                className="text-accent hover:text-foreground transition-colors font-medium"
-              >
-                View current live jobs
-              </Link>
-            </div>
-            <div className="mt-6 flex gap-3">
+            <p className="mt-5 text-sm font-medium text-muted">US · UK · EU · UAE · Asia</p>
+            <div className="mt-5 flex gap-3">
               <a
                 href={PERRY_LINKEDIN_URL}
                 target="_blank"
@@ -129,47 +179,55 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
             </div>
           </div>
 
-          <div className="md:col-span-3 md:border-l md:border-gray-border md:pl-8 dark:md:border-white/[0.06]">
-            <h4 className="text-muted text-xs font-semibold tracking-[0.12em] uppercase mb-4 inline-block max-w-full">
-              <SplitWords as="span" text="Company" stagger={0.06} animate={footSplit} />
-            </h4>
-            <div className="grid gap-2.5 md:grid-rows-5 md:grid-flow-col md:gap-x-6">
-              {footerLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={sectionHref(link.href, sectionLinksFromRoot)}
-                  onClick={(e) => onSectionLinkClick(e, link.href)}
-                  className="text-text-secondary hover:text-foreground transition-colors duration-200 text-sm"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </div>
+          <FooterColumn title="Company" animate={footSplit}>
+            {companyLinks.map((link) => (
+              <a
+                key={link.label}
+                href={sectionHref(link.href, sectionLinksFromRoot)}
+                onClick={(e) => onSectionLinkClick(e, link.href)}
+                className="footer-link"
+              >
+                {link.label}
+              </a>
+            ))}
+          </FooterColumn>
 
-          <div className="md:col-span-2 md:border-l md:border-gray-border md:pl-8 dark:md:border-white/[0.06]">
-            <h4 className="text-muted text-xs font-semibold tracking-[0.12em] uppercase mb-4 inline-block max-w-full">
-              <SplitWords as="span" text="Practices" stagger={0.06} animate={footSplit} />
-            </h4>
-            <div className="flex flex-col gap-2.5">
-              {sectors.map((link) => (
-                <a
-                  key={link.label}
-                  href={sectionHref(link.href, sectionLinksFromRoot)}
-                  onClick={(e) => onSectionLinkClick(e, link.href)}
-                  className="text-text-secondary hover:text-foreground transition-colors duration-200 text-sm"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </div>
+          <FooterColumn title="Practices" animate={footSplit}>
+            {sectors.map((link) => (
+              <a
+                key={link.label}
+                href={sectionHref(link.href, sectionLinksFromRoot)}
+                onClick={(e) => onSectionLinkClick(e, link.href)}
+                className="footer-link"
+              >
+                {link.label}
+              </a>
+            ))}
+          </FooterColumn>
 
-          <div className="col-span-2 md:col-span-4 md:border-l md:border-gray-border md:pl-8 dark:md:border-white/[0.06]">
+          <FooterColumn title="Explore" animate={footSplit}>
+            {exploreLinks.map((link) => (
+              <a
+                key={link.label}
+                href={sectionHref(link.href, sectionLinksFromRoot)}
+                onClick={(e) => onSectionLinkClick(e, link.href)}
+                className="footer-link"
+              >
+                {link.label}
+              </a>
+            ))}
+            <Link href="/jobs" className="footer-link">
+              Live jobs
+            </Link>
+          </FooterColumn>
+
+          <div className="col-span-2 md:col-span-3 md:border-l md:border-gray-border md:pl-8 dark:md:border-white/[0.06]">
             <h4 className="text-muted text-xs font-semibold tracking-[0.12em] uppercase mb-4 inline-block max-w-full">
               <SplitWords as="span" text="Offices" stagger={0.06} animate={footSplit} />
             </h4>
-            <div className="grid gap-x-6 gap-y-5 text-sm text-text-secondary leading-relaxed sm:grid-cols-2">
+            {/* Side by side while there is room; one per row once the column
+                narrows, so an address never wraps mid-line. */}
+            <div className="grid gap-x-6 gap-y-5 text-sm text-text-secondary leading-relaxed sm:grid-cols-2 md:grid-cols-1">
               <div>
                 <p className="text-muted text-xs font-semibold uppercase tracking-wider">London</p>
                 <address className="not-italic mt-1.5">
@@ -196,7 +254,6 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
                 </p>
               </div>
             </div>
-            <p className="text-muted text-sm mt-5">US · UK · EU · UAE · Asia</p>
           </div>
         </motion.div>
 

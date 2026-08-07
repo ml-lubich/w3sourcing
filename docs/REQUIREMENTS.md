@@ -25,6 +25,7 @@ We optimise for **clarity and calm**, not for gimmicks. The experience should fe
 - **First-time-reader navigation**: README and canonical docs must expose a table of contents or document map so someone opening the project can find setup, requirements, design, testing, and deployment without hunting.
 - **Site navigation** must make the primary home sections, legal pages, and direct email contact reachable from header/footer patterns; non-home section links must route back to the home page and land on the intended section.
 - **Registered-office and contact details** surfaced in the footer, sourced from `src/content/offices.ts` so copy does not drift.
+- **Footer structure**: the footer opens on a W3-blue contact band (the ask), then five columns whose headings share one baseline — brand, Company, Practices, Explore, Offices — then a compact legal bar. Link columns are built from one shared component so a long list next to a short one can never leave a divider rule running past empty space.
 - **Theme switching** between light and dark, with persistence and first-paint behaviour as described in `docs/OVERVIEW.md` and `docs/DESIGN.md`.
 - **Accessibility baseline**: skip link to main content, semantic landmarks, `aria-live` where hero and rotating copy update, and respect for `prefers-reduced-motion` on animated passages.
 

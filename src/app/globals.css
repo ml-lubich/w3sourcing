@@ -1324,6 +1324,45 @@ html.dark .step-card-header-scrim {
 }
 
 /* ──────────────────────────────────────────────────────────── */
+/*  Footer — the closing ask, then the reference material.       */
+/* ──────────────────────────────────────────────────────────── */
+
+/* The band the footer opens on: W3 blue, not another grey panel, so the ask
+   reads as the point of the section rather than one more link list. */
+.footer-cta {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 12%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 4%, transparent) 46%,
+    transparent 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+html.dark .footer-cta {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 16%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 5%, transparent) 50%,
+    transparent 100%
+  );
+  border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+}
+
+/* Every footer link is the same object, so the columns share one rhythm. */
+.footer-link {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--text-secondary);
+  transition: color 200ms ease;
+}
+
+.footer-link:hover,
+.footer-link:focus-visible {
+  color: var(--accent);
+}
+
+/* ──────────────────────────────────────────────────────────── */
 /*  Expertise Storm — 3D carousel of competency pills (lg+).     */
 /*  One shared --storm-angle (set by a single rAF loop) drives   */
 /*  every pill: cos() sweeps it across the page, sin() carries   */
