@@ -9,6 +9,18 @@ export function AdminLogin() {
 
   return (
     <form action={formAction} className="glass-panel mt-8 max-w-sm rounded-2xl p-6">
+      <label htmlFor="email" className="text-sm font-semibold text-primary">
+        Email
+      </label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        autoComplete="username"
+        autoFocus
+        required
+        className="mb-4 mt-2 w-full rounded-lg border border-black/10 bg-white/70 px-3 py-2 text-sm text-primary outline-none focus:border-accent dark:border-white/15 dark:bg-white/5"
+      />
       <label htmlFor="password" className="text-sm font-semibold text-primary">
         Password
       </label>
@@ -17,7 +29,6 @@ export function AdminLogin() {
         name="password"
         type="password"
         autoComplete="current-password"
-        autoFocus
         required
         className="mt-2 w-full rounded-lg border border-black/10 bg-white/70 px-3 py-2 text-sm text-primary outline-none focus:border-accent dark:border-white/15 dark:bg-white/5"
       />

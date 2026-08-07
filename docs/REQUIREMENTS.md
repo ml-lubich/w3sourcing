@@ -74,7 +74,7 @@ We optimise for **clarity and calm**, not for gimmicks. The experience should fe
 
 Perry publishes and closes roles himself; adding a role must never require a developer, a commit, or a deploy.
 
-- The editor lives at `/admin` behind a single shared password (`ADMIN_PASSWORD`). It must be `noindex`, unlinked from public navigation, and must re-check the session inside every mutating server action — the page-level check is not access control.
+- The editor lives at `/admin` behind a single shared login (`ADMIN_EMAIL` + `ADMIN_PASSWORD`). It must be `noindex`, unlinked from public navigation, and must re-check the session inside every mutating server action — the page-level check is not access control.
 - Roles can be added **one at a time** through a form, or in bulk by **CSV** (file upload or pasted rows). Only the role title is required; every other field is optional and may be left blank.
 - CSV headers are matched by alias (`job title`, `location`, `comp`, … all resolve), unknown columns are ignored and reported, and unreadable rows are reported by line number instead of being silently dropped.
 - Rows carrying an ATS link that already exists update that role in place rather than creating a duplicate, so a refreshed export can be re-imported safely.

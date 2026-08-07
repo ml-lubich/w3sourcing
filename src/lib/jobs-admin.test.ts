@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test } from "bun:test";
 
-import { isValidPassword, isValidSession, sessionToken } from "./admin-auth";
+import { isValidLogin, isValidSession, sessionToken } from "./admin-auth";
 import { maskJobs, toRef, type RawJob } from "./jobs";
 import { jobsFromCsv, parseCsv, toIsoDate } from "./jobs-csv";
 
@@ -128,28 +128,44 @@ describe("jobsFromCsv", () => {
 });
 
 describe("admin session", () => {
-  const original = process.env.ADMIN_PASSWORD;
+  const originalEmail = process.env.ADMIN_EMAIL;
+  const originalPassword = process.env.ADMIN_PASSWORD;
+
+  function configure(email: string, password: string) {
+    process.env.ADMIN_EMAIL = email;
+    process.env.ADMIN_PASSWORD = password;
+  }
+
   afterEach(() => {
-    process.env.ADMIN_PASSWORD = original;
+    process.env.ADMIN_EMAIL = originalEmail;
+    process.env.ADMIN_PASSWORD = originalPassword;
   });
 
-  test("accepts a cookie minted from the current password", () => {
-    process.env.ADMIN_PASSWORD = "correct horse";
-    expect(isValidSession(sessionToken("correct horse"))).toBe(true);
-    expect(isValidPassword("correct horse")).toBe(true);
+  test("accepts the configured pair and a cookie minted from it", () => {
+    configure("perry@example.com", "correct horse");
+    expect(isValidLogin("perry@example.com", "correct horse")).toBe(true);
+    expect(isValidSession(sessionToken("perry@example.com", "correct horse"))).toBe(true);
   });
 
-  test("rejects the wrong password and a stale cookie after a password change", () => {
-    process.env.ADMIN_PASSWORD = "correct horse";
-    const cookie = sessionToken("correct horse");
-    expect(isValidPassword("battery staple")).toBe(false);
-    process.env.ADMIN_PASSWORD = "battery staple";
+  test("ignores email casing and surrounding space, but not the password's", () => {
+    configure("perry@example.com", "correct horse");
+    expect(isValidLogin(" Perry@Example.com ", "correct horse")).toBe(true);
+    expect(isValidLogin("perry@example.com", "Correct Horse")).toBe(false);
+  });
+
+  test("rejects a wrong email, a wrong password, and a stale cookie after a change", () => {
+    configure("perry@example.com", "correct horse");
+    const cookie = sessionToken("perry@example.com", "correct horse");
+    expect(isValidLogin("someone@else.com", "correct horse")).toBe(false);
+    expect(isValidLogin("perry@example.com", "battery staple")).toBe(false);
+    configure("perry@example.com", "battery staple");
     expect(isValidSession(cookie)).toBe(false);
   });
 
-  test("locks everything out when no password is configured", () => {
+  test("locks everything out when the credentials are not configured", () => {
+    delete process.env.ADMIN_EMAIL;
     delete process.env.ADMIN_PASSWORD;
-    expect(isValidPassword("")).toBe(false);
+    expect(isValidLogin("perry@example.com", "correct horse")).toBe(false);
     expect(isValidSession("anything")).toBe(false);
   });
 });

@@ -46,7 +46,7 @@ If `NEXT_PUBLIC_SITE_URL` is unset, the app falls back to **`VERCEL_URL`** on Ve
 `/jobs` and `/admin` read and write one Supabase table. Without these variables the app still builds and serves the committed Paraform export (`src/content/live-jobs.json`), and `/admin` renders a "not configured" panel instead of failing.
 
 1. **Provision:** `vercel integration add supabase --no-claim` (accept the Marketplace terms in the browser the first time). This connects the resource to the project and injects `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and the `POSTGRES_*` connection strings across all environments.
-2. **Set the editor password:** `vercel env add ADMIN_PASSWORD production` (repeat for `preview` / `development`). This is the single shared password for `/admin`; changing it signs every existing session out.
+2. **Set the editor sign-in:** `vercel env add ADMIN_EMAIL production` and `vercel env add ADMIN_PASSWORD production` (repeat for `preview` / `development`). This is the single shared login for `/admin` — Perry's address and a shared password. Changing either value signs every existing session out.
 3. **Create the table and load the export:** `vercel env pull .env.local --yes` then `bun run jobs:seed`. The seed applies `supabase/schema.sql` (idempotent) and upserts every role by W3 reference.
 4. Redeploy so the running functions pick up the new variables.
 

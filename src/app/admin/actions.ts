@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
 import {
   ADMIN_COOKIE,
   ADMIN_SESSION_MAX_AGE,
-  isValidPassword,
+  isValidLogin,
   isValidSession,
   sessionToken,
 } from "@/lib/admin-auth";
@@ -36,9 +36,10 @@ function publish(): void {
 }
 
 export async function login(_state: ActionState, formData: FormData): Promise<ActionState> {
+  const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
-  if (!isValidPassword(password)) return { error: "That password is not right." };
-  (await cookies()).set(ADMIN_COOKIE, sessionToken(password), {
+  if (!isValidLogin(email, password)) return { error: "That email and password combination is not right." };
+  (await cookies()).set(ADMIN_COOKIE, sessionToken(email, password), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

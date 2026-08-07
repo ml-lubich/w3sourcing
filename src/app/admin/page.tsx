@@ -34,7 +34,7 @@ export default async function AdminPage() {
           <p className="mt-2">
             This environment is missing{" "}
             {[
-              !isAdminConfigured() && "ADMIN_PASSWORD",
+              !isAdminConfigured() && "ADMIN_EMAIL / ADMIN_PASSWORD",
               !isJobsDbConfigured() && "SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY",
             ]
               .filter(Boolean)
