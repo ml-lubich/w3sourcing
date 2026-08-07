@@ -80,6 +80,12 @@ Perry publishes and closes roles himself; adding a role must never require a dev
 - Rows carrying an ATS link that already exists update that role in place rather than creating a duplicate, so a refreshed export can be re-imported safely.
 - Any role can be flagged a **hot job**. Hot roles carry a badge on the public card and sort above everything else, newest-first ordering applying within each group.
 - Closed roles are removed outright from `/admin`; the public board must reflect an add, edit, removal, or hot flag immediately, not on the next deploy.
+- Every role has its own public address (`/jobs#job-<ref>`, from `jobPermalink`). Both the admin row and the public card copy it straight to the clipboard on one press — no OS share sheet — and confirm with a green "Link copied" for about two seconds.
+- `/admin` carries the site's own chrome: the wordmark links back to the public site, the light/dark toggle is present, and the sign-in card is centred rather than pinned to the top left.
+- `/admin` offers a **Dashboard** view alongside the roles list: live/hot/recent counts, roles posted per month, and rankings by group, sector, and location. Each chart answers a magnitude question, so each is a single series in one hue — no colour carries identity.
+- The admin roles list loads a page at a time as the editor scrolls, the same way the public board does; a new search restarts at the first page.
+- Job cards (public and admin) carry a per-discipline icon derived from the role title, not one shared briefcase.
+- Public job cards tilt in 3D toward the pointer. The angles come from one delegated handler writing CSS variables, never a spring per card, and the effect is off under `prefers-reduced-motion` and for non-mouse pointers.
 - The privacy contract from the Jobs Explorer requirements still holds for every route into the data: company, website, ATS link, tagline, and free-text visa notes stay server-side, whether a role came from the Paraform export, the form, or a CSV.
 
 ## 2026-05-04 American Startup Voice Requirement

@@ -52,12 +52,25 @@ describe("live jobs page contract", () => {
     expect(src).toContain('aria-hidden="true"');
   });
 
-  test("job cards expose stable share links with a clipboard fallback", () => {
+  test("job cards copy their permalink straight to the clipboard, with no share sheet", () => {
     const src = readFileSync(path.join(componentsDir, "jobs-explorer.tsx"), "utf8");
-    expect(src).toContain("navigator.share");
     expect(src).toContain("navigator.clipboard.writeText");
-    expect(src).toContain("Share role");
+    expect(src).toContain("jobPermalink");
+    expect(src).toContain("Copy link");
+    expect(src).toContain("Link copied");
     expect(src).toContain("job.ref");
+    // The OS share sheet put a dialog between the reader and the link they wanted.
+    expect(src).not.toContain("navigator.share");
+  });
+
+  test("job cards carry a per-discipline icon and a pointer-driven 3D tilt", () => {
+    const src = readFileSync(path.join(componentsDir, "jobs-explorer.tsx"), "utf8");
+    expect(src).toContain("RoleIcon");
+    expect(src).toContain("data-tilt-card");
+    expect(src).toContain("jobs-card-3d");
+    // One delegated handler on the grid, not a spring per card.
+    expect(src).toContain("tiltCardUnderPointer");
+    expect(src).not.toContain("usePointerTilt3d");
   });
 
   test("every job card offers LinkedIn DM and prefilled email as the contact actions", () => {

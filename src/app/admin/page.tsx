@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 
+import { ThemeToggle } from "@/components/theme-toggle";
 import { isAdminConfigured } from "@/lib/admin-auth";
 import { fetchJobs, isJobsDbConfigured } from "@/lib/jobs-store";
 
@@ -15,12 +18,38 @@ export const metadata: Metadata = {
 /** Always live: this is the editor's view of the board, never a cached page. */
 export const dynamic = "force-dynamic";
 
-function Shell({ children }: { children: React.ReactNode }) {
+function Shell({
+  children,
+  center = false,
+}: {
+  children: React.ReactNode;
+  center?: boolean;
+}) {
   return (
-    <main className="mx-auto min-h-screen w-full max-w-6xl px-6 py-16">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">W3 Sourcing</p>
-      <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-primary">Jobs admin</h1>
-      {children}
+    <main className="mx-auto min-h-screen w-full max-w-6xl px-6 py-10">
+      <div className="flex items-center justify-between gap-4">
+        {/* The wordmark is the way back to the public site. */}
+        <Link href="/" className="group inline-flex items-center gap-3" aria-label="Back to w3sourcing.com">
+          <Image
+            src="/images/logo_w3_sourcing_wordmark.png"
+            alt="W3 Sourcing"
+            width={184}
+            height={72}
+            priority
+            className="h-9 w-[140px] object-contain transition-transform duration-200 group-hover:scale-[1.03] dark:brightness-0 dark:invert"
+          />
+        </Link>
+        <ThemeToggle />
+      </div>
+
+      {center ? (
+        <div className="grid min-h-[70vh] place-items-center">{children}</div>
+      ) : (
+        <>
+          <h1 className="mt-8 text-3xl font-extrabold tracking-tight text-primary">Jobs admin</h1>
+          {children}
+        </>
+      )}
     </main>
   );
 }
@@ -49,7 +78,7 @@ export default async function AdminPage() {
 
   if (!(await isAdminSession())) {
     return (
-      <Shell>
+      <Shell center>
         <AdminLogin />
       </Shell>
     );

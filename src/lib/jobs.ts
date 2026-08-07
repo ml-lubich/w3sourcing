@@ -70,6 +70,14 @@ export function toRef(link: string): string {
   return `W3-${id.slice(-6).toUpperCase()}`;
 }
 
+/**
+ * Every role has its own address on the public board — the anchor the card
+ * carries and the link the admin's "Copy link" button hands out.
+ */
+export function jobPermalink(ref: string): string {
+  return `/jobs#job-${ref.toLowerCase()}`;
+}
+
 /** Reference for a role typed in by hand, with no Paraform link to derive from. */
 export function newRef(): string {
   return `W3-${crypto.randomUUID().replaceAll("-", "").slice(-6).toUpperCase()}`;

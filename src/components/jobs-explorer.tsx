@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from "react";
 import {
@@ -18,10 +19,10 @@ import {
   CircleDollarSign,
   Clock3,
   Flame,
+  Link2,
   Mail,
   MapPin,
   Search,
-  Share2,
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
@@ -29,11 +30,17 @@ import {
   X,
 } from "lucide-react";
 
+import { RoleIcon } from "@/components/role-icon";
 import { PERRY_LINKEDIN_URL } from "@/content/contact-links";
-import { buildJobMailtoHref, filterJobs, type LiveJob } from "@/lib/jobs";
+import { buildJobMailtoHref, filterJobs, jobPermalink, type LiveJob } from "@/lib/jobs";
+import { clientPointToCardTilt } from "@/lib/use-pointer-tilt-3d";
+import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
 
 const PAGE_SIZE = 24;
 const LOAD_DELAY_MS = 420;
+/** Kept shallow: a job card is dense text, and text under a steep rotation blurs. */
+const CARD_TILT_MAX_DEG = 5;
+const CARD_TILT_LIFT_PX = 10;
 
 function LinkedInGlyph({ className }: { className?: string }) {
   return (
@@ -234,6 +241,7 @@ function JobCardSkeleton() {
 }
 
 export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
+  const reducedMotion = useHydrationSafeReducedMotion();
   const [query, setQuery] = useState("");
   const [roleGroup, setRoleGroup] = useState("");
   const [workplace, setWorkplace] = useState("");
@@ -391,24 +399,41 @@ export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
     markCopied(ref);
   };
 
-  const shareJob = async (job: LiveJob) => {
-    const anchor = `job-${job.ref.toLowerCase()}`;
-    const url = `${window.location.origin}${window.location.pathname}#${anchor}`;
-    const shareData = {
-      title: `${job.role} — ${job.ref}`,
-      text: `Take a look at this ${job.role} opportunity from W3 Sourcing (${job.ref}).`,
-      url,
-    };
+  /**
+   * One delegated pointer handler for the whole grid drives the 3D tilt: it
+   * writes two CSS variables on the card under the cursor and lets the
+   * compositor animate the transform. A per-card React/Framer spring would
+   * mean hundreds of live subscriptions on a board this size.
+   */
+  const tiltCardUnderPointer = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (reducedMotion || event.pointerType !== "mouse") return;
+    const card = (event.target as HTMLElement).closest<HTMLElement>("[data-tilt-card]");
+    if (!card) return;
+    const tilt = clientPointToCardTilt(
+      event.clientX,
+      event.clientY,
+      card.getBoundingClientRect(),
+      CARD_TILT_MAX_DEG,
+    );
+    card.style.setProperty("--card-tilt-x", `${tilt.rotateX.toFixed(2)}deg`);
+    card.style.setProperty("--card-tilt-y", `${tilt.rotateY.toFixed(2)}deg`);
+    card.style.setProperty("--card-tilt-lift", `${CARD_TILT_LIFT_PX}px`);
+  };
 
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-        return;
-      } catch (error) {
-        if (error instanceof DOMException && error.name === "AbortError") return;
-      }
-    }
-    await copyLink(url, job.ref);
+  const resetCardTilt = (event: ReactPointerEvent<HTMLElement>) => {
+    const card = event.currentTarget;
+    card.style.setProperty("--card-tilt-x", "0deg");
+    card.style.setProperty("--card-tilt-y", "0deg");
+    card.style.setProperty("--card-tilt-lift", "0px");
+  };
+
+  /**
+   * Straight to the clipboard. This used to open the OS share sheet first,
+   * which put an extra dialog between the reader and the one thing they wanted
+   * — the link to this role.
+   */
+  const copyJobLink = async (job: LiveJob) => {
+    await copyLink(`${window.location.origin}${jobPermalink(job.ref)}`, job.ref);
   };
 
   return (
@@ -526,7 +551,10 @@ export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
         </div>
       ) : (
         <>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div
+            className="grid gap-4 [perspective:1100px] md:grid-cols-2"
+            onPointerMove={tiltCardUnderPointer}
+          >
             {visible.map((job, index) => {
               const chips = techStackChips(job.techStack);
               const anchor = `job-${job.ref.toLowerCase()}`;
@@ -537,8 +565,10 @@ export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
                   key={job.ref}
                   id={anchor}
                   tabIndex={-1}
+                  data-tilt-card
+                  onPointerLeave={resetCardTilt}
                   style={{ animationDelay: `${Math.min(index % PAGE_SIZE, 8) * 45}ms` }}
-                  className="jobs-card-enter glass-panel group relative scroll-mt-28 overflow-hidden rounded-2xl p-6 transition-[box-shadow,transform] duration-300 hover:shadow-[0_18px_55px_rgb(79_70_229_/_0.14)] dark:hover:shadow-[0_18px_55px_rgb(0_0_0_/_0.42)]"
+                  className="jobs-card-enter jobs-card-3d glass-panel group relative scroll-mt-28 overflow-hidden rounded-2xl p-6 hover:shadow-[0_28px_70px_rgb(79_70_229_/_0.18)] dark:hover:shadow-[0_28px_70px_rgb(0_0_0_/_0.5)]"
                 >
                   {/* Inside the inner wrapper: `.glass-panel > *` forces position:relative on direct children. */}
                   <div className="relative flex h-full flex-col">
@@ -548,7 +578,7 @@ export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
                     />
                     <div className="relative flex items-start gap-3">
                       <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-accent/18 to-cyan-400/10 text-accent shadow-[inset_0_1px_0_rgb(255_255_255_/_0.6)]">
-                        <BriefcaseBusiness className="size-5" strokeWidth={1.8} aria-hidden />
+                        <RoleIcon job={job} className="size-5" />
                       </span>
                       <div className="min-w-0 flex-1">
                         <h3 className="text-base font-bold leading-snug text-primary">
@@ -653,17 +683,23 @@ export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
                         </a>
                         <button
                           type="button"
-                          onClick={() => void shareJob(job).catch(() => markCopyFailed(job.ref))}
-                          className="glass-panel glass-panel--chrome inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-primary transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
-                          aria-label={`Share role: ${job.role}`}
+                          onClick={() => void copyJobLink(job).catch(() => markCopyFailed(job.ref))}
+                          className={`glass-panel glass-panel--chrome inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 ${
+                            wasCopied
+                              ? "text-emerald-600 dark:text-emerald-400"
+                              : copyFailed
+                                ? "text-red-600 dark:text-red-400"
+                                : "text-primary hover:text-accent"
+                          }`}
+                          aria-label={`Copy link to ${job.role}`}
                           aria-live="polite"
                         >
                           {wasCopied ? (
-                            <Check className="size-3.5 text-accent" aria-hidden />
+                            <Check className="size-3.5" aria-hidden />
                           ) : (
-                            <Share2 className="size-3.5" aria-hidden />
+                            <Link2 className="size-3.5" aria-hidden />
                           )}
-                          {wasCopied ? "Link copied" : copyFailed ? "Copy failed" : "Share role"}
+                          {wasCopied ? "Link copied" : copyFailed ? "Copy failed" : "Copy link"}
                         </button>
                       </div>
                     </div>

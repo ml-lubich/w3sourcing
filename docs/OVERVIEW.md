@@ -30,6 +30,7 @@ Canonical registration and office details used in the UI live in `src/content/of
 - **Framework:** Next.js 16 (App Router, TypeScript, React 19).
 - **Styling:** Tailwind CSS v4 with project tokens in `src/app/globals.css`. The main stylesheet imports Tailwind via a path under `node_modules/` (not the bare `tailwindcss` package name) so resolution never depends on a flaky working directory. `postcss.config.mjs` still sets `@tailwindcss/postcss` `base` to the project root. `dev` uses `scripts/run-next-dev.ts`: it `cd`s to the repo root, stops an existing Next 16 dev server holding `.next/dev/lock` (unless `W3_REPLACE_NEXT_DEV=0`), then runs `next dev`. Other primary scripts use `scripts/exec-in-repo-root.ts` (and `scripts/run-tests-in-root.ts` for `test`) so `build` / `start` / `lint` / `test` run with the repo as cwd even when Bun is invoked from a parent folder.
 - **Motion:** Framer Motion for section and hero polish, with reduced-motion and narrow-viewport safeguards documented in `docs/DESIGN.md`.
+- **Charts:** Recharts (admin dashboard only, `src/app/admin/admin-stats.tsx`).
 - **Icons:** Lucide React (tree-shaken via `experimental.optimizePackageImports` in `next.config.ts`).
 - **Performance (home):** `src/app/page.tsx` is a Server Component. Hash / pending section scrolling is client-only (`src/components/home-hash-scroll.tsx`). Below-the-fold sections are loaded with `next/dynamic` into separate chunks; **Header**, **Hero**, **Trusted By**, and **Floating CTA** stay statically imported for first paint. Hero demo avatars use `next/image` (local SVG placeholder is `unoptimized`).
 - **Theme:** Custom `ThemeProvider` in `src/components/theme-provider.tsx` (not `next-themes`). User choice is stored under `localStorage` key `w3-theme`; `next/script` with `strategy="beforeInteractive"` loads `/w3-theme-boot.js` from `app/layout.tsx` so `class="dark"` on `<html>` matches storage / `prefers-color-scheme` before first paint.
@@ -44,7 +45,7 @@ Canonical registration and office details used in the UI live in `src/content/of
 | `/jobs`    | Public jobs board (masked roles, filters, infinite scroll). ISR, 60s. |
 | `/privacy` | Privacy policy (uses `LegalPageShell`; header/footer with root section links). |
 | `/terms`   | Terms of use (same shell pattern). |
-| `/admin`   | Password-gated jobs editor for Perry (add / edit / remove / flag hot, CSV import). `noindex`, unlinked, always dynamic. |
+| `/admin`   | Password-gated jobs editor for Perry: roles list (lazy-loaded, per-role copy link) plus a Recharts dashboard; add / edit / remove / flag hot / CSV import. `noindex`, unlinked, always dynamic. |
 
 Contact is **direct email-first** in the current public journey: header, hero, comparison, 404, footer, and final CTA actions should resolve to `mailto:info@w3sourcing.com`. The deprecated `#contact` form component remains in the tree for implementation history only.
 
