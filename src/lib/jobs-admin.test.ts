@@ -72,10 +72,22 @@ describe("parseCsv", () => {
 });
 
 describe("toIsoDate", () => {
-  test("passes ISO through and reads day-first dates", () => {
+  test("passes ISO through", () => {
     expect(toIsoDate("2026-06-25")).toBe("2026-06-25");
+  });
+
+  test("reads a slashed date day-first, the way Singapore and London write it", () => {
     expect(toIsoDate("25/06/2026")).toBe("2026-06-25");
+    // Ambiguous on its own — day-first is the one that must win.
+    expect(toIsoDate("05/08/2026")).toBe("2026-08-05");
+  });
+
+  test("falls back to month-first only when day-first is impossible", () => {
     expect(toIsoDate("06/25/2026")).toBe("2026-06-25");
+  });
+
+  test("rejects a slashed date that works neither way", () => {
+    expect(toIsoDate("25/25/2026")).toBeNull();
   });
 
   test("returns null for gibberish so the row can be reported", () => {

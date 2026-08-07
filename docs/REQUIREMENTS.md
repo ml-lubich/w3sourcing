@@ -76,7 +76,7 @@ Perry publishes and closes roles himself; adding a role must never require a dev
 
 - The editor lives at `/admin` behind a single shared login (`ADMIN_EMAIL` + `ADMIN_PASSWORD`). It must be `noindex`, unlinked from public navigation, and must re-check the session inside every mutating server action — the page-level check is not access control.
 - Roles can be added **one at a time** through a form, or in bulk by **CSV** (file upload or pasted rows). Only the role title is required; every other field is optional and may be left blank.
-- CSV headers are matched by alias (`job title`, `location`, `comp`, … all resolve), unknown columns are ignored and reported, and unreadable rows are reported by line number instead of being silently dropped.
+- CSV headers are matched by alias (`job title`, `location`, `comp`, … all resolve), unknown columns are ignored and reported, and unreadable rows are reported by line number instead of being silently dropped. Slashed dates are read day-first (Singapore and London convention), never month-first, unless only month-first is possible.
 - Rows carrying an ATS link that already exists update that role in place rather than creating a duplicate, so a refreshed export can be re-imported safely.
 - Any role can be flagged a **hot job**. Hot roles carry a badge on the public card and sort above everything else, newest-first ordering applying within each group.
 - Closed roles are removed outright from `/admin`; the public board must reflect an add, edit, removal, or hot flag immediately, not on the next deploy.

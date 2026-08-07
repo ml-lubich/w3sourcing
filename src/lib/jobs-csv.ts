@@ -151,20 +151,27 @@ export function isTruthyFlag(value: string): boolean {
 }
 
 /**
- * ISO dates pass through. Otherwise fall back to `Date`, but treat a leading
- * number above 12 in a slashed date as day-first (`25/06/2026`), which `Date`
- * would otherwise read as an invalid month.
+ * ISO dates pass through.
+ *
+ * A slashed date is read **day-first** (`05/08/2026` is 5 August): W3 works out
+ * of Singapore and London, and `Date` would otherwise read that as 8 May and
+ * quietly reorder the board. The one exception is a date that cannot be
+ * day-first — `08/25/2026` — which is read month-first instead.
  */
 export function toIsoDate(value: string): string | null {
   const trimmed = value.trim();
   if (!trimmed) return null;
   if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
-  const slashed = trimmed.match(/^(\d{1,2})[/.](\d{1,2})[/.](\d{4})$/);
-  const candidate =
-    slashed && Number(slashed[1]) > 12
-      ? `${slashed[3]}-${slashed[2].padStart(2, "0")}-${slashed[1].padStart(2, "0")}`
-      : trimmed;
-  const parsed = new Date(candidate);
+
+  const slashed = trimmed.match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/);
+  if (slashed) {
+    const [, first, second, year] = slashed;
+    const [day, month] = Number(second) > 12 ? [second, first] : [first, second];
+    if (Number(day) < 1 || Number(day) > 31 || Number(month) < 1 || Number(month) > 12) return null;
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  }
+
+  const parsed = new Date(trimmed);
   if (Number.isNaN(parsed.getTime())) return null;
   return parsed.toISOString().slice(0, 10);
 }
