@@ -45,7 +45,7 @@ Canonical registration and office details used in the UI live in `src/content/of
 | `/jobs`    | Public jobs board (masked roles, filters, infinite scroll). ISR, 60s. |
 | `/privacy` | Privacy policy (uses `LegalPageShell`; header/footer with root section links). |
 | `/terms`   | Terms of use (same shell pattern). |
-| `/admin`   | Password-gated jobs editor for Perry: roles list (lazy-loaded, per-role copy link) plus a Recharts dashboard; add / edit / remove / flag hot / CSV import. `noindex`, unlinked, always dynamic. |
+| `/admin`   | Password-gated jobs editor for Perry: roles list (lazy-loaded, per-role copy link) plus a Recharts dashboard; add / edit / remove / flag hot / CSV import. Roles can be multi-selected and retired in one step, and an import can **replace the board** (upsert the file, then remove everything it no longer lists) for the weekly Paraform batch. `noindex`, unlinked, always dynamic. |
 
 Contact is **direct email-first** in the current public journey: header, hero, comparison, 404, footer, and final CTA actions should resolve to `mailto:info@w3sourcing.com`. The deprecated `#contact` form component remains in the tree for implementation history only.
 
