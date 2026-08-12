@@ -8,7 +8,7 @@ import { jobPermalink } from "@/lib/jobs";
 import { CSV_TEMPLATE_COLUMNS } from "@/lib/jobs-csv";
 import type { JobRow } from "@/lib/jobs-store";
 
-import { importCsv, logout, removeJob, saveJob, setHot, type ActionState } from "./actions";
+import { importCsv, logout, removeJob, removeJobs, saveJob, setHot, type ActionState } from "./actions";
 import { AdminStats } from "./admin-stats";
 
 const INPUT =
@@ -148,6 +148,19 @@ function CsvImport({ onDone }: { onDone: () => void }) {
         className={`relative mt-3 ${INPUT}`}
       />
 
+      {/* The weekly rhythm: the export is the board, so what it drops comes down. */}
+      <label className="relative mt-4 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/5 p-3">
+        <input type="checkbox" name="replace" className="mt-0.5 size-4 accent-amber-500" />
+        <span className="text-sm">
+          <span className="font-semibold text-primary">Replace the board</span>
+          <span className="block text-xs text-text-secondary">
+            Remove every role that is not in this file. Use this for the weekly Paraform batch —
+            roles that have been filled or pulled come down in the same step. Leave it off to add to
+            the board without touching what is already there.
+          </span>
+        </span>
+      </label>
+
       {state.error ? (
         <p className="relative mt-4 text-sm text-red-600 dark:text-red-400">{state.error}</p>
       ) : null}
@@ -223,6 +236,7 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
   const [editing, setEditing] = useState<JobRow | null>(null);
   const [panel, setPanel] = useState<"none" | "add" | "import">("none");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [selected, setSelected] = useState<ReadonlySet<string>>(() => new Set());
   const [pending, startTransition] = useTransition();
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -253,8 +267,32 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
     return () => observer.disconnect();
   }, [matches.length, visibleCount]);
 
+  const toggleRef = useCallback((ref: string) => {
+    setSelected((current) => {
+      const next = new Set(current);
+      if (!next.delete(ref)) next.add(ref);
+      return next;
+    });
+  }, []);
+
   const hotCount = jobs.filter((job) => job.hot).length;
   const visible = matches.slice(0, visibleCount);
+
+  // Selecting covers everything the search matches, not just the rows scrolled
+  // into view — otherwise "select all" would quietly mean "select the first 40".
+  const allMatchesSelected = matches.length > 0 && matches.every((job) => selected.has(job.ref));
+  const selectedCount = selected.size;
+
+  const removeSelected = () => {
+    const refs = [...selected];
+    if (refs.length === 0) return;
+    const noun = refs.length === 1 ? "role" : "roles";
+    if (!confirm(`Remove ${refs.length} ${noun} from the site? This cannot be undone.`)) return;
+    startTransition(() => {
+      void removeJobs(refs);
+      setSelected(new Set());
+    });
+  };
 
   return (
     <div className="mt-6">
@@ -342,9 +380,55 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
             />
           </label>
 
-          <ul className="mt-4 divide-y divide-black/5 dark:divide-white/10">
+          <div className="mt-4 flex flex-wrap items-center gap-3 border-b border-black/5 pb-3 dark:border-white/10">
+            <label className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
+              <input
+                type="checkbox"
+                className="size-4 accent-accent"
+                checked={allMatchesSelected}
+                disabled={matches.length === 0}
+                onChange={() =>
+                  setSelected(allMatchesSelected ? new Set() : new Set(matches.map((job) => job.ref)))
+                }
+                aria-label={
+                  query.trim()
+                    ? `Select all ${matches.length} roles matching this search`
+                    : `Select all ${matches.length} roles`
+                }
+              />
+              Select all{query.trim() ? ` ${matches.length} matching` : ""}
+            </label>
+
+            {selectedCount > 0 ? (
+              <>
+                <span className="text-sm text-text-secondary">{selectedCount} selected</span>
+                <button
+                  type="button"
+                  disabled={pending}
+                  onClick={removeSelected}
+                  className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-opacity disabled:opacity-60"
+                >
+                  <Trash2 className="size-4" aria-hidden />
+                  {pending ? "Removing…" : `Remove selected (${selectedCount})`}
+                </button>
+                <button type="button" onClick={() => setSelected(new Set())} className={GHOST_BUTTON}>
+                  Clear
+                </button>
+              </>
+            ) : null}
+          </div>
+
+          <ul className="divide-y divide-black/5 dark:divide-white/10">
             {visible.map((job) => (
               <li key={job.ref} className="flex flex-wrap items-center gap-3 py-3">
+                <input
+                  type="checkbox"
+                  className="size-4 accent-accent"
+                  checked={selected.has(job.ref)}
+                  onChange={() => toggleRef(job.ref)}
+                  aria-label={`Select ${job.role} (${job.ref})`}
+                />
+
                 <button
                   type="button"
                   title={job.hot ? "Remove hot flag" : "Mark as a new hot job"}

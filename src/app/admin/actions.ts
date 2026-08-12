@@ -12,7 +12,15 @@ import {
 } from "@/lib/admin-auth";
 import { jobsFromCsv } from "@/lib/jobs-csv";
 import { newRef, toRef } from "@/lib/jobs";
-import { deleteJob, updateJob, upsertJobs, type JobRow } from "@/lib/jobs-store";
+import {
+  deleteJob,
+  deleteJobs,
+  deleteJobsExcept,
+  updateJob,
+  upsertJobs,
+  type JobRow,
+} from "@/lib/jobs-store";
+import { removalSummary, syncSummary } from "@/lib/jobs-sync";
 
 /** What every form action hands back to the UI. */
 export type ActionState = { ok?: string; error?: string };
@@ -102,6 +110,17 @@ export async function removeJob(ref: string): Promise<void> {
   publish();
 }
 
+/**
+ * Take a hand-picked selection off the board in one step, rather than one
+ * confirm dialog per role.
+ */
+export async function removeJobs(refs: string[]): Promise<ActionState> {
+  await requireAdmin();
+  const removed = await deleteJobs(refs);
+  publish();
+  return { ok: removalSummary(removed) };
+}
+
 export async function setHot(ref: string, hot: boolean): Promise<void> {
   await requireAdmin();
   await updateJob(ref, { hot });
@@ -117,15 +136,21 @@ export async function importCsv(_state: ActionState, formData: FormData): Promis
   if (!text) return { error: "Choose a CSV file or paste some rows first." };
 
   const { jobs, errors, ignoredColumns } = jobsFromCsv(text);
+  // A file that yielded nothing is a bad upload. Bail before the replace pass so
+  // it can never be read as "clear the board".
   if (jobs.length === 0) {
     return { error: errors.join(" ") || "No rows to import." };
   }
 
   await upsertJobs(jobs);
-  publish();
 
-  const notes = [`Imported ${jobs.length} role${jobs.length === 1 ? "" : "s"}.`];
-  if (ignoredColumns.length > 0) notes.push(`Ignored unknown columns: ${ignoredColumns.join(", ")}.`);
-  if (errors.length > 0) notes.push(`${errors.length} row(s) skipped — ${errors.slice(0, 5).join(" ")}`);
-  return { ok: notes.join(" ") };
+  /**
+   * Perry's weekly rhythm: the export *is* the live board, so anything it no
+   * longer lists has been filled or pulled and should come down with it.
+   */
+  const replace = formData.get("replace") !== null;
+  const removed = replace ? await deleteJobsExcept(jobs.map((job) => job.ref)) : null;
+
+  publish();
+  return { ok: syncSummary({ imported: jobs.length, removed, ignoredColumns, errors }) };
 }
