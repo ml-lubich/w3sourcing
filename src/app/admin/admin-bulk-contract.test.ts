@@ -52,7 +52,7 @@ describe("bulk removal contract", () => {
 describe("admin bulk UI contract", () => {
   test("rows carry selection checkboxes with accessible labels", () => {
     expect(adminJobs).toContain("selected");
-    expect(adminJobs).toContain("toggleRef");
+    expect(adminJobs).toContain("toggleRow");
     expect(adminJobs).toContain('type="checkbox"');
     expect(adminJobs).toContain("aria-label");
   });
@@ -67,6 +67,18 @@ describe("admin bulk UI contract", () => {
     expect(adminJobs).toContain("removeJobs");
     expect(adminJobs).toContain("Remove selected");
     expect(adminJobs).toContain("confirm(");
+  });
+
+  test("the same selection drives a tri-state hot control", () => {
+    // Mixed selections read as "partly hot" and go all-hot on the first press,
+    // the way a bold button behaves over mixed text.
+    expect(adminJobs).toContain("Partly hot");
+    expect(adminJobs).toContain('aria-pressed={hotState === "off" ? false : hotState === "on" ? true : "mixed"}');
+    expect(adminJobs).toContain("toggleHot(selectedRefs, !allSelectedHot)");
+  });
+
+  test("the import panel offers an optional mark-everything-hot checkbox", () => {
+    expect(adminJobs).toContain("Mark every imported role as hot");
   });
 
   test("the import panel offers the weekly replace-the-board option", () => {

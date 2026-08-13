@@ -10,13 +10,16 @@ import {
   isValidSession,
   sessionToken,
 } from "@/lib/admin-auth";
+import { aiConfigured, aiText } from "@/lib/ai";
+import { jobsDigest } from "@/lib/jobs-digest";
 import { jobsFromCsv } from "@/lib/jobs-csv";
 import { newRef, toRef } from "@/lib/jobs";
 import {
   deleteJob,
   deleteJobs,
   deleteJobsExcept,
-  updateJob,
+  fetchJobs,
+  updateJobs,
   upsertJobs,
   type JobRow,
 } from "@/lib/jobs-store";
@@ -121,9 +124,9 @@ export async function removeJobs(refs: string[]): Promise<ActionState> {
   return { ok: removalSummary(removed) };
 }
 
-export async function setHot(ref: string, hot: boolean): Promise<void> {
+export async function setHot(refs: string[], hot: boolean): Promise<void> {
   await requireAdmin();
-  await updateJob(ref, { hot });
+  await updateJobs(refs, { hot });
   publish();
 }
 
@@ -142,6 +145,9 @@ export async function importCsv(_state: ActionState, formData: FormData): Promis
     return { error: errors.join(" ") || "No rows to import." };
   }
 
+  // The checkbox flags the whole batch; a `hot` column can still flag rows on its own.
+  if (formData.get("hot") !== null) for (const job of jobs) job.hot = true;
+
   await upsertJobs(jobs);
 
   /**
@@ -153,4 +159,33 @@ export async function importCsv(_state: ActionState, formData: FormData): Promis
 
   publish();
   return { ok: syncSummary({ imported: jobs.length, removed, ignoredColumns, errors }) };
+}
+
+const ASSISTANT_SYSTEM = `You are the W3 Sourcing desk analyst. You are given a digest of the live
+job board (facet counts plus the most recent roles) and one question from a recruiter.
+
+Answer only from the digest — if it does not contain the answer, say so plainly rather than guessing.
+Be concrete: quote numbers, name clients and role refs (W3-xxxx). Keep it under 180 words, use short
+lines or bullets, no preamble, no markdown headings.`;
+
+/** Admin-only: the digest carries client names, so this never leaves the editor. */
+export async function askAssistant(
+  _state: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  await requireAdmin();
+  if (!aiConfigured()) return { error: "No OPENROUTER_API_KEY set — add one to .env.local (see docs/DEPLOYMENT.md)." };
+
+  const question = String(formData.get("question") ?? "").trim();
+  if (!question) return { error: "Ask a question first." };
+
+  try {
+    const { text, model } = await aiText(
+      ASSISTANT_SYSTEM,
+      `Live board digest:\n${jobsDigest(await fetchJobs())}\n\nQuestion: ${question}`,
+    );
+    return { ok: `${text}\n\n— ${model}` };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "The assistant failed." };
+  }
 }

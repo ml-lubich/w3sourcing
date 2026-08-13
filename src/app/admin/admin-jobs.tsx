@@ -1,14 +1,44 @@
 "use client";
 
-import { useActionState, useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { Check, ChartPie, Flame, Link2, List, Pencil, Plus, Search, Trash2, Upload } from "lucide-react";
+import {
+  useActionState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useOptimistic,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
+import {
+  Check,
+  ChartPie,
+  Flame,
+  Link2,
+  List,
+  Pencil,
+  Plus,
+  Search,
+  Sparkles,
+  Trash2,
+  Upload,
+} from "lucide-react";
 
 import { RoleIcon } from "@/components/role-icon";
 import { jobPermalink } from "@/lib/jobs";
 import { CSV_TEMPLATE_COLUMNS } from "@/lib/jobs-csv";
 import type { JobRow } from "@/lib/jobs-store";
 
-import { importCsv, logout, removeJob, removeJobs, saveJob, setHot, type ActionState } from "./actions";
+import {
+  askAssistant,
+  importCsv,
+  logout,
+  removeJob,
+  removeJobs,
+  saveJob,
+  setHot,
+  type ActionState,
+} from "./actions";
 import { AdminStats } from "./admin-stats";
 
 const INPUT =
@@ -161,6 +191,11 @@ function CsvImport({ onDone }: { onDone: () => void }) {
         </span>
       </label>
 
+      <label className="relative mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+        <input type="checkbox" name="hot" className="size-4 accent-orange-500" />
+        <Flame className="size-4 text-orange-500" aria-hidden /> Mark every imported role as hot
+      </label>
+
       {state.error ? (
         <p className="relative mt-4 text-sm text-red-600 dark:text-red-400">{state.error}</p>
       ) : null}
@@ -230,9 +265,75 @@ function CopyLinkButton({ job }: { job: JobRow }) {
   );
 }
 
+/** Starters so the desk never faces an empty box. */
+const ASSISTANT_PROMPTS = [
+  "What stands out about the board right now?",
+  "Which roles look like they deserve the hot flag?",
+  "Where are we most concentrated — clients, sectors, locations?",
+  "Which roles have gone stale and need a refresh?",
+];
+
+function AdminAssistant() {
+  const [state, formAction, pending] = useActionState<ActionState, FormData>(askAssistant, {});
+  const [question, setQuestion] = useState("");
+
+  return (
+    <form action={formAction} className="glass-panel mt-6 rounded-2xl p-6">
+      <h2 className="relative text-lg font-bold text-primary">
+        <Sparkles className="mr-2 inline size-4 text-accent" aria-hidden />
+        Ask about the board
+      </h2>
+      <p className="relative mt-1 text-xs text-text-secondary">
+        Reads a digest of every live role — counts by client, sector, location, and the most recent
+        postings. Answers stay in this admin page; client names never reach the public board.
+      </p>
+
+      <div className="relative mt-4 flex flex-wrap gap-2">
+        {ASSISTANT_PROMPTS.map((prompt) => (
+          <button
+            key={prompt}
+            type="button"
+            onClick={() => setQuestion(prompt)}
+            className="glass-chip rounded-lg px-3 py-1.5 text-xs font-semibold text-text-secondary transition-colors hover:text-accent"
+          >
+            {prompt}
+          </button>
+        ))}
+      </div>
+
+      <textarea
+        name="question"
+        rows={3}
+        value={question}
+        onChange={(event) => setQuestion(event.target.value)}
+        placeholder="e.g. which AI roles in Singapore are still unflagged?"
+        className={`relative mt-3 ${INPUT}`}
+      />
+
+      <button type="submit" disabled={pending} className={`relative mt-4 ${BUTTON}`}>
+        <Sparkles className="size-4" aria-hidden />
+        {pending ? "Thinking…" : "Ask"}
+      </button>
+
+      {state.error ? (
+        <p className="relative mt-4 text-sm text-red-600 dark:text-red-400">{state.error}</p>
+      ) : null}
+      {state.ok ? (
+        <p className="relative mt-4 whitespace-pre-wrap text-sm leading-relaxed text-primary">{state.ok}</p>
+      ) : null}
+    </form>
+  );
+}
+
 export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
+  // Hot toggles paint instantly and settle when the server action revalidates.
+  const [list, applyHot] = useOptimistic(jobs, (current: JobRow[], patch: { refs: string[]; hot: boolean }) => {
+    const refs = new Set(patch.refs);
+    return current.map((job) => (refs.has(job.ref) ? { ...job, hot: patch.hot } : job));
+  });
+  const lastClicked = useRef<number | null>(null);
   const [query, setQuery] = useState("");
-  const [view, setView] = useState<"roles" | "dashboard">("roles");
+  const [view, setView] = useState<"roles" | "dashboard" | "assistant">("roles");
   const [editing, setEditing] = useState<JobRow | null>(null);
   const [panel, setPanel] = useState<"none" | "add" | "import">("none");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -242,15 +343,15 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
 
   const matches = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    if (!needle) return jobs;
-    return jobs.filter((job) =>
+    if (!needle) return list;
+    return list.filter((job) =>
       [job.ref, job.role, job.company, job.locations, job.sector, job.roleGroup]
         .filter(Boolean)
         .join(" ")
         .toLowerCase()
         .includes(needle),
     );
-  }, [jobs, query]);
+  }, [list, query]);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
@@ -267,21 +368,43 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
     return () => observer.disconnect();
   }, [matches.length, visibleCount]);
 
-  const toggleRef = useCallback((ref: string) => {
-    setSelected((current) => {
-      const next = new Set(current);
-      if (!next.delete(ref)) next.add(ref);
-      return next;
-    });
-  }, []);
-
-  const hotCount = jobs.filter((job) => job.hot).length;
+  const hotCount = list.filter((job) => job.hot).length;
   const visible = matches.slice(0, visibleCount);
 
-  // Selecting covers everything the search matches, not just the rows scrolled
-  // into view — otherwise "select all" would quietly mean "select the first 40".
+  const toggleHot = useCallback(
+    (refs: string[], hot: boolean) =>
+      startTransition(async () => {
+        applyHot({ refs, hot });
+        await setHot(refs, hot);
+      }),
+    [applyHot],
+  );
+
+  /** Shift-click extends from the last clicked row, the way file lists do. */
+  const toggleRow = useCallback(
+    (index: number, shiftKey: boolean) => {
+      setSelected((prev) => {
+        const next = new Set(prev);
+        const turningOn = !next.has(visible[index].ref);
+        const from = shiftKey && lastClicked.current !== null ? lastClicked.current : index;
+        for (let i = Math.min(from, index); i <= Math.max(from, index); i++) {
+          if (turningOn) next.add(visible[i].ref);
+          else next.delete(visible[i].ref);
+        }
+        return next;
+      });
+      lastClicked.current = index;
+    },
+    [visible],
+  );
+
+  const selectedJobs = list.filter((job) => selected.has(job.ref));
+  const selectedRefs = selectedJobs.map((job) => job.ref);
+  const allSelectedHot = selectedJobs.length > 0 && selectedJobs.every((job) => job.hot);
+  const someSelectedHot = selectedJobs.some((job) => job.hot);
+  // Mixed selections behave like a bold button: the first press makes them all hot.
+  const hotState = allSelectedHot ? "on" : someSelectedHot ? "mixed" : "off";
   const allMatchesSelected = matches.length > 0 && matches.every((job) => selected.has(job.ref));
-  const selectedCount = selected.size;
 
   const removeSelected = () => {
     const refs = [...selected];
@@ -302,6 +425,7 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
             [
               ["roles", "Roles", List],
               ["dashboard", "Dashboard", ChartPie],
+              ["assistant", "Assistant", Sparkles],
             ] as const
           ).map(([id, label, Icon]) => (
             <button
@@ -353,8 +477,10 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
         </div>
       </div>
 
-      {view === "dashboard" ? (
-        <AdminStats jobs={jobs} />
+      {view === "assistant" ? (
+        <AdminAssistant />
+      ) : view === "dashboard" ? (
+        <AdminStats jobs={list} />
       ) : (
         <>
           {panel === "import" ? <CsvImport onDone={() => setPanel("none")} /> : null}
@@ -362,7 +488,7 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
           {editing ? <JobForm key={editing.ref} job={editing} onDone={() => setEditing(null)} /> : null}
 
           <p className="mt-6 text-sm text-text-secondary">
-            <strong className="text-primary">{jobs.length}</strong> live roles
+            <strong className="text-primary">{list.length}</strong> live roles
             {hotCount > 0 ? ` · ${hotCount} hot` : ""}
           </p>
 
@@ -380,28 +506,53 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
             />
           </label>
 
-          <div className="mt-4 flex flex-wrap items-center gap-3 border-b border-black/5 pb-3 dark:border-white/10">
+          <div className="glass-chip sticky top-2 z-10 mt-4 flex flex-wrap items-center gap-3 rounded-xl px-3 py-2">
             <label className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
               <input
                 type="checkbox"
-                className="size-4 accent-accent"
                 checked={allMatchesSelected}
                 disabled={matches.length === 0}
-                onChange={() =>
-                  setSelected(allMatchesSelected ? new Set() : new Set(matches.map((job) => job.ref)))
+                ref={(node) => {
+                  if (node) node.indeterminate = !allMatchesSelected && selected.size > 0;
+                }}
+                onChange={(event) =>
+                  setSelected(event.target.checked ? new Set(matches.map((job) => job.ref)) : new Set())
                 }
+                // Selecting covers everything the search matches, not just the rows
+                // scrolled into view — otherwise this would mean "the first 40".
                 aria-label={
                   query.trim()
                     ? `Select all ${matches.length} roles matching this search`
                     : `Select all ${matches.length} roles`
                 }
+                className="size-4 accent-accent"
               />
-              Select all{query.trim() ? ` ${matches.length} matching` : ""}
+              {selected.size > 0 ? `${selected.size} selected` : `Select all ${matches.length}`}
             </label>
 
-            {selectedCount > 0 ? (
+            <button
+              type="button"
+              disabled={selected.size === 0}
+              aria-pressed={hotState === "off" ? false : hotState === "on" ? true : "mixed"}
+              title={
+                hotState === "on" ? "Remove the hot flag from the selection" : "Mark the selection as hot"
+              }
+              onClick={() => toggleHot(selectedRefs, !allSelectedHot)}
+              className={`${GHOST_BASE} disabled:opacity-40 ${
+                hotState === "off" ? GHOST_TEXT : "border-orange-500/50 bg-orange-500/10 text-orange-500"
+              }`}
+            >
+              <Flame
+                className="size-4"
+                fill={hotState === "off" ? "none" : "currentColor"}
+                fillOpacity={hotState === "mixed" ? 0.4 : 1}
+                aria-hidden
+              />
+              {hotState === "on" ? "Hot" : hotState === "mixed" ? "Partly hot" : "Mark hot"}
+            </button>
+
+            {selected.size > 0 ? (
               <>
-                <span className="text-sm text-text-secondary">{selectedCount} selected</span>
                 <button
                   type="button"
                   disabled={pending}
@@ -409,32 +560,40 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
                   className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-opacity disabled:opacity-60"
                 >
                   <Trash2 className="size-4" aria-hidden />
-                  {pending ? "Removing…" : `Remove selected (${selectedCount})`}
+                  {pending ? "Removing…" : `Remove selected (${selected.size})`}
                 </button>
-                <button type="button" onClick={() => setSelected(new Set())} className={GHOST_BUTTON}>
+                <button type="button" onClick={() => setSelected(new Set())} className={`${GHOST_BASE} ${GHOST_TEXT}`}>
                   Clear
                 </button>
               </>
-            ) : null}
+            ) : (
+              <span className="text-xs text-text-secondary">
+                Tip: tick rows (shift-click for a range), then hit the flame.
+              </span>
+            )}
           </div>
 
-          <ul className="divide-y divide-black/5 dark:divide-white/10">
-            {visible.map((job) => (
-              <li key={job.ref} className="flex flex-wrap items-center gap-3 py-3">
+          <ul className="mt-2 divide-y divide-black/5 dark:divide-white/10">
+            {visible.map((job, index) => (
+              <li
+                key={job.ref}
+                className={`flex flex-wrap items-center gap-3 py-3 ${
+                  selected.has(job.ref) ? "bg-accent/5" : ""
+                }`}
+              >
                 <input
                   type="checkbox"
-                  className="size-4 accent-accent"
                   checked={selected.has(job.ref)}
-                  onChange={() => toggleRef(job.ref)}
+                  onChange={() => undefined}
+                  onClick={(event) => toggleRow(index, event.shiftKey)}
                   aria-label={`Select ${job.role} (${job.ref})`}
+                  className="size-4 shrink-0 accent-accent"
                 />
-
                 <button
                   type="button"
                   title={job.hot ? "Remove hot flag" : "Mark as a new hot job"}
                   aria-pressed={job.hot}
-                  disabled={pending}
-                  onClick={() => startTransition(() => void setHot(job.ref, !job.hot))}
+                  onClick={() => toggleHot([job.ref], !job.hot)}
                   className={`rounded-lg p-2 transition-colors ${
                     job.hot ? "text-orange-500" : "text-text-secondary hover:text-orange-500"
                   }`}

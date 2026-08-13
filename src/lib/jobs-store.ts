@@ -74,9 +74,11 @@ export async function upsertJobs(jobs: JobRow[]): Promise<number> {
   return jobs.length;
 }
 
-export async function updateJob(ref: string, patch: Partial<JobRow>): Promise<void> {
-  const { error } = await db().from(TABLE).update(patch).eq("ref", ref);
-  if (error) throw new Error(`Failed to update ${ref}: ${error.message}`);
+/** Patch one or many rows in a single round trip (bulk hot toggles use this). */
+export async function updateJobs(refs: string[], patch: Partial<JobRow>): Promise<void> {
+  if (refs.length === 0) return;
+  const { error } = await db().from(TABLE).update(patch).in("ref", refs);
+  if (error) throw new Error(`Failed to update ${refs.join(", ")}: ${error.message}`);
 }
 
 export async function deleteJob(ref: string): Promise<void> {

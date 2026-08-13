@@ -52,6 +52,17 @@ If `NEXT_PUBLIC_SITE_URL` is unset, the app falls back to **`VERCEL_URL`** on Ve
 
 **Access model:** the table has RLS enabled with **no policies**, so the anon key that ships to browsers cannot read or write it. Every query goes through the service-role key in server-only code (`src/lib/jobs-store.ts`), which must never be imported from a client component.
 
+## Admin assistant (OpenRouter)
+
+The `/admin` **Assistant** view calls OpenRouter with the same cheap open-weight models as the candidate portal (`z-ai/glm-4.7-flash`, `deepseek/deepseek-v4-flash`, `qwen/qwen-2.5-7b-instruct`), trying each in turn until one answers.
+
+- `OPENROUTER_API_KEY` — required for the view to answer; without it the panel reports that no key is set and nothing else breaks.
+- `OPENROUTER_API_KEY_FALLBACK` — optional second key, tried when the first fails.
+- `OPENROUTER_MODELS` — optional comma-separated override of the model chain.
+- `OPENROUTER_BASE_URL` — optional; any OpenAI-compatible endpoint works.
+
+Locally these come from `.env.local` (shared with `w3sourcing-candidate-portal`). For production: `vercel env add OPENROUTER_API_KEY production`. The key is read only in server-only code (`src/lib/ai.ts`) behind the admin session check.
+
 ## CI (GitHub Actions)
 
 **`.github/workflows/ci.yml`** runs on pushes and pull requests to `main` / `master`: `bun install --frozen-lockfile`, then **`bun run ci`** (`lint` + `test` + `build`), then **`bun run smoke:routes:ci`** so PRs match the same gates as Vercel’s build command.
