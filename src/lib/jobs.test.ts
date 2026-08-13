@@ -1,16 +1,20 @@
 import { describe, expect, test } from "bun:test";
 
 import { PERRY_EMAIL } from "@/content/contact-links";
+import liveJobsData from "@/content/live-jobs.json";
 import {
   buildJobMailtoHref,
   filterJobs,
+  maskJobs,
   type LiveJob,
+  type RawJob,
 } from "./jobs";
-import { loadLiveJobs } from "./jobs-server";
 
-// No Supabase credentials under `bun test`, so this exercises the committed
-// Paraform export — the same masking path the database rows go through.
-const jobs = await loadLiveJobs();
+// The committed Paraform export, through the same masking path the database
+// rows take. Deliberately not `loadLiveJobs()`: that reads Supabase wherever
+// credentials happen to exist, so these assertions would describe whatever is
+// on the live board that day instead of a fixed dataset.
+const jobs = maskJobs(liveJobsData as RawJob[]);
 
 describe("live jobs dataset", () => {
 
@@ -30,11 +34,16 @@ describe("live jobs dataset", () => {
     expect(new Set(refs).size).toBe(refs.length);
   });
 
-  test("is sorted newest-first by posted date", () => {
-    const dated = jobs.filter((j) => j.postedDate);
+  test("is sorted hot-first, then newest-first within each group", () => {
+    // Hot roles float to the top; date ordering applies inside each group.
+    const firstNonHot = jobs.findIndex((job) => !job.hot);
+    if (firstNonHot !== -1) expect(jobs.slice(firstNonHot).some((job) => job.hot)).toBe(false);
 
-    for (let i = 1; i < dated.length; i++) {
-      expect(dated[i - 1].postedDate! >= dated[i].postedDate!).toBe(true);
+    for (const group of [jobs.filter((j) => j.hot), jobs.filter((j) => !j.hot)]) {
+      const dated = group.filter((j) => j.postedDate);
+      for (let i = 1; i < dated.length; i++) {
+        expect(dated[i - 1].postedDate! >= dated[i].postedDate!).toBe(true);
+      }
     }
   });
 
@@ -68,8 +77,10 @@ describe("live jobs dataset", () => {
     // Client name / website / Paraform source are stripped server-side.
     expect(raw).not.toMatch(/paraform/i);
     expect(raw).not.toMatch(/https?:\/\//i);
-    // Free-text visa notes (which can name the client) are reduced to status only.
-    expect(raw).not.toMatch(/sponsor/i);
+    // Free-text visa notes (which can name the client) are reduced to status
+    // only. Scoped to the visa field: role titles are public text, and one of
+    // them legitimately reads "Borrower/Sponsor Side".
+    for (const job of jobs) expect(job.visa ?? "").not.toMatch(/sponsor/i);
     // Recruiter economics never belong on the public site.
     expect(raw).not.toMatch(/total fee/i);
     expect(raw).not.toMatch(/% first year/i);
