@@ -667,32 +667,51 @@ html.dark .header-bar::before {
   );
 }
 
-/* Over the hero film the bar carries no glass at all — just a blue wash that
-   ties it to the accent and keeps the wordmark and links readable. */
+/* Over the hero film the bar carries nothing at all — no glass, no tint, no
+   shadow, so the footage runs edge to edge behind it. */
 .header-bar[data-at-top] {
   --header-glass: 0;
   box-shadow: none;
 }
 
 .header-bar[data-at-top]::before {
-  opacity: 1;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+  opacity: 0;
+}
+
+/* Scrolled past the hero it becomes the blue bar: a deep accent gradient
+   rather than the frosted surface tint. */
+.header-bar:not([data-at-top])::before {
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--accent) 34%, transparent) 0%,
-    color-mix(in srgb, var(--accent) 12%, transparent) 60%,
-    transparent 100%
+    color-mix(in srgb, var(--accent) 94%, #04122e) 0%,
+    color-mix(in srgb, var(--accent) 80%, #04122e) 55%,
+    color-mix(in srgb, var(--accent) 62%, transparent) 100%
   );
 }
 
-.header-bar[data-at-top] .nav-link-section,
-.header-bar[data-at-top] .text-primary,
-.header-bar[data-at-top] .text-text-secondary {
+.dark .header-bar:not([data-at-top])::before,
+html.dark .header-bar:not([data-at-top])::before {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 34%, #020617) 0%,
+    color-mix(in srgb, var(--accent) 22%, #020617) 55%,
+    color-mix(in srgb, var(--accent) 12%, transparent) 100%
+  );
+}
+
+/* White chrome in both states: over the film and on the blue bar. */
+.header-bar .nav-link-section,
+.header-bar .text-primary,
+.header-bar .text-text-secondary {
   color: #fff;
 }
 
-.header-bar[data-at-top] .header-wordmark {
+.header-bar .nav-link-section-active {
+  color: #fff;
+  text-shadow: 0 0 18px rgb(255 255 255 / 0.55);
+}
+
+.header-bar .header-wordmark {
   filter: brightness(0) invert(1);
 }
 
@@ -867,6 +886,32 @@ html.dark ::-webkit-scrollbar-thumb {
 .hero-on-film .glass-panel .text-accent,
 .hero-on-film .glass-chip .text-accent {
   color: var(--accent);
+}
+
+/* A soft shadow pooled behind the copy — the film stays fully visible around
+   it, but words never sit on a bright frame. (Same idea as the vignette on
+   jheupler-site, pulled in behind the text instead of around the edges.) */
+.hero-on-film::before {
+  content: "";
+  position: absolute;
+  inset: -8% -12% 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 68% 58% at 50% 40%,
+    rgb(2 6 23 / 0.62) 0%,
+    rgb(2 6 23 / 0.38) 45%,
+    rgb(2 6 23 / 0.12) 68%,
+    transparent 80%
+  );
+}
+
+/* The pipeline mock is a product screenshot, not a window: over live footage it
+   needs a real surface, or the video reads straight through the candidate rows.
+   Specificity beats `.dark .glass-panel-strong`, which lands later in the file. */
+.hero-on-film .glass-panel.glass-panel-strong,
+.dark .hero-on-film .glass-panel.glass-panel-strong {
+  background: var(--surface);
 }
 
 .hero-on-film .glass-panel,
@@ -1070,19 +1115,36 @@ html.dark ::-webkit-scrollbar-thumb {
   }
 }
 
-.hero-surface-grid {
-  background-image:
-    linear-gradient(
-      color-mix(in srgb, var(--gray-border) 58%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--gray-border) 58%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 75% 70% at 50% 20%, black 15%, transparent 70%);
+/* Landing on /jobs#job-w3-xxxx: the browser's own `:target` marks the card the
+   link points at — an accent border plus a glow that pulses once and settles. */
+article[id^="job-"]:target {
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--accent) 55%, transparent),
+    0 0 34px color-mix(in srgb, var(--accent) 28%, transparent),
+    0 28px 70px color-mix(in srgb, var(--accent) 18%, transparent);
+  animation: job-target-glow 2.6s cubic-bezier(0.22, 1, 0.36, 1) 1;
+}
+
+@keyframes job-target-glow {
+  0% {
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--accent) 85%, transparent),
+      0 0 0 12px color-mix(in srgb, var(--accent) 30%, transparent),
+      0 0 60px color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  100% {
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--accent) 55%, transparent),
+      0 0 0 0 transparent,
+      0 0 34px color-mix(in srgb, var(--accent) 28%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  article[id^="job-"]:target {
+    animation: none;
+  }
 }
 
 .hero-dot-noise {

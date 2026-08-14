@@ -335,7 +335,7 @@ function HeroFilm({ narrow }: { narrow: boolean }) {
     <video
       ref={ref}
       className="h-full w-full object-cover"
-      src={narrow ? "/videos/hero-640.mp4" : "/videos/hero-1280.mp4"}
+      src={narrow ? "/videos/hero-854.mp4" : "/videos/hero-1280.mp4"}
       poster="/videos/hero-poster.webp"
       autoPlay
       muted
@@ -548,7 +548,6 @@ export function Hero() {
             />
           </>
         )}
-        <div className="absolute inset-0 hero-surface-grid opacity-[0.48] dark:opacity-[0.45]" aria-hidden />
         <div className="absolute inset-0 hero-dot-noise" aria-hidden />
       </div>
 

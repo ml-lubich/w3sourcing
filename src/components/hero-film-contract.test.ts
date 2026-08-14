@@ -22,13 +22,15 @@ describe("hero film contract", () => {
     expect(css).toContain(".hero-on-film .glass-panel .text-primary");
   });
 
-  test("the bar goes transparent over the hero and picks up the accent", () => {
+  test("the bar carries nothing over the film", () => {
+    // Full contract (transparent here, blue gradient once scrolled) lives in
+    // header-opacity-contract.test.ts.
     expect(css).toContain(".header-bar[data-at-top]");
-    expect(css).toContain(".header-bar[data-at-top] .header-wordmark");
+    expect(css).toContain(".header-bar .header-wordmark");
   });
 
   test("phones get their own encode, never the desktop file", () => {
-    expect(hero).toContain('narrow ? "/videos/hero-640.mp4" : "/videos/hero-1280.mp4"');
+    expect(hero).toContain('narrow ? "/videos/hero-854.mp4" : "/videos/hero-1280.mp4"');
     // Mounting after hydration is what makes the choice before any request.
     expect(hero).toContain("<HeroFilm narrow={narrowViewport} />");
   });
@@ -43,5 +45,16 @@ describe("hero film contract", () => {
   test("plays muted and inline, and asks again when autoplay is skipped", () => {
     for (const attr of ["autoPlay", "muted", "loop", "playsInline"]) expect(hero).toContain(attr);
     expect(hero).toContain("ref.current?.play().catch(() => {})");
+  });
+});
+
+describe("job permalink contract", () => {
+  test("the linked job card marks itself with the browser's own :target", async () => {
+    const jobsCss = await Bun.file(new URL("../app/globals.css", import.meta.url)).text();
+    expect(jobsCss).toContain('article[id^="job-"]:target');
+    expect(jobsCss).toContain("job-target-glow");
+    // The pulse settles into a static border; reduced motion keeps the border
+    // and drops the animation.
+    expect(jobsCss).toContain("animation: none;");
   });
 });

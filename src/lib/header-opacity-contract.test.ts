@@ -6,27 +6,27 @@ const repoRoot = path.join(import.meta.dirname, "..", "..");
 const globalsSrc = readFileSync(path.join(repoRoot, "src", "app", "globals.css"), "utf8");
 
 /** The `[data-at-top]` block only — the scrolled bar keeps its own rules. */
-const atTopBlock = globalsSrc.slice(
+const barBlock = globalsSrc.slice(
   globalsSrc.indexOf(".header-bar[data-at-top] {"),
   globalsSrc.indexOf(".header-bar > * {"),
 );
 
-describe("header opacity contract", () => {
-  test("stays frosted once the page scrolls off the hero", () => {
-    expect(globalsSrc).toContain("--header-glass: 1");
-    expect(globalsSrc).toContain("backdrop-filter: blur(22px)");
+describe("header bar contract", () => {
+  test("carries nothing at all over the hero film", () => {
+    // Any tint here reads as a dark band across the top of the footage.
+    expect(barBlock).toContain("--header-glass: 0");
+    expect(barBlock).toContain(".header-bar[data-at-top]::before");
+    expect(barBlock).toMatch(/\.header-bar\[data-at-top\]::before \{\s*opacity: 0;/);
   });
 
-  test("goes fully transparent over the hero film instead", () => {
-    // Glass over moving footage reads as a smear; the accent wash carries the
-    // bar there and the frosted treatment returns on scroll.
-    expect(atTopBlock).toContain("--header-glass: 0");
-    expect(atTopBlock).toContain("backdrop-filter: none");
-    expect(atTopBlock).toContain("var(--accent)");
+  test("becomes the blue gradient bar once scrolled past the hero", () => {
+    expect(barBlock).toContain(".header-bar:not([data-at-top])::before");
+    expect(barBlock).toContain("linear-gradient");
+    expect(barBlock).toContain("var(--accent)");
   });
 
-  test("keeps the wordmark and links readable on the film", () => {
-    expect(atTopBlock).toContain(".header-bar[data-at-top] .header-wordmark");
-    expect(atTopBlock).toContain(".header-bar[data-at-top] .nav-link-section");
+  test("keeps its chrome white in both states", () => {
+    expect(barBlock).toContain(".header-bar .header-wordmark");
+    expect(barBlock).toContain(".header-bar .nav-link-section");
   });
 });
