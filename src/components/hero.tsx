@@ -511,8 +511,6 @@ export function Hero() {
         <div className="hero-film absolute inset-0" aria-hidden>
           {visible && !reduceMotion ? <HeroFilm narrow={narrowViewport} /> : null}
         </div>
-        <div className="hero-film-scrim absolute inset-0" aria-hidden />
-
         {liteMotion ? (
           <>
             <div
@@ -555,7 +553,7 @@ export function Hero() {
       </div>
 
       <div
-        className={`relative z-10 mx-auto max-w-6xl px-6 text-center transition-transform duration-700 ease-out will-change-transform ${visible ? "translate-y-0" : "translate-y-6"
+        className={`hero-on-film relative z-10 mx-auto max-w-6xl px-6 text-center transition-transform duration-700 ease-out will-change-transform ${visible ? "translate-y-0" : "translate-y-6"
           }`}
       >
         <motion.div

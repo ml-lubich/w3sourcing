@@ -146,7 +146,7 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
             alt="W3 Sourcing"
             width={184}
             height={72}
-            className="h-full w-full object-contain transition-[filter,transform] duration-200 group-hover:scale-[1.03] dark:brightness-0 dark:invert"
+            className="header-wordmark h-full w-full object-contain transition-[filter,transform] duration-200 group-hover:scale-[1.03] dark:brightness-0 dark:invert"
             wrapperClassName="relative inline-block h-10 w-[150px] overflow-hidden rounded-md align-middle sm:w-[180px]"
             priority
           />
