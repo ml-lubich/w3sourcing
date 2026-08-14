@@ -26,17 +26,24 @@ describe("hero film contract", () => {
     // Full contract (transparent here, blue gradient once scrolled) lives in
     // header-opacity-contract.test.ts.
     expect(css).toContain(".header-bar[data-at-top]");
-    expect(css).toContain(".header-bar .header-wordmark");
+    expect(css).toContain(".header-bar[data-at-top] .header-wordmark");
   });
 
-  test("phones get their own encode, never the desktop file", () => {
-    expect(hero).toContain('narrow ? "/videos/hero-854.mp4" : "/videos/hero-1280.mp4"');
-    // Mounting after hydration is what makes the choice before any request.
-    expect(hero).toContain("<HeroFilm narrow={narrowViewport} />");
+  test("phones never download the film at all", () => {
+    // Below `sm` the hero is the gradient alone — no video, no poster.
+    expect(hero).toContain("!narrowViewport ? <HeroFilm /> : null");
+    expect(hero).toContain('src="/videos/hero-1280.mp4"');
+    expect(css).toMatch(/@media \(min-width: 640px\) \{\s*\.hero-film \{/);
+  });
+
+  test("a shimmer covers the poster until the first frame can play", () => {
+    expect(hero).toContain("hero-film-shimmer");
+    expect(hero).toContain("onCanPlay");
+    expect(css).toContain("@keyframes hero-film-shimmer");
   });
 
   test("reduced motion downloads no video at all", () => {
-    expect(hero).toContain("visible && !reduceMotion ?");
+    expect(hero).toContain("visible && !reduceMotion &&");
     // The poster is a CSS background on the film box, so that path stays static.
     expect(css).toContain('.hero-film {');
     expect(css).toContain('url("/videos/hero-poster.webp")');

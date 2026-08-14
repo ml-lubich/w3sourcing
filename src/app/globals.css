@@ -668,7 +668,8 @@ html.dark .header-bar::before {
 }
 
 /* Over the hero film the bar carries nothing at all — no glass, no tint, no
-   shadow, so the footage runs edge to edge behind it. */
+   shadow, and no backdrop blur, whose lower edge otherwise draws a seam across
+   the footage. */
 .header-bar[data-at-top] {
   --header-glass: 0;
   box-shadow: none;
@@ -676,6 +677,8 @@ html.dark .header-bar::before {
 
 .header-bar[data-at-top]::before {
   opacity: 0;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 /* Scrolled past the hero it becomes the blue bar: a deep accent gradient
@@ -699,20 +702,45 @@ html.dark .header-bar:not([data-at-top])::before {
   );
 }
 
-/* White chrome in both states: over the film and on the blue bar. */
-.header-bar .nav-link-section,
-.header-bar .text-primary,
-.header-bar .text-text-secondary {
+/* White chrome on the blue bar, at every width. */
+.header-bar:not([data-at-top]) .nav-link-section,
+.header-bar:not([data-at-top]) .text-primary,
+.header-bar:not([data-at-top]) .text-text-secondary {
   color: #fff;
 }
 
-.header-bar .nav-link-section-active {
+.header-bar:not([data-at-top]) .nav-link-section-active {
   color: #fff;
   text-shadow: 0 0 18px rgb(255 255 255 / 0.55);
 }
 
-.header-bar .header-wordmark {
+.header-bar:not([data-at-top]) .header-wordmark {
   filter: brightness(0) invert(1);
+}
+
+/* At the top, white chrome only where the film actually plays — phones get the
+   gradient hero, where white on light would vanish. */
+@media (min-width: 640px) {
+  .header-bar[data-at-top] .nav-link-section,
+  .header-bar[data-at-top] .text-primary,
+  .header-bar[data-at-top] .text-text-secondary {
+    color: #fff;
+  }
+
+  .header-bar[data-at-top] .header-wordmark {
+    filter: brightness(0) invert(1);
+  }
+}
+
+/* The open mobile menu is a solid surface of its own: never the bar's white. */
+.header-bar .header-mobile-menu .nav-link-section,
+.header-bar .header-mobile-menu .text-text-secondary {
+  color: var(--text-secondary);
+}
+
+.header-bar .header-mobile-menu .nav-link-section-active {
+  color: var(--accent);
+  text-shadow: none;
 }
 
 .header-bar > * {
@@ -853,80 +881,116 @@ html.dark ::-webkit-scrollbar-thumb {
 /* Hero film: the 8s cinematic loop behind the hero, at full strength — no tint
    and no gradient over it. The poster covers the same box, so the first paint
    and the reduced-motion fallback need no video at all. */
-.hero-film {
-  background: url("/videos/hero-poster.webp") center / cover no-repeat;
+@media (min-width: 640px) {
+  .hero-film {
+    background: url("/videos/hero-poster.webp") center / cover no-repeat;
+  }
 }
 
 /* Hero copy sits directly on the footage, so it takes the same light-on-dark
    treatment in both themes — a shadow behind the glyphs rather than a tint over
-   the film. Panels (the badge, the CTAs, the pipeline mock) carry their own
-   surface and keep their normal colours. */
-.hero-on-film {
-  color: #fff;
-  text-shadow:
-    0 2px 22px rgb(0 0 0 / 0.6),
-    0 1px 4px rgb(0 0 0 / 0.5);
+   the film. Below `sm` there is no film (phones get the gradient hero), so none
+   of this applies and the theme's own colours stand. */
+@media (min-width: 640px) {
+  .hero-on-film {
+    color: #fff;
+    text-shadow:
+      0 2px 22px rgb(0 0 0 / 0.6),
+      0 1px 4px rgb(0 0 0 / 0.5);
+  }
+
+  .hero-on-film .text-primary,
+  .hero-on-film .text-text-secondary {
+    color: #fff;
+  }
+
+  .hero-on-film .text-text-secondary {
+    color: color-mix(in srgb, #fff 86%, transparent);
+  }
+
+  /* A soft shadow pooled behind the copy — the film stays fully visible around
+     it, but words never sit on a bright frame. */
+  .hero-on-film::before {
+    content: "";
+    position: absolute;
+    inset: -8% -12% 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse 68% 58% at 50% 40%,
+      rgb(2 6 23 / 0.62) 0%,
+      rgb(2 6 23 / 0.38) 45%,
+      rgb(2 6 23 / 0.12) 68%,
+      transparent 80%
+    );
+  }
+
+  /* The rotating accent line lifts toward sky-blue: brand accent at full
+     saturation disappears into the footage's own blues. */
+  .hero-on-film .text-accent {
+    color: color-mix(in srgb, var(--accent) 45%, #ffffff);
+  }
+
+  /* The pipeline mock is a product screenshot, not a window: over live footage
+     it needs a real surface, or the video reads straight through the rows. */
+  .hero-on-film .glass-panel.glass-panel-strong,
+  .dark .hero-on-film .glass-panel.glass-panel-strong {
+    background: var(--surface);
+  }
+
+  /* Panels carry their own surface and keep the theme's colours — including
+     when the colour class sits on the panel itself, as the hero CTAs do. */
+  .hero-on-film .glass-panel,
+  .hero-on-film .glass-chip {
+    text-shadow: none;
+  }
+
+  .hero-on-film .glass-panel.text-primary,
+  .hero-on-film .glass-chip.text-primary,
+  .hero-on-film .glass-panel .text-primary,
+  .hero-on-film .glass-chip .text-primary {
+    color: var(--primary);
+  }
+
+  .dark .hero-on-film .glass-panel.text-primary,
+  .dark .hero-on-film .glass-chip.text-primary {
+    color: #fff;
+  }
+
+  .hero-on-film .glass-panel .text-text-secondary,
+  .hero-on-film .glass-chip .text-text-secondary {
+    color: var(--text-secondary);
+  }
+
+  .hero-on-film .glass-panel .text-accent,
+  .hero-on-film .glass-chip .text-accent {
+    color: var(--accent);
+  }
 }
 
-.hero-on-film .text-primary,
-.hero-on-film .text-text-secondary {
-  color: #fff;
-}
-
-.hero-on-film .text-text-secondary {
-  color: color-mix(in srgb, #fff 86%, transparent);
-}
-
-/* The rotating accent line lifts toward sky-blue: brand accent at full
-   saturation disappears into the footage's own blues. */
-.hero-on-film .text-accent {
-  color: color-mix(in srgb, var(--accent) 45%, #ffffff);
-}
-
-.hero-on-film .glass-panel .text-accent,
-.hero-on-film .glass-chip .text-accent {
-  color: var(--accent);
-}
-
-/* A soft shadow pooled behind the copy — the film stays fully visible around
-   it, but words never sit on a bright frame. (Same idea as the vignette on
-   jheupler-site, pulled in behind the text instead of around the edges.) */
-.hero-on-film::before {
-  content: "";
-  position: absolute;
-  inset: -8% -12% 0;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse 68% 58% at 50% 40%,
-    rgb(2 6 23 / 0.62) 0%,
-    rgb(2 6 23 / 0.38) 45%,
-    rgb(2 6 23 / 0.12) 68%,
+/* Skeleton shimmer over the poster until the film's first frame can play. */
+.hero-film-shimmer {
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgb(255 255 255 / 0.16) 42%,
+    rgb(255 255 255 / 0.28) 50%,
+    rgb(255 255 255 / 0.16) 58%,
     transparent 80%
   );
+  background-size: 220% 100%;
+  animation: hero-film-shimmer 1.6s ease-in-out infinite;
 }
 
-/* The pipeline mock is a product screenshot, not a window: over live footage it
-   needs a real surface, or the video reads straight through the candidate rows.
-   Specificity beats `.dark .glass-panel-strong`, which lands later in the file. */
-.hero-on-film .glass-panel.glass-panel-strong,
-.dark .hero-on-film .glass-panel.glass-panel-strong {
-  background: var(--surface);
+@keyframes hero-film-shimmer {
+  from { background-position: 180% 0; }
+  to { background-position: -80% 0; }
 }
 
-.hero-on-film .glass-panel,
-.hero-on-film .glass-chip {
-  text-shadow: none;
-}
-
-.hero-on-film .glass-panel .text-primary,
-.hero-on-film .glass-chip .text-primary {
-  color: var(--primary);
-}
-
-.hero-on-film .glass-panel .text-text-secondary,
-.hero-on-film .glass-chip .text-text-secondary {
-  color: var(--text-secondary);
+@media (prefers-reduced-motion: reduce) {
+  .hero-film-shimmer {
+    animation: none;
+  }
 }
 
 @keyframes hero-orb-float {

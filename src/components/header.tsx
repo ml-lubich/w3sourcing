@@ -241,7 +241,7 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
             animate={{ height: "auto" }}
             exit={{ height: 0 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="bg-surface xl:hidden absolute top-full left-0 right-0 z-[2] min-h-[calc(100dvh-4.5rem)] overflow-hidden border-t border-gray-border/35 shadow-[0_24px_48px_rgb(15_23_42_/_0.12)] dark:shadow-[0_24px_48px_rgb(0_0_0_/_0.4)]"
+            className="header-mobile-menu bg-surface xl:hidden absolute top-full left-0 right-0 z-[2] min-h-[calc(100dvh-4.5rem)] overflow-hidden border-t border-gray-border/35 shadow-[0_24px_48px_rgb(15_23_42_/_0.12)] dark:shadow-[0_24px_48px_rgb(0_0_0_/_0.4)]"
           >
             <nav className="flex flex-col p-6 gap-1">
               {navLinks.map((link) => {

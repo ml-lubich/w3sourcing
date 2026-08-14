@@ -25,8 +25,13 @@ describe("header bar contract", () => {
     expect(barBlock).toContain("var(--accent)");
   });
 
-  test("keeps its chrome white in both states", () => {
-    expect(barBlock).toContain(".header-bar .header-wordmark");
-    expect(barBlock).toContain(".header-bar .nav-link-section");
+  test("keeps its chrome white on the blue bar and over the film", () => {
+    expect(barBlock).toContain(".header-bar:not([data-at-top]) .header-wordmark");
+    expect(barBlock).toContain(".header-bar[data-at-top] .header-wordmark");
+  });
+
+  test("never paints the bar's white onto the open mobile menu", () => {
+    // The menu is a solid surface of its own; white on it is invisible in light.
+    expect(barBlock).toContain(".header-bar .header-mobile-menu .nav-link-section");
   });
 });

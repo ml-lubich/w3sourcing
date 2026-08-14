@@ -321,7 +321,63 @@ function AdminAssistant() {
       {state.ok ? (
         <p className="relative mt-4 whitespace-pre-wrap text-sm leading-relaxed text-primary">{state.ok}</p>
       ) : null}
+      {state.action ? (
+        // Keyed on the proposal so a fresh answer never shows the last one's
+        // "applied" note.
+        <AssistantProposal
+          key={`${state.action.hot}-${state.action.refs.join(",")}`}
+          action={state.action}
+        />
+      ) : null}
     </form>
+  );
+}
+
+/** The assistant never writes: it proposes, and this is where the editor agrees. */
+function AssistantProposal({ action }: { action: NonNullable<ActionState["action"]> }) {
+  const [done, setDone] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  if (done) {
+    return (
+      <p className="relative mt-4 inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 dark:text-emerald-400">
+        <Check className="size-4" aria-hidden /> {done}
+      </p>
+    );
+  }
+
+  const verb = action.hot ? "Mark hot" : "Remove the hot flag from";
+  return (
+    <div className="relative mt-4 rounded-xl border border-orange-500/40 bg-orange-500/5 p-4">
+      <p className="text-sm font-semibold text-primary">
+        <Flame className="mr-1.5 inline size-4 text-orange-500" aria-hidden />
+        {verb} {action.refs.length} role{action.refs.length === 1 ? "" : "s"}?
+      </p>
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {action.refs.map((ref) => (
+          <span key={ref} className="glass-chip rounded-md px-2 py-0.5 text-[11px] font-semibold text-text-secondary">
+            {ref}
+          </span>
+        ))}
+      </div>
+      <button
+        type="button"
+        disabled={pending}
+        onClick={() =>
+          startTransition(async () => {
+            await setHot(action.refs, action.hot);
+            setDone(
+              `${action.hot ? "Marked" : "Unflagged"} ${action.refs.length} role${
+                action.refs.length === 1 ? "" : "s"
+              }.`,
+            );
+          })
+        }
+        className={`mt-3 ${BUTTON}`}
+      >
+        {pending ? "Applying…" : `Confirm — ${verb.toLowerCase()} ${action.refs.length}`}
+      </button>
+    </div>
   );
 }
 

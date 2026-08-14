@@ -322,8 +322,9 @@ function FitBar({
  * phone-sized encode is picked before a byte is requested and reduced-motion
  * visitors never fetch one at all — the poster behind it carries those cases.
  */
-function HeroFilm({ narrow }: { narrow: boolean }) {
+function HeroFilm() {
   const ref = useRef<HTMLVideoElement>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     // `autoplay` is skipped when the tab mounts in the background, and iOS Low
@@ -332,18 +333,25 @@ function HeroFilm({ narrow }: { narrow: boolean }) {
   }, []);
 
   return (
-    <video
-      ref={ref}
-      className="h-full w-full object-cover"
-      src={narrow ? "/videos/hero-854.mp4" : "/videos/hero-1280.mp4"}
-      poster="/videos/hero-poster.webp"
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="metadata"
-      tabIndex={-1}
-    />
+    <>
+      <video
+        ref={ref}
+        className={`h-full w-full object-cover transition-opacity duration-700 ${
+          ready ? "opacity-100" : "opacity-0"
+        }`}
+        src="/videos/hero-1280.mp4"
+        poster="/videos/hero-poster.webp"
+        onCanPlay={() => setReady(true)}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        tabIndex={-1}
+      />
+      {/* Skeleton shimmer over the poster until the first frame can play. */}
+      {ready ? null : <span className="hero-film-shimmer absolute inset-0" aria-hidden />}
+    </>
   );
 }
 
@@ -509,7 +517,8 @@ export function Hero() {
           under reduced motion.
         */}
         <div className="hero-film absolute inset-0" aria-hidden>
-          {visible && !reduceMotion ? <HeroFilm narrow={narrowViewport} /> : null}
+          {/* Phones get the gradient hero instead: no film, nothing to download. */}
+          {visible && !reduceMotion && !narrowViewport ? <HeroFilm /> : null}
         </div>
         {liteMotion ? (
           <>

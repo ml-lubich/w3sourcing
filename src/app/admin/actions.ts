@@ -11,6 +11,7 @@ import {
   sessionToken,
 } from "@/lib/admin-auth";
 import { aiConfigured, aiText } from "@/lib/ai";
+import { parseAssistantAction, type AssistantAction } from "@/lib/assistant-action";
 import { jobsDigest } from "@/lib/jobs-digest";
 import { jobsFromCsv } from "@/lib/jobs-csv";
 import { newRef, toRef } from "@/lib/jobs";
@@ -26,7 +27,12 @@ import {
 import { removalSummary, syncSummary } from "@/lib/jobs-sync";
 
 /** What every form action hands back to the UI. */
-export type ActionState = { ok?: string; error?: string };
+export type ActionState = {
+  ok?: string;
+  error?: string;
+  /** Hot-flag change the assistant proposed; nothing is written until confirmed. */
+  action?: AssistantAction;
+};
 
 export async function isAdminSession(): Promise<boolean> {
   return isValidSession((await cookies()).get(ADMIN_COOKIE)?.value);
@@ -164,9 +170,20 @@ export async function importCsv(_state: ActionState, formData: FormData): Promis
 const ASSISTANT_SYSTEM = `You are the W3 Sourcing desk analyst. You are given a digest of the live
 job board (facet counts plus the most recent roles) and one question from a recruiter.
 
+Write the final answer only. Never show planning, analysis steps, numbered workings, or restated
+constraints — the recruiter sees exactly what you output.
+
 Answer only from the digest — if it does not contain the answer, say so plainly rather than guessing.
 Be concrete: quote numbers, name clients and role refs (W3-xxxx). Keep it under 180 words, use short
-lines or bullets, no preamble, no markdown headings.`;
+lines or bullets, no preamble, no markdown headings.
+
+When the recruiter asks you to flag roles as hot, or to take the hot flag off roles, end your reply
+with one final line, exactly:
+ACTION: HOT W3-AAA111, W3-BBB222
+or
+ACTION: UNHOT W3-AAA111
+Only refs that appear in the digest. Nothing is changed by that line — the recruiter confirms it — so
+say in your prose what you are proposing and why. Leave the line out entirely for ordinary questions.`;
 
 /** Admin-only: the digest carries client names, so this never leaves the editor. */
 export async function askAssistant(
@@ -180,11 +197,20 @@ export async function askAssistant(
   if (!question) return { error: "Ask a question first." };
 
   try {
+    const jobs = await fetchJobs();
     const { text, model } = await aiText(
       ASSISTANT_SYSTEM,
-      `Live board digest:\n${jobsDigest(await fetchJobs())}\n\nQuestion: ${question}`,
+      `Live board digest:\n${jobsDigest(jobs)}\n\nQuestion: ${question}`,
     );
-    return { ok: `${text}\n\n— ${model}` };
+    const { text: answer, action } = parseAssistantAction(text);
+    // A model can name a role that is not on the board; only refs that really
+    // exist reach the confirm button.
+    const known = new Set(jobs.map((job) => job.ref.toUpperCase()));
+    const refs = action?.refs.filter((ref) => known.has(ref)) ?? [];
+    return {
+      ok: `${answer}\n\n— ${model}`,
+      action: action && refs.length > 0 ? { hot: action.hot, refs } : undefined,
+    };
   } catch (error) {
     return { error: error instanceof Error ? error.message : "The assistant failed." };
   }

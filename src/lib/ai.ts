@@ -39,6 +39,9 @@ async function callModel(model: string, key: string, system: string, user: strin
     body: JSON.stringify({
       model,
       max_tokens: maxTokens,
+      // Some open models narrate their planning; ask the gateway to drop
+      // reasoning tokens so `content` is the answer alone.
+      reasoning: { exclude: true },
       // Deterministic: the same board and question give the same answer.
       temperature: 0,
       messages: [
