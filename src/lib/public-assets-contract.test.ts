@@ -47,7 +47,7 @@ describe("public assets contract", () => {
       .filter((entryName) => !entryName.startsWith("."))
       .sort();
 
-    expect(rootEntries).toEqual(["images", "llms.txt", "w3-theme-boot.js"]);
+    expect(rootEntries).toEqual(["images", "llms.txt", "videos", "w3-theme-boot.js"]);
   });
 
   test("keeps source image URLs backed by files under public/images", () => {

@@ -317,6 +317,36 @@ function FitBar({
   );
 }
 
+/**
+ * The hero's cinematic loop. Mounted only once the page has hydrated, so the
+ * phone-sized encode is picked before a byte is requested and reduced-motion
+ * visitors never fetch one at all — the poster behind it carries those cases.
+ */
+function HeroFilm({ narrow }: { narrow: boolean }) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    // `autoplay` is skipped when the tab mounts in the background, and iOS Low
+    // Power Mode refuses it outright. Ask once; the poster stays if refused.
+    void ref.current?.play().catch(() => {});
+  }, []);
+
+  return (
+    <video
+      ref={ref}
+      className="h-full w-full object-cover"
+      src={narrow ? "/videos/hero-640.mp4" : "/videos/hero-1280.mp4"}
+      poster="/videos/hero-poster.webp"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      tabIndex={-1}
+    />
+  );
+}
+
 export function Hero() {
   const [visible, setVisible] = useState(false);
   const [accentIndex, setAccentIndex] = useState(0);
@@ -470,6 +500,19 @@ export function Hero() {
       aria-labelledby="hero-heading"
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {/*
+          The cinematic loop sits under every other hero layer — orbs, grid, and
+          the headline and demo panel all render on top of it. It only mounts
+          once `visible` flips (80ms after hydration), so the poster carries the
+          first paint and the phone-sized encode is chosen before anything is
+          requested — no desktop file downloaded on a phone, nothing at all
+          under reduced motion.
+        */}
+        <div className="hero-film absolute inset-0" aria-hidden>
+          {visible && !reduceMotion ? <HeroFilm narrow={narrowViewport} /> : null}
+        </div>
+        <div className="hero-film-scrim absolute inset-0" aria-hidden />
+
         {liteMotion ? (
           <>
             <div
