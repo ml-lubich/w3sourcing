@@ -30,6 +30,11 @@ describe("header bar contract", () => {
     expect(barBlock).toContain(".header-bar[data-at-top] .header-wordmark");
   });
 
+  test("bar controls read as chrome, not white blobs on the film", () => {
+    expect(barBlock).toContain(".header-bar:not([data-at-top]) .glass-chip");
+    expect(barBlock).toContain(".header-bar[data-at-top] .glass-chip");
+  });
+
   test("never paints the bar's white onto the open mobile menu", () => {
     // The menu is a solid surface of its own; white on it is invisible in light.
     expect(barBlock).toContain(".header-bar .header-mobile-menu .nav-link-section");

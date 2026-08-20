@@ -732,6 +732,27 @@ html.dark .header-bar:not([data-at-top])::before {
   }
 }
 
+/* Bar controls (theme toggle, mobile menu button) are chrome, not white blobs
+   floating on the film or the blue bar: outline only, in the same two states
+   as the links above. */
+.header-bar:not([data-at-top]) .glass-chip {
+  background: rgb(255 255 255 / 0.14);
+  border-color: rgb(255 255 255 / 0.38);
+  box-shadow: none;
+  color: #fff;
+}
+
+@media (min-width: 640px) {
+  .header-bar[data-at-top] .glass-chip {
+    background: rgb(255 255 255 / 0.12);
+    border-color: rgb(255 255 255 / 0.34);
+    box-shadow: none;
+    color: #fff;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
 /* The open mobile menu is a solid surface of its own: never the bar's white. */
 .header-bar .header-mobile-menu .nav-link-section,
 .header-bar .header-mobile-menu .text-text-secondary {
