@@ -1332,7 +1332,11 @@ html:not(.dark) .glass-panel.stats-outcome-card {
   width: 280px;
   height: 280px;
   bottom: -80px;
-  right: -40px;
+  /* Sits flush with the edge rather than 40px past it: the overhang widened
+     the document on phones (clipped by `body { overflow-x: hidden }`, but it
+     left `scrollWidth` reading 430 at a 390px viewport). A blurred 280px orb
+     does not miss the 40px. */
+  right: 0;
   background: color-mix(in srgb, #06b6d4 12%, transparent);
   opacity: 0.45;
 }

@@ -67,13 +67,6 @@ export default function Home() {
     <>
       <HomeJsonLd />
       <HomeHashScroll />
-      <a
-        href="#main-content"
-        /* Off-screen until a keyboard user tabs to it — never visible to a pointer user. */
-        className="absolute left-4 top-4 z-[100] -translate-y-[150vh] rounded-lg bg-accent/95 px-3 py-1.5 text-xs font-semibold text-white shadow-md outline-none transition-transform focus:translate-y-0 focus:ring-2 focus:ring-white/40"
-      >
-        Skip to main content
-      </a>
       <Header />
       <FloatingCTA />
       <main id="main-content" tabIndex={-1} className="outline-none">
