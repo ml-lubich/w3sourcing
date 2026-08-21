@@ -84,7 +84,7 @@ function BeatRow({ beat, index }: { beat: Beat; index: number }) {
             className="rounded-2xl border border-gray-border/60 bg-transparent p-5 dark:border-white/[0.08]"
             initial={reduced ? false : { opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px -15% 0px" }}
+            viewport={{ once: true, margin: "0px 0px -120px 0px" }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
@@ -99,7 +99,7 @@ function BeatRow({ beat, index }: { beat: Beat; index: number }) {
             className="glass-panel rounded-2xl p-5 shadow-[0_12px_36px_rgb(15_23_42_/_0.06)] dark:shadow-[0_12px_36px_rgb(0_0_0_/_0.32)]"
             initial={reduced ? false : { opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px -15% 0px" }}
+            viewport={{ once: true, margin: "0px 0px -120px 0px" }}
             transition={{ duration: 0.5, delay: reduced ? 0 : 0.08, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">

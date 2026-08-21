@@ -14,7 +14,7 @@ type Props = {
 
 export function AnimatedLegalHeading({ level, text, className, id }: Props) {
   const ref = useRef<HTMLHeadingElement | null>(null);
-  const inView = useInView(ref, { once: true, margin: "-10% 0px -15% 0px" });
+  const inView = useInView(ref, { once: true, margin: "-80px 0px -120px 0px" });
   const animate = useSplitWordsAnimate(inView);
   const Tag = level === 1 ? "h1" : "h2";
   return (

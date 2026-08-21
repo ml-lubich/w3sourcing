@@ -75,7 +75,7 @@ function FooterColumn({
 export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
   const onSectionLinkClick = useSectionLinkClick(sectionLinksFromRoot);
   const footerRef = useRef<HTMLElement | null>(null);
-  const footerInView = useInView(footerRef, { once: true, margin: "0px 0px -20% 0px" });
+  const footerInView = useInView(footerRef, { once: true, margin: "0px 0px -160px 0px" });
   const [clientMotionReady, setClientMotionReady] = useState(false);
   useLayoutEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- align first paint with SSR; then allow useInView

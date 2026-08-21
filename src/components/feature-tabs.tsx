@@ -148,7 +148,7 @@ const EASE_PRO = [0.16, 1, 0.3, 1] as const;
 function FeatureBlock({ section, index }: { section: FeatureSection; index: number }) {
   const [activeTab, setActiveTab] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.12, margin: "0px 0px -10% 0px" });
+  const inView = useInView(ref, { once: true, amount: 0.12, margin: "0px 0px -80px 0px" });
   const reduced = useHydrationSafeReducedMotion();
   const narrowViewport = useMobileLightMotion();
   const liteMotion = reduced || narrowViewport;

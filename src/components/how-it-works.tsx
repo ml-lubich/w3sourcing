@@ -365,7 +365,7 @@ function StepCard({
 
 export function HowItWorks() {
   const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-12% 0px" });
+  const inView = useInView(ref, { once: true, margin: "-96px 0px" });
   const reduced = useHydrationSafeReducedMotion();
   const narrowViewport = useMobileLightMotion();
   const liteMotion = reduced || narrowViewport;
