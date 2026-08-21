@@ -12,8 +12,7 @@ const barBlock = globalsSrc.slice(
 );
 
 describe("header bar contract", () => {
-  test("carries nothing at all over the hero film", () => {
-    // Any tint here reads as a dark band across the top of the footage.
+  test("carries nothing at all at the top of the page", () => {
     expect(barBlock).toContain("--header-glass: 0");
     expect(barBlock).toContain(".header-bar[data-at-top]::before");
     expect(barBlock).toMatch(/\.header-bar\[data-at-top\]::before \{\s*opacity: 0;/);
@@ -25,14 +24,13 @@ describe("header bar contract", () => {
     expect(barBlock).toContain("var(--accent)");
   });
 
-  test("keeps its chrome white on the blue bar and over the film", () => {
+  test("white chrome belongs to the blue bar alone", () => {
+    // At the top the hero is the page's own wash, so the bar keeps theme
+    // colours there — white would vanish on it in light mode.
     expect(barBlock).toContain(".header-bar:not([data-at-top]) .header-wordmark");
-    expect(barBlock).toContain(".header-bar[data-at-top] .header-wordmark");
-  });
-
-  test("bar controls read as chrome, not white blobs on the film", () => {
     expect(barBlock).toContain(".header-bar:not([data-at-top]) .glass-chip");
-    expect(barBlock).toContain(".header-bar[data-at-top] .glass-chip");
+    expect(barBlock).not.toContain(".header-bar[data-at-top] .header-wordmark");
+    expect(barBlock).not.toContain(".header-bar[data-at-top] .glass-chip");
   });
 
   test("never paints the bar's white onto the open mobile menu", () => {

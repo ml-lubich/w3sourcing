@@ -317,44 +317,6 @@ function FitBar({
   );
 }
 
-/**
- * The hero's cinematic loop. Mounted only once the page has hydrated, so the
- * phone-sized encode is picked before a byte is requested and reduced-motion
- * visitors never fetch one at all — the poster behind it carries those cases.
- */
-function HeroFilm() {
-  const ref = useRef<HTMLVideoElement>(null);
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    // `autoplay` is skipped when the tab mounts in the background, and iOS Low
-    // Power Mode refuses it outright. Ask once; the poster stays if refused.
-    void ref.current?.play().catch(() => {});
-  }, []);
-
-  return (
-    <>
-      <video
-        ref={ref}
-        className={`h-full w-full object-cover transition-opacity duration-700 ${
-          ready ? "opacity-100" : "opacity-0"
-        }`}
-        src="/videos/hero-1280.mp4"
-        poster="/videos/hero-poster.webp"
-        onCanPlay={() => setReady(true)}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        tabIndex={-1}
-      />
-      {/* Skeleton shimmer over the poster until the first frame can play. */}
-      {ready ? null : <span className="hero-film-shimmer absolute inset-0" aria-hidden />}
-    </>
-  );
-}
-
 export function Hero() {
   const [visible, setVisible] = useState(false);
   const [accentIndex, setAccentIndex] = useState(0);
@@ -508,18 +470,6 @@ export function Hero() {
       aria-labelledby="hero-heading"
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {/*
-          The cinematic loop sits under every other hero layer — orbs, grid, and
-          the headline and demo panel all render on top of it. It only mounts
-          once `visible` flips (80ms after hydration), so the poster carries the
-          first paint and the phone-sized encode is chosen before anything is
-          requested — no desktop file downloaded on a phone, nothing at all
-          under reduced motion.
-        */}
-        <div className="hero-film absolute inset-0" aria-hidden>
-          {/* Phones get the gradient hero instead: no film, nothing to download. */}
-          {visible && !reduceMotion && !narrowViewport ? <HeroFilm /> : null}
-        </div>
         {liteMotion ? (
           <>
             <div
@@ -557,11 +507,12 @@ export function Hero() {
             />
           </>
         )}
+        <div className="absolute inset-0 hero-surface-grid opacity-[0.48] dark:opacity-[0.45]" aria-hidden />
         <div className="absolute inset-0 hero-dot-noise" aria-hidden />
       </div>
 
       <div
-        className={`hero-on-film relative z-10 mx-auto max-w-6xl px-6 text-center transition-transform duration-700 ease-out will-change-transform ${visible ? "translate-y-0" : "translate-y-6"
+        className={`relative z-10 mx-auto max-w-6xl px-6 text-center transition-transform duration-700 ease-out will-change-transform ${visible ? "translate-y-0" : "translate-y-6"
           }`}
       >
         <motion.div
