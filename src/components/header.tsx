@@ -153,7 +153,7 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
         </Link>
 
         <nav
-          className="relative z-10 hidden xl:flex min-w-0 flex-1 items-center justify-start gap-x-1 overflow-x-auto overscroll-x-contain px-1 xl:justify-center xl:gap-x-2 [scrollbar-width:thin]"
+          className="relative z-10 hidden xl:flex min-w-0 flex-1 items-center justify-center gap-x-1 lg:gap-x-1.5 px-2"
           aria-label="Primary"
         >
           {navLinks.map((link) => {
@@ -167,7 +167,7 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
                   onSectionLinkClick(e, link.href);
                 }}
                 aria-current={isActive ? "location" : undefined}
-                className={`nav-link-section shrink-0 whitespace-nowrap px-2 py-2 text-sm font-medium rounded-lg duration-200 lg:px-3 ${
+                className={`nav-link-section shrink-0 whitespace-nowrap px-2 py-1.5 text-xs lg:text-[13px] font-medium rounded-lg duration-200 ${
                   isActive
                     ? "nav-link-section-active"
                     : "text-text-secondary hover:text-primary"
@@ -179,7 +179,7 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
           })}
           <Link
             href="/jobs"
-            className="nav-link-section shrink-0 whitespace-nowrap px-2 py-2 text-sm font-medium rounded-lg duration-200 lg:px-3 text-text-secondary hover:text-primary"
+            className="nav-link-section shrink-0 whitespace-nowrap px-2 py-1.5 text-xs lg:text-[13px] font-medium rounded-lg duration-200 text-text-secondary hover:text-primary"
           >
             Jobs
           </Link>
@@ -187,10 +187,10 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
             href="https://w3sourcing-candidate-portal.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
-            className="nav-link-section shrink-0 whitespace-nowrap px-2 py-2 text-sm font-medium rounded-lg duration-200 lg:px-3 text-accent hover:text-accent-hover font-semibold flex items-center gap-1"
+            className="nav-link-section shrink-0 whitespace-nowrap px-2.5 py-1 text-xs lg:text-[13px] font-semibold rounded-lg duration-200 text-accent hover:text-accent-hover bg-accent/10 border border-accent/20 flex items-center gap-1 shadow-xs"
           >
-            <span>Admin Portal</span>
-            <span className="text-xs">↗</span>
+            <span>Admin</span>
+            <span className="text-[10px]">↗</span>
           </a>
         </nav>
 
