@@ -467,8 +467,8 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
     if (refs.length === 0) return;
     const noun = refs.length === 1 ? "role" : "roles";
     if (!confirm(`Remove ${refs.length} ${noun} from the site? This cannot be undone.`)) return;
-    startTransition(() => {
-      void removeJobs(refs);
+    startTransition(async () => {
+      await removeJobs(refs);
       setSelected(new Set());
     });
   };
