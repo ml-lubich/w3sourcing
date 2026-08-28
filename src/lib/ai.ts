@@ -18,13 +18,39 @@ function keys(): string[] {
 }
 
 export function aiConfigured(): boolean {
-  return keys().length > 0;
+  return keys().length > 0 || Boolean(process.env.OPENAI_API_KEY?.trim());
 }
 
 export function aiModels(): string[] {
   const env = process.env.OPENROUTER_MODELS;
   const custom = env?.split(",").map((model) => model.trim()).filter(Boolean);
   return custom?.length ? custom : DEFAULT_MODELS;
+}
+
+async function callOpenAi(key: string, system: string, user: string, maxTokens: number, model = process.env.OPENAI_MODEL || "gpt-4o-mini") {
+  const base = process.env.OPENAI_BASE_URL?.replace(/\/$/, "") || "https://api.openai.com/v1";
+  const res = await fetch(`${base}/chat/completions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: maxTokens,
+      temperature: 0,
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+    }),
+    signal: AbortSignal.timeout(60_000),
+  });
+  if (!res.ok) throw new Error(`openai/${model}: HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
+  const message = (await res.json())?.choices?.[0]?.message ?? {};
+  const text = String(message.content || "").trim();
+  if (!text) throw new Error(`openai/${model}: returned an empty answer`);
+  return text;
 }
 
 async function callModel(model: string, key: string, system: string, user: string, maxTokens: number) {
@@ -65,7 +91,7 @@ export async function aiText(
   user: string,
   maxTokens = 900,
 ): Promise<{ text: string; model: string }> {
-  if (!aiConfigured()) throw new Error("OPENROUTER_API_KEY is not set — add it to .env.local.");
+  if (!aiConfigured()) throw new Error("OPENROUTER_API_KEY or OPENAI_API_KEY is not set — add one to .env.local.");
   const errors: string[] = [];
   for (const model of aiModels()) {
     for (const key of keys()) {
@@ -76,5 +102,17 @@ export async function aiText(
       }
     }
   }
+
+  const openAiKey = process.env.OPENAI_API_KEY?.trim();
+  if (openAiKey) {
+    const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
+    try {
+      return { text: await callOpenAi(openAiKey, system, user, maxTokens, model), model };
+    } catch (error) {
+      errors.push(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   throw new Error(`Every model failed — ${errors.join(" | ")}`);
 }
+

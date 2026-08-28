@@ -11,6 +11,7 @@ afterEach(() => {
   process.env.OPENROUTER_API_KEY = realKey;
   process.env.OPENROUTER_MODELS = realModels;
   delete process.env.OPENROUTER_API_KEY_FALLBACK;
+  delete process.env.OPENAI_API_KEY;
 });
 
 function reply(content: string, status = 200) {
@@ -21,12 +22,20 @@ describe("aiConfigured", () => {
   test("is false without a key", () => {
     delete process.env.OPENROUTER_API_KEY;
     delete process.env.OPENROUTER_API_KEY_FALLBACK;
+    delete process.env.OPENAI_API_KEY;
     expect(aiConfigured()).toBe(false);
   });
 
   test("is true with either key", () => {
     delete process.env.OPENROUTER_API_KEY;
     process.env.OPENROUTER_API_KEY_FALLBACK = "sk-b";
+    expect(aiConfigured()).toBe(true);
+  });
+
+  test("is true with OPENAI_API_KEY", () => {
+    delete process.env.OPENROUTER_API_KEY;
+    delete process.env.OPENROUTER_API_KEY_FALLBACK;
+    process.env.OPENAI_API_KEY = "sk-proj-test";
     expect(aiConfigured()).toBe(true);
   });
 });
@@ -64,6 +73,24 @@ describe("aiText", () => {
     expect(seen).toEqual(["a/one", "b/two"]);
   });
 
+  test("falls through to OpenAI when OpenRouter fails", async () => {
+    process.env.OPENROUTER_API_KEY = "sk-a";
+    process.env.OPENROUTER_MODELS = "a/one";
+    process.env.OPENAI_API_KEY = "sk-proj-test";
+    const calls: string[] = [];
+    globalThis.fetch = (async (url: string) => {
+      calls.push(url.toString());
+      if (url.toString().includes("openrouter.ai")) {
+        return reply("rate limit", 403);
+      }
+      return reply("OpenAI answer");
+    }) as unknown as typeof fetch;
+    const result = await aiText("sys", "q");
+    expect(result.text).toBe("OpenAI answer");
+    expect(result.model).toBe("gpt-4o-mini");
+    expect(calls.some((u) => u.includes("api.openai.com"))).toBe(true);
+  });
+
   test("reads the reasoning field when content comes back empty", async () => {
     process.env.OPENROUTER_API_KEY = "sk-a";
     process.env.OPENROUTER_MODELS = "a/one";
@@ -82,6 +109,8 @@ describe("aiText", () => {
   test("refuses to call out without a key", () => {
     delete process.env.OPENROUTER_API_KEY;
     delete process.env.OPENROUTER_API_KEY_FALLBACK;
+    delete process.env.OPENAI_API_KEY;
     expect(aiText("sys", "q")).rejects.toThrow(/OPENROUTER_API_KEY/);
   });
 });
+
