@@ -274,109 +274,351 @@ const ASSISTANT_PROMPTS = [
 ];
 
 function AdminAssistant() {
-  const [state, formAction, pending] = useActionState<ActionState, FormData>(askAssistant, {});
-  const [question, setQuestion] = useState("");
+  const [messages, setMessages] = useState<
+    Array<{
+      id: string;
+      role: "user" | "assistant";
+      text: string;
+      model?: string;
+      action?: NonNullable<ActionState["action"]>;
+      isStreaming?: boolean;
+    }>
+  >([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+  async function handleSend(promptText?: string) {
+    const textToSend = promptText ?? input;
+    if (!textToSend.trim() || loading) return;
+
+    setError(null);
+    setInput("");
+    const userMsgId = `user-${Date.now()}`;
+    const assistantMsgId = `ai-${Date.now()}`;
+
+    setMessages((prev) => [
+      ...prev,
+      { id: userMsgId, role: "user", text: textToSend },
+      { id: assistantMsgId, role: "assistant", text: "", isStreaming: true },
+    ]);
+    setLoading(true);
+
+    try {
+      const fd = new FormData();
+      fd.append("question", textToSend);
+      const res = await askAssistant({}, fd);
+
+      if (res.error) {
+        setError(res.error);
+        setMessages((prev) => prev.filter((m) => m.id !== assistantMsgId));
+      } else if (res.ok) {
+        const fullText = res.ok;
+        // Animated typewriter / streaming effect
+        let currentIdx = 0;
+        const step = Math.max(1, Math.floor(fullText.length / 40));
+        const interval = setInterval(() => {
+          currentIdx = Math.min(fullText.length, currentIdx + step + Math.floor(Math.random() * 3));
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantMsgId
+                ? {
+                    ...m,
+                    text: fullText.slice(0, currentIdx),
+                    isStreaming: currentIdx < fullText.length,
+                    action: currentIdx >= fullText.length ? res.action : undefined,
+                  }
+                : m,
+            ),
+          );
+          if (currentIdx >= fullText.length) {
+            clearInterval(interval);
+          }
+        }, 15);
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to query assistant");
+      setMessages((prev) => prev.filter((m) => m.id !== assistantMsgId));
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <form action={formAction} className="glass-panel mt-6 rounded-2xl p-6">
-      <h2 className="relative text-lg font-bold text-primary">
-        <Sparkles className="mr-2 inline size-4 text-accent" aria-hidden />
-        Ask about the board
-      </h2>
-      <p className="relative mt-1 text-xs text-text-secondary">
-        Reads a digest of every live role — counts by client, sector, location, and the most recent
-        postings. Answers stay in this admin page; client names never reach the public board.
-      </p>
-
-      <div className="relative mt-4 flex flex-wrap gap-2">
-        {ASSISTANT_PROMPTS.map((prompt) => (
+    <div className="glass-panel mt-6 flex flex-col rounded-3xl border border-gray-border/50 bg-gradient-to-b from-surface to-surface/80 p-6 shadow-2xl backdrop-blur-xl dark:border-white/[0.08]">
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-border/40 pb-5 dark:border-white/[0.06]">
+        <div className="flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-sky-400 to-indigo-600 shadow-[0_0_20px_color-mix(in_srgb,var(--accent)_40%,transparent)]">
+            <Sparkles className="size-5 text-white animate-pulse" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-primary flex items-center gap-2">
+              <span>W3 Intelligence Assistant</span>
+              <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-500 border border-emerald-500/20">
+                Live Digest
+              </span>
+            </h2>
+            <p className="text-xs text-text-secondary">
+              Real-time job board digest with interactive batch operations (Hot, Unflag, Delete).
+            </p>
+          </div>
+        </div>
+        {messages.length > 0 && (
           <button
-            key={prompt}
             type="button"
-            onClick={() => setQuestion(prompt)}
-            className="glass-chip rounded-lg px-3 py-1.5 text-xs font-semibold text-text-secondary transition-colors hover:text-accent"
+            onClick={() => setMessages([])}
+            className="rounded-xl border border-gray-border/60 bg-surface/50 px-3 py-1.5 text-xs font-medium text-text-secondary hover:text-primary transition-colors"
           >
-            {prompt}
+            Clear conversation
           </button>
-        ))}
+        )}
       </div>
 
-      <textarea
-        name="question"
-        rows={3}
-        value={question}
-        onChange={(event) => setQuestion(event.target.value)}
-        placeholder="e.g. which AI roles in Singapore are still unflagged?"
-        className={`relative mt-3 ${INPUT}`}
-      />
+      {/* Suggested Starter Chips */}
+      {messages.length === 0 && (
+        <div className="my-6">
+          <p className="text-xs font-semibold uppercase tracking-wider text-text-secondary mb-3">
+            Suggested Queries
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {ASSISTANT_PROMPTS.map((prompt) => (
+              <button
+                key={prompt}
+                type="button"
+                onClick={() => handleSend(prompt)}
+                className="group flex items-center justify-between rounded-2xl border border-gray-border/60 bg-surface/60 p-3.5 text-left text-xs font-medium text-text-secondary hover:border-accent/40 hover:bg-surface hover:text-primary transition-all duration-200 shadow-sm"
+              >
+                <span>{prompt}</span>
+                <span className="text-accent opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
-      <button type="submit" disabled={pending} className={`relative mt-4 ${BUTTON}`}>
-        <Sparkles className="size-4" aria-hidden />
-        {pending ? "Thinking…" : "Ask"}
-      </button>
+      {/* Message History & Animated Stream */}
+      <div className="flex-1 space-y-4 overflow-y-auto py-4 min-h-[160px] max-h-[500px] pr-1">
+        {messages.map((m) => (
+          <div
+            key={m.id}
+            className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}
+          >
+            <div
+              className={`max-w-[90%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
+                m.role === "user"
+                  ? "bg-accent text-white font-medium rounded-tr-xs"
+                  : "glass-chip text-primary border border-gray-border/40 dark:border-white/[0.06] rounded-tl-xs"
+              }`}
+            >
+              <p className="whitespace-pre-wrap">{m.text}</p>
+              {m.isStreaming && (
+                <span className="inline-block w-2 h-4 ml-1 bg-accent animate-pulse align-middle" />
+              )}
+            </div>
 
-      {state.error ? (
-        <p className="relative mt-4 text-sm text-red-600 dark:text-red-400">{state.error}</p>
-      ) : null}
-      {state.ok ? (
-        <p className="relative mt-4 whitespace-pre-wrap text-sm leading-relaxed text-primary">{state.ok}</p>
-      ) : null}
-      {state.action ? (
-        // Keyed on the proposal so a fresh answer never shows the last one's
-        // "applied" note.
-        <AssistantProposal
-          key={`${state.action.hot}-${state.action.refs.join(",")}`}
-          action={state.action}
+            {/* Interactive Tool Actions */}
+            {m.action && !m.isStreaming && (
+              <div className="mt-2 w-full max-w-[90%]">
+                <AssistantProposal action={m.action} />
+              </div>
+            )}
+          </div>
+        ))}
+        {loading && messages.length > 0 && messages[messages.length - 1].role === "user" && (
+          <div className="flex items-center gap-2 text-xs text-text-secondary font-medium">
+            <span className="size-2 rounded-full bg-accent animate-ping" />
+            <span>Analyzing board digest…</span>
+          </div>
+        )}
+        <div ref={chatEndRef} />
+      </div>
+
+      {error && (
+        <div className="mb-3 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-600 dark:text-red-400">
+          {error}
+        </div>
+      )}
+
+      {/* Modern Gemini-style Input Box */}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSend();
+        }}
+        className="relative mt-2 flex items-center rounded-2xl border border-gray-border/80 bg-surface/90 p-1.5 shadow-inner focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/20 dark:border-white/[0.1] transition-all"
+      >
+        <input
+          type="text"
+          value={input}
+          disabled={loading}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Ask a question or request role changes (e.g. mark AI roles hot, delete stale jobs)…"
+          className="flex-1 bg-transparent px-4 py-2.5 text-sm text-primary placeholder:text-text-secondary/70 focus:outline-none"
         />
-      ) : null}
-    </form>
+        <button
+          type="submit"
+          disabled={loading || !input.trim()}
+          className="flex size-9 items-center justify-center rounded-xl bg-accent text-white shadow-md hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+        >
+          {loading ? (
+            <span className="size-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+          ) : (
+            <Sparkles className="size-4" />
+          )}
+        </button>
+      </form>
+    </div>
   );
 }
 
-/** The assistant never writes: it proposes, and this is where the editor agrees. */
+/** Rich interactive action proposal with selectable/deselectable roles and confirmation */
 function AssistantProposal({ action }: { action: NonNullable<ActionState["action"]> }) {
+  const [selectedRefs, setSelectedRefs] = useState<Set<string>>(() => new Set(action.refs));
   const [done, setDone] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
+  const actionType = action.type ?? (action.hot ? "hot" : "unhot");
+  const isDelete = actionType === "delete";
+  const isHot = actionType === "hot";
+
+  function toggleRef(ref: string) {
+    setSelectedRefs((prev) => {
+      const next = new Set(prev);
+      if (next.has(ref)) {
+        next.delete(ref);
+      } else {
+        next.add(ref);
+      }
+      return next;
+    });
+  }
+
+  function selectAll() {
+    setSelectedRefs(new Set(action.refs));
+  }
+
+  function deselectAll() {
+    setSelectedRefs(new Set());
+  }
+
   if (done) {
     return (
-      <p className="relative mt-4 inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 dark:text-emerald-400">
-        <Check className="size-4" aria-hidden /> {done}
-      </p>
+      <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-3.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+        <Check className="size-4" /> {done}
+      </div>
     );
   }
 
-  const verb = action.hot ? "Mark hot" : "Remove the hot flag from";
+  const borderTone = isDelete
+    ? "border-red-500/40 bg-red-500/5 dark:bg-red-500/10"
+    : isHot
+    ? "border-orange-500/40 bg-orange-500/5 dark:bg-orange-500/10"
+    : "border-sky-500/40 bg-sky-500/5 dark:bg-sky-500/10";
+
+  const titleText = isDelete
+    ? `Delete ${selectedRefs.size} of ${action.refs.length} selected role(s)?`
+    : isHot
+    ? `Mark ${selectedRefs.size} of ${action.refs.length} role(s) hot?`
+    : `Remove hot flag from ${selectedRefs.size} of ${action.refs.length} role(s)?`;
+
   return (
-    <div className="relative mt-4 rounded-xl border border-orange-500/40 bg-orange-500/5 p-4">
-      <p className="text-sm font-semibold text-primary">
-        <Flame className="mr-1.5 inline size-4 text-orange-500" aria-hidden />
-        {verb} {action.refs.length} role{action.refs.length === 1 ? "" : "s"}?
-      </p>
-      <div className="mt-2 flex flex-wrap gap-1.5">
-        {action.refs.map((ref) => (
-          <span key={ref} className="glass-chip rounded-md px-2 py-0.5 text-[11px] font-semibold text-text-secondary">
-            {ref}
-          </span>
-        ))}
+    <div className={`rounded-2xl border p-4 shadow-sm backdrop-blur-md ${borderTone}`}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          {isDelete ? (
+            <Trash2 className="size-4 text-red-500" />
+          ) : isHot ? (
+            <Flame className="size-4 text-orange-500" />
+          ) : (
+            <Sparkles className="size-4 text-sky-500" />
+          )}
+          <span className="text-xs font-bold text-primary">{titleText}</span>
+        </div>
+        <div className="flex items-center gap-2 text-[11px]">
+          <button
+            type="button"
+            onClick={selectAll}
+            className="text-accent hover:underline font-medium"
+          >
+            Select all
+          </button>
+          <span className="text-text-secondary">·</span>
+          <button
+            type="button"
+            onClick={deselectAll}
+            className="text-text-secondary hover:underline"
+          >
+            Deselect all
+          </button>
+        </div>
       </div>
-      <button
-        type="button"
-        disabled={pending}
-        onClick={() =>
-          startTransition(async () => {
-            await setHot(action.refs, action.hot);
-            setDone(
-              `${action.hot ? "Marked" : "Unflagged"} ${action.refs.length} role${
-                action.refs.length === 1 ? "" : "s"
-              }.`,
-            );
-          })
-        }
-        className={`mt-3 ${BUTTON}`}
-      >
-        {pending ? "Applying…" : `Confirm — ${verb.toLowerCase()} ${action.refs.length}`}
-      </button>
+
+      {/* Selectable / Deselectable Role Pills */}
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        {action.refs.map((ref) => {
+          const active = selectedRefs.has(ref);
+          return (
+            <button
+              key={ref}
+              type="button"
+              onClick={() => toggleRef(ref)}
+              className={`flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-semibold transition-all cursor-pointer ${
+                active
+                  ? isDelete
+                    ? "bg-red-500 text-white shadow-xs"
+                    : isHot
+                    ? "bg-orange-500 text-white shadow-xs"
+                    : "bg-sky-500 text-white shadow-xs"
+                  : "glass-chip text-text-secondary line-through opacity-60 hover:opacity-100"
+              }`}
+            >
+              <span>{active ? "✓" : "✗"}</span>
+              <span>{ref}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Action Execution Button */}
+      <div className="mt-4 flex items-center gap-3">
+        <button
+          type="button"
+          disabled={pending || selectedRefs.size === 0}
+          onClick={() =>
+            startTransition(async () => {
+              const refsToApply = Array.from(selectedRefs);
+              if (isDelete) {
+                await removeJobs(refsToApply);
+                setDone(`Deleted ${refsToApply.length} role${refsToApply.length === 1 ? "" : "s"} from the board.`);
+              } else {
+                await setHot(refsToApply, isHot);
+                setDone(
+                  `${isHot ? "Marked" : "Unflagged"} ${refsToApply.length} role${
+                    refsToApply.length === 1 ? "" : "s"
+                  }.`,
+                );
+              }
+            })
+          }
+          className={`rounded-xl px-4 py-2 text-xs font-semibold text-white shadow-md transition-all cursor-pointer ${
+            isDelete
+              ? "bg-red-600 hover:bg-red-500 disabled:opacity-40"
+              : isHot
+              ? "bg-orange-600 hover:bg-orange-500 disabled:opacity-40"
+              : "bg-sky-600 hover:bg-sky-500 disabled:opacity-40"
+          }`}
+        >
+          {pending
+            ? "Applying changes…"
+            : `Confirm ${isDelete ? "Deletion" : isHot ? "Mark Hot" : "Unflag"} (${selectedRefs.size})`}
+        </button>
+      </div>
     </div>
   );
 }

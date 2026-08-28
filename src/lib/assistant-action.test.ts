@@ -15,13 +15,22 @@ describe("parseAssistantAction", () => {
       "These two look strongest.\n\nACTION: HOT W3-AAA111, W3-BBB222",
     );
     expect(text).toBe("These two look strongest.");
-    expect(action).toEqual({ hot: true, refs: ["W3-AAA111", "W3-BBB222"] });
+    expect(action).toEqual({ type: "hot", hot: true, refs: ["W3-AAA111", "W3-BBB222"] });
   });
 
   test("reads an unflag proposal the same way", () => {
     expect(parseAssistantAction("Stale.\nACTION: UNHOT w3-ccc333").action).toEqual({
+      type: "unhot",
       hot: false,
       refs: ["W3-CCC333"],
+    });
+  });
+
+  test("reads a delete proposal", () => {
+    expect(parseAssistantAction("These are obsolete.\nACTION: DELETE w3-ddd444, w3-eee555").action).toEqual({
+      type: "delete",
+      hot: false,
+      refs: ["W3-DDD444", "W3-EEE555"],
     });
   });
 

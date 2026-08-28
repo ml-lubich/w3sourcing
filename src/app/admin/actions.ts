@@ -177,12 +177,14 @@ Answer only from the digest — if it does not contain the answer, say so plainl
 Be concrete: quote numbers, name clients and role refs (W3-xxxx). Keep it under 180 words, use short
 lines or bullets, no preamble, no markdown headings.
 
-When the recruiter asks you to flag roles as hot, or to take the hot flag off roles, end your reply
+When the recruiter asks you to flag roles as hot, unflag roles, or delete/remove stale roles, end your reply
 with one final line, exactly:
 ACTION: HOT W3-AAA111, W3-BBB222
 or
 ACTION: UNHOT W3-AAA111
-Only refs that appear in the digest. Nothing is changed by that line — the recruiter confirms it — so
+or
+ACTION: DELETE W3-AAA111, W3-BBB222
+Only refs that appear in the digest. Nothing is changed by that line — the recruiter confirms it in the interactive selector — so
 say in your prose what you are proposing and why. Leave the line out entirely for ordinary questions.`;
 
 /** Admin-only: the digest carries client names, so this never leaves the editor. */
@@ -209,7 +211,7 @@ export async function askAssistant(
     const refs = action?.refs.filter((ref) => known.has(ref)) ?? [];
     return {
       ok: `${answer}\n\n— ${model}`,
-      action: action && refs.length > 0 ? { hot: action.hot, refs } : undefined,
+      action: action && refs.length > 0 ? { type: action.type, refs, hot: action.hot } : undefined,
     };
   } catch (error) {
     return { error: error instanceof Error ? error.message : "The assistant failed." };
