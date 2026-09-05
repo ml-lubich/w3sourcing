@@ -9,6 +9,7 @@ import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-
 import { useMobileLightMotion } from "@/lib/use-mobile-light-motion";
 import { useSplitWordsAnimate } from "@/lib/use-split-words-animate";
 import { MotionDash, MotionPulse, sectionDecoSvgClassName } from "@/components/section-animated-art";
+import { ScrollStack, useScrollStackCompactViewport } from "@/components/scroll-stack";
 import { ChevronRight, ClipboardList, Handshake, Radar, UserCheck } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -288,6 +289,56 @@ function StepArt({
   );
 }
 
+function StepsDesktop({
+  reduced,
+  liteMotion,
+  inView,
+}: {
+  reduced: boolean;
+  liteMotion: boolean;
+  inView: boolean;
+}) {
+  // `null` until measured (SSR + first paint) — that renders the row, so
+  // hydration matches; the stack appears only after mount on wide desktops.
+  const compact = useScrollStackCompactViewport();
+  const stack = compact === false && !reduced && !liteMotion;
+
+  if (stack) {
+    return (
+      <ScrollStack
+        className="hidden lg:block"
+        items={steps.map((step, index) => ({
+          key: String(step.n),
+          node: (
+            <StepCard step={step} index={index} reduced={reduced} liteMotion={liteMotion} inView={inView} />
+          ),
+        }))}
+      />
+    );
+  }
+
+  return (
+    <div className="hidden lg:flex flex-row items-stretch">
+      {steps.map((step, index) => (
+        <Fragment key={step.n}>
+          <StepCard step={step} index={index} reduced={reduced} liteMotion={liteMotion} inView={inView} />
+          {index < steps.length - 1 && (
+            <div
+              className="flex shrink-0 w-5 xl:w-7 items-center justify-center self-center pt-[4.5rem]"
+              aria-hidden
+            >
+              <ChevronRight
+                className="size-5 xl:size-6 text-accent/58 dark:text-accent/45 transition-colors duration-500"
+                strokeWidth={1.75}
+              />
+            </div>
+          )}
+        </Fragment>
+      ))}
+    </div>
+  );
+}
+
 function StepCard({
   step,
   index,
@@ -425,25 +476,9 @@ export function HowItWorks() {
           ))}
         </ul>
 
-        {/* Desktop: row with chevrons */}
-        <div className="hidden lg:flex flex-row items-stretch">
-          {steps.map((step, index) => (
-            <Fragment key={step.n}>
-              <StepCard step={step} index={index} reduced={reduced} liteMotion={liteMotion} inView={inView} />
-              {index < steps.length - 1 && (
-                <div
-                  className="flex shrink-0 w-5 xl:w-7 items-center justify-center self-center pt-[4.5rem]"
-                  aria-hidden
-                >
-                  <ChevronRight
-                    className="size-5 xl:size-6 text-accent/58 dark:text-accent/45 transition-colors duration-500"
-                    strokeWidth={1.75}
-                  />
-                </div>
-              )}
-            </Fragment>
-          ))}
-        </div>
+        {/* Desktop: wide mouse-driven viewports get the scroll stack; every other
+            lg+ viewport keeps the row with chevrons. */}
+        <StepsDesktop reduced={reduced} liteMotion={liteMotion} inView={inView} />
 
         {/* Mobile / tablet: stack + timeline */}
         <div className="lg:hidden relative pl-2">
