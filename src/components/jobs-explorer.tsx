@@ -30,9 +30,11 @@ import {
   X,
 } from "lucide-react";
 
+import { issueJobReferral } from "@/app/jobs/referral-actions";
 import { RoleIcon } from "@/components/role-icon";
 import { PERRY_LINKEDIN_URL } from "@/content/contact-links";
 import { buildJobMailtoHref, filterJobs, jobPermalink, type LiveJob } from "@/lib/jobs";
+import { referralPath, type ReferralChannel } from "@/lib/referrals";
 import { clientPointToCardTilt } from "@/lib/use-pointer-tilt-3d";
 import { useHydrationSafeReducedMotion } from "@/lib/use-hydration-safe-reduced-motion";
 
@@ -240,7 +242,14 @@ function JobCardSkeleton() {
   );
 }
 
-export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
+export function JobsExplorer({
+  jobs,
+  activeReferral = null,
+}: {
+  jobs: LiveJob[];
+  /** Set when this visit arrived through a shared `/r/<code>` link. */
+  activeReferral?: { code: string; jobRef: string } | null;
+}) {
   const reducedMotion = useHydrationSafeReducedMotion();
   const [query, setQuery] = useState("");
   const [roleGroup, setRoleGroup] = useState("");
@@ -432,8 +441,31 @@ export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
    * which put an extra dialog between the reader and the one thing they wanted
    * — the link to this role.
    */
+  const codeFor = async (job: LiveJob, channel: ReferralChannel) => {
+    if (activeReferral && activeReferral.jobRef === job.ref) return activeReferral.code;
+    return issueJobReferral(job.ref, channel);
+  };
+
   const copyJobLink = async (job: LiveJob) => {
-    await copyLink(`${window.location.origin}${jobPermalink(job.ref)}`, job.ref);
+    try {
+      const code = await codeFor(job, "copy");
+      await copyLink(`${window.location.origin}${referralPath(code)}`, job.ref);
+    } catch {
+      // Tracking can be down. The plain anchor still lets them share the role.
+      await copyLink(`${window.location.origin}${jobPermalink(job.ref)}`, job.ref);
+    }
+  };
+
+  const openJobEmail = async (job: LiveJob) => {
+    try {
+      const code = await codeFor(job, "email");
+      window.location.href = buildJobMailtoHref(job, {
+        code,
+        origin: window.location.origin,
+      });
+    } catch {
+      window.location.href = buildJobMailtoHref(job);
+    }
   };
 
   return (
@@ -669,6 +701,9 @@ export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
                           href={PERRY_LINKEDIN_URL}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => {
+                            void codeFor(job, "linkedin").catch(() => undefined);
+                          }}
                           className="inline-flex items-center gap-1.5 rounded-xl bg-accent px-3.5 py-2.5 text-xs font-semibold text-white shadow-[0_8px_20px_rgb(79_70_229_/_0.18)] transition-[background-color,transform] hover:bg-accent-hover motion-safe:hover:-translate-y-0.5"
                         >
                           <LinkedInGlyph className="size-3.5" />
@@ -676,6 +711,10 @@ export function JobsExplorer({ jobs }: { jobs: LiveJob[] }) {
                         </a>
                         <a
                           href={buildJobMailtoHref(job)}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            void openJobEmail(job);
+                          }}
                           className="glass-panel glass-panel--chrome inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-primary transition-colors hover:text-accent"
                         >
                           <Mail className="size-3.5" strokeWidth={2} aria-hidden />

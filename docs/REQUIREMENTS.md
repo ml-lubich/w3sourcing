@@ -66,11 +66,12 @@ We optimise for **clarity and calm**, not for gimmicks. The experience should fe
 ## 2026-07-29 Jobs Explorer Requirements
 
 - `/jobs` must provide free-text search plus role-group, workplace, sector, and visa-availability filters without exposing client identifiers.
+- Each public job card must have a stable link target and a share action with clipboard fallback, without exposing client identifiers.
+- Sharing a role, emailing Perry about it, or opening his LinkedIn from a card mints a unique referral code (`/r/<code>`). Opening that link counts one person once. `/admin` → Referrals is the ledger Perry uses to pay the 10% commission for candidates who came through the site. The code is also written into the email subject so the sender can be matched. The ATS link stays server-side; the referral hop never redirects to it.
 - Job results must load progressively as the reader scrolls, without numbered pagination or a manual load-more button.
 - Progressive batches must show non-content shimmer placeholders while loading, and reduced-motion preferences must be respected.
 - Posted dates may determine result order but must not be rendered on public job cards.
 - The W3 map (`#expertise`, lg+) must read as a dense field: no pill may sweep through the centre title's keep-out band, and scatter that lands inside it is reflected outward rather than clamped to the edge (clamping parks a tier on one line, where pills overlap). Pills are real buttons; clicking one freezes the field and flips out an opaque panel anchored to that pill, naming its practice, its sibling areas, and a link to live roles. Escape or a press outside closes it.
-- Each public job card must have a stable link target and a share action with clipboard fallback, without exposing client identifiers.
 
 ## 2026-08-06 Self-Serve Jobs Management Requirements
 
@@ -88,6 +89,7 @@ Perry publishes and closes roles himself; adding a role must never require a dev
 - Every role has its own public address (`/jobs#job-<ref>`, from `jobPermalink`). Opening one **highlights that card**: an accent border with a glow that pulses once and settles, from the browser's own `:target` — so the card stays marked while the visitor reads it, and reduced motion keeps the border without the pulse. Both the admin row and the public card copy it straight to the clipboard on one press — no OS share sheet — and confirm with a green "Link copied" for about two seconds.
 - `/admin` carries the site's own chrome: the wordmark links back to the public site, the light/dark toggle is present, and the sign-in card is centred rather than pinned to the top left.
 - `/admin` offers a **Dashboard** view alongside the roles list: live/hot/recent counts, roles posted per month, and rankings by group, sector, and location. Each chart answers a magnitude question, so each is a single series in one hue — no colour carries identity.
+- `/admin` offers a **Referrals** view: every code issued from the live board or from the editor's copy button, with the role, channel, issue time, distinct people, and the last visitor id. That ledger is the record for the 10% site commission.
 - The admin roles list loads a page at a time as the editor scrolls, the same way the public board does; a new search restarts at the first page.
 - The same selection drives hot flags: shift-click extends a range across rows, and one flame button applies to whatever is selected. That button is tri-state like a bold control — filled when every selected role is hot, half-filled ("Partly hot") on a mixed selection, empty otherwise — and a mixed or empty selection turns them all hot on the first press. Toggles paint immediately and settle when the server confirms.
 - The CSV import carries an optional "mark every imported role as hot" checkbox; a `hot` column in the file still flags rows on its own.

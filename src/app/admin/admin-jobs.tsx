@@ -10,23 +10,14 @@ import {
   useState,
   useTransition,
 } from "react";
-import {
-  Check,
-  ChartPie,
-  Flame,
-  Link2,
-  List,
-  Pencil,
-  Plus,
-  Search,
-  Sparkles,
-  Trash2,
-  Upload,
-} from "lucide-react";
+import { ChartPie, Check, Flame, Link2, List, MousePointerClick, Pencil, Plus, Search, Sparkles, Trash2, Upload } from "lucide-react";
 
+import { issueJobReferral } from "@/app/jobs/referral-actions";
 import { RoleIcon } from "@/components/role-icon";
 import { jobPermalink } from "@/lib/jobs";
+import { referralPath } from "@/lib/referrals";
 import { CSV_TEMPLATE_COLUMNS } from "@/lib/jobs-csv";
+import type { StoredReferral } from "@/lib/referrals-store";
 import type { JobRow } from "@/lib/jobs-store";
 
 import {
@@ -39,6 +30,7 @@ import {
   setHot,
   type ActionState,
 } from "./actions";
+import { AdminReferrals } from "./admin-referrals";
 import { AdminStats } from "./admin-stats";
 
 const INPUT =
@@ -228,11 +220,16 @@ function CopyLinkButton({ job }: { job: JobRow }) {
   }, []);
 
   const copy = useCallback(async () => {
-    const url = `${window.location.origin}${jobPermalink(job.ref)}`;
+    let url = `${window.location.origin}${jobPermalink(job.ref)}`;
+    try {
+      const code = await issueJobReferral(job.ref, "copy");
+      url = `${window.location.origin}${referralPath(code)}`;
+    } catch {
+      // The plain anchor still works when the referral ledger is offline.
+    }
     try {
       await navigator.clipboard.writeText(url);
     } catch {
-      // Clipboard permission can be refused; a prompt still lets the editor copy by hand.
       window.prompt("Copy this link", url);
       return;
     }
@@ -623,7 +620,13 @@ function AssistantProposal({ action }: { action: NonNullable<ActionState["action
   );
 }
 
-export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
+export function AdminJobs({
+  jobs,
+  referrals,
+}: {
+  jobs: JobRow[];
+  referrals: StoredReferral[];
+}) {
   // Hot toggles paint instantly and settle when the server action revalidates.
   const [list, applyHot] = useOptimistic(jobs, (current: JobRow[], patch: { refs: string[]; hot: boolean }) => {
     const refs = new Set(patch.refs);
@@ -631,7 +634,7 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
   });
   const lastClicked = useRef<number | null>(null);
   const [query, setQuery] = useState("");
-  const [view, setView] = useState<"roles" | "dashboard" | "assistant">("roles");
+  const [view, setView] = useState<"roles" | "dashboard" | "assistant" | "referrals">("roles");
   const [editing, setEditing] = useState<JobRow | null>(null);
   const [panel, setPanel] = useState<"none" | "add" | "import">("none");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -723,6 +726,7 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
             [
               ["roles", "Roles", List],
               ["dashboard", "Dashboard", ChartPie],
+              ["referrals", "Referrals", MousePointerClick],
               ["assistant", "Assistant", Sparkles],
             ] as const
           ).map(([id, label, Icon]) => (
@@ -777,6 +781,8 @@ export function AdminJobs({ jobs }: { jobs: JobRow[] }) {
 
       {view === "assistant" ? (
         <AdminAssistant />
+      ) : view === "referrals" ? (
+        <AdminReferrals referrals={referrals} jobs={list} />
       ) : view === "dashboard" ? (
         <AdminStats jobs={list} />
       ) : (

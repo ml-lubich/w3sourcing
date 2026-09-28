@@ -42,10 +42,11 @@ Canonical registration and office details used in the UI live in `src/content/of
 | Path       | Purpose |
 | ---------- | ------- |
 | `/`        | Home: full landing with all sections and header/footer section navigation (see below). |
-| `/jobs`    | Public jobs board (masked roles, filters, infinite scroll). ISR, 60s. |
+| `/jobs`    | Public jobs board (masked roles, filters, infinite scroll). ISR, 60s. A `?r=` code means the visit arrived through a referral link. |
+| `/r/[code]` | Referral hop. Counts one distinct person against that code, then redirects to the matching role on `/jobs`. Never sends the browser to the ATS link. |
 | `/privacy` | Privacy policy (uses `LegalPageShell`; header/footer with root section links). |
 | `/terms`   | Terms of use (same shell pattern). |
-| `/admin`   | Password-gated jobs editor for Perry: roles list (lazy-loaded, per-role copy link) plus a Recharts dashboard; add / edit / remove / flag hot / CSV import. Roles can be multi-selected and retired in one step, and an import can **replace the board** (upsert the file, then remove everything it no longer lists) for the weekly Paraform batch. `noindex`, unlinked, always dynamic. |
+| `/admin`   | Password-gated jobs editor for Perry: roles list (lazy-loaded, per-role copy link) plus a Recharts dashboard, a referral ledger, and an assistant. Add / edit / remove / flag hot / CSV import. Copied links are `/r/<code>` so opens are counted. Roles can be multi-selected and retired in one step, and an import can **replace the board** (upsert the file, then remove everything it no longer lists) for the weekly Paraform batch. `noindex`, unlinked, always dynamic. |
 
 Contact is **direct email-first** in the current public journey: header, hero, comparison, 404, footer, and final CTA actions should resolve to `mailto:info@w3sourcing.com`. The deprecated `#contact` form component remains in the tree for implementation history only.
 

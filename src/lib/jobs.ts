@@ -160,12 +160,21 @@ export function filterJobs(jobs: LiveJob[], filters: JobFilters): LiveJob[] {
 }
 
 /** Prefilled auto-message to Perry about one specific role (by W3 reference). */
-export function buildJobMailtoHref(job: LiveJob): string {
-  const subject = `Interested in ${job.role} — ${job.ref} (via w3sourcing.com)`;
+export function buildJobMailtoHref(
+  job: LiveJob,
+  referral?: { code: string; origin: string },
+): string {
+  const subject = referral
+    ? `Interested in ${job.role} — ${job.ref} — referral ${referral.code} (via w3sourcing.com)`
+    : `Interested in ${job.role} — ${job.ref} (via w3sourcing.com)`;
+  const origin = referral?.origin.replace(/\/$/, "");
   const body = [
     "Hi Perry,",
     "",
     `I saw the ${job.role} role (ref ${job.ref}) on the W3 Sourcing live jobs page and would like further details.`,
+    ...(referral
+      ? ["", `Referral code: ${referral.code}`, `Link: ${origin}/r/${referral.code}`]
+      : []),
     "",
     "My LinkedIn profile: ",
     "A little about me: ",

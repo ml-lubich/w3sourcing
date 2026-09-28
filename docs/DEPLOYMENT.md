@@ -50,7 +50,7 @@ If `NEXT_PUBLIC_SITE_URL` is unset, the app falls back to **`VERCEL_URL`** on Ve
 3. **Create the table and load the export:** `vercel env pull .env.local --yes` then `bun run jobs:seed`. The seed applies `supabase/schema.sql` (idempotent) and upserts every role by W3 reference.
 4. Redeploy so the running functions pick up the new variables.
 
-**Access model:** the table has RLS enabled with **no policies**, so the anon key that ships to browsers cannot read or write it. Every query goes through the service-role key in server-only code (`src/lib/jobs-store.ts`), which must never be imported from a client component.
+**Access model:** `jobs`, `job_referrals`, and `job_referral_clicks` have RLS enabled with **no policies**, so the anon key that ships to browsers cannot read or write them. Every query goes through the service-role key in server-only code (`src/lib/jobs-store.ts`, `src/lib/referrals-store.ts`), which must never be imported from a client component. `bun run jobs:seed` applies `supabase/schema.sql`, including the referral tables, so an existing project picks them up on the next seed.
 
 ## Admin assistant (OpenRouter)
 

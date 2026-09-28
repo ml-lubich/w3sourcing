@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { isAdminConfigured } from "@/lib/admin-auth";
 import { fetchJobs, isJobsDbConfigured } from "@/lib/jobs-store";
+import { fetchReferrals } from "@/lib/referrals-store";
 
 import { isAdminSession } from "./actions";
 import { AdminJobs } from "./admin-jobs";
@@ -86,7 +87,7 @@ export default async function AdminPage() {
 
   return (
     <Shell>
-      <AdminJobs jobs={await fetchJobs()} />
+      <AdminJobs jobs={await fetchJobs()} referrals={await fetchReferrals().catch(() => [])} />
     </Shell>
   );
 }

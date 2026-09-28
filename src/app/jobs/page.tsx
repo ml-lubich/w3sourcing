@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { JobsExplorer } from "@/components/jobs-explorer";
 import { LegalPageShell } from "@/components/legal-page-shell";
 import { loadLiveJobs } from "@/lib/jobs-server";
+import { isReferralCode } from "@/lib/referrals";
+import { findReferral } from "@/lib/referrals-store";
 
 export const metadata: Metadata = {
   title: "Jobs",
@@ -16,8 +18,15 @@ export const metadata: Metadata = {
  */
 export const revalidate = 60;
 
-export default async function JobsPage() {
+export default async function JobsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ r?: string }>;
+}) {
   const jobs = await loadLiveJobs();
+  const params = await searchParams;
+  const code = typeof params.r === "string" ? params.r.toUpperCase() : "";
+  const referral = isReferralCode(code) ? await findReferral(code).catch(() => null) : null;
 
   return (
     <LegalPageShell>
@@ -30,7 +39,10 @@ export default async function JobsPage() {
             Roles we are actively recruiting for
           </h1>
         </div>
-        <JobsExplorer jobs={jobs} />
+        <JobsExplorer
+          jobs={jobs}
+          activeReferral={referral ? { code: referral.code, jobRef: referral.jobRef } : null}
+        />
       </div>
     </LegalPageShell>
   );

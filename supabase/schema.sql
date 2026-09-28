@@ -35,3 +35,30 @@ alter table public.jobs enable row level security;
 
 create index if not exists jobs_posted_date_idx on public.jobs ("postedDate" desc nulls last);
 create index if not exists jobs_hot_idx on public.jobs (hot) where hot;
+
+-- One row per shared link or contact click. `clicks` is distinct people, not
+-- page refreshes. The visitor id is an opaque first-party cookie — no email,
+-- no IP, no client name. RLS on, no policies: service role only.
+create table if not exists public.job_referrals (
+  code            text primary key,
+  "jobRef"        text not null,
+  channel         text not null,
+  "createdAt"     timestamptz not null default now(),
+  clicks          integer not null default 0,
+  "lastClickedAt" timestamptz,
+  "lastVisitorId" text
+);
+
+alter table public.job_referrals enable row level security;
+
+create index if not exists job_referrals_created_idx on public.job_referrals ("createdAt" desc);
+
+create table if not exists public.job_referral_clicks (
+  code         text not null,
+  "visitorId"  text not null,
+  "clickedAt"  timestamptz not null default now(),
+  "userAgent"  text,
+  primary key (code, "visitorId")
+);
+
+alter table public.job_referral_clicks enable row level security;
