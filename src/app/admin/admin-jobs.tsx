@@ -32,6 +32,7 @@ import {
 } from "./actions";
 import { AdminReferrals } from "./admin-referrals";
 import { AdminStats } from "./admin-stats";
+import { AssistantMessage } from "./assistant-message";
 
 const INPUT =
   "w-full rounded-lg border border-black/10 bg-white/70 px-3 py-2 text-sm text-primary outline-none focus:border-accent dark:border-white/15 dark:bg-white/5";
@@ -278,7 +279,6 @@ function AdminAssistant() {
       text: string;
       model?: string;
       action?: NonNullable<ActionState["action"]>;
-      isStreaming?: boolean;
     }>
   >([]);
   const [input, setInput] = useState("");
@@ -299,11 +299,7 @@ function AdminAssistant() {
     const userMsgId = `user-${Date.now()}`;
     const assistantMsgId = `ai-${Date.now()}`;
 
-    setMessages((prev) => [
-      ...prev,
-      { id: userMsgId, role: "user", text: textToSend },
-      { id: assistantMsgId, role: "assistant", text: "", isStreaming: true },
-    ]);
+    setMessages((prev) => [...prev, { id: userMsgId, role: "user", text: textToSend }]);
     setLoading(true);
 
     try {
@@ -313,34 +309,19 @@ function AdminAssistant() {
 
       if (res.error) {
         setError(res.error);
-        setMessages((prev) => prev.filter((m) => m.id !== assistantMsgId));
       } else if (res.ok) {
-        const fullText = res.ok;
-        // Animated typewriter / streaming effect
-        let currentIdx = 0;
-        const step = Math.max(1, Math.floor(fullText.length / 40));
-        const interval = setInterval(() => {
-          currentIdx = Math.min(fullText.length, currentIdx + step + Math.floor(Math.random() * 3));
-          setMessages((prev) =>
-            prev.map((m) =>
-              m.id === assistantMsgId
-                ? {
-                    ...m,
-                    text: fullText.slice(0, currentIdx),
-                    isStreaming: currentIdx < fullText.length,
-                    action: currentIdx >= fullText.length ? res.action : undefined,
-                  }
-                : m,
-            ),
-          );
-          if (currentIdx >= fullText.length) {
-            clearInterval(interval);
-          }
-        }, 15);
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: assistantMsgId,
+            role: "assistant",
+            text: res.ok,
+            action: res.action,
+          },
+        ]);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to query assistant");
-      setMessages((prev) => prev.filter((m) => m.id !== assistantMsgId));
     } finally {
       setLoading(false);
     }
@@ -413,14 +394,15 @@ function AdminAssistant() {
                   : "glass-chip text-primary border border-gray-border/40 dark:border-white/[0.06] rounded-tl-xs"
               }`}
             >
-              <p className="whitespace-pre-wrap">{m.text}</p>
-              {m.isStreaming && (
-                <span className="inline-block w-2 h-4 ml-1 bg-accent animate-pulse align-middle" />
+              {m.role === "assistant" ? (
+                <AssistantMessage text={m.text} />
+              ) : (
+                <p>{m.text}</p>
               )}
             </div>
 
             {/* Interactive Tool Actions */}
-            {m.action && !m.isStreaming && (
+            {m.action && (
               <div className="mt-2 w-full max-w-[90%]">
                 <AssistantProposal action={m.action} />
               </div>

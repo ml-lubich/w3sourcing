@@ -980,6 +980,27 @@ html.dark ::-webkit-scrollbar-thumb {
   animation: jobs-card-enter 440ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+@keyframes assistant-block {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+.assistant-block {
+  animation: assistant-block 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-block {
+    animation: none;
+  }
+}
+
 /*
  * Pointer-follow 3D. The angles arrive as CSS variables from one delegated
  * handler on the grid (see `jobs-explorer.tsx`), so tilting a card costs a
