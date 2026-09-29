@@ -310,12 +310,13 @@ function AdminAssistant() {
       if (res.error) {
         setError(res.error);
       } else if (res.ok) {
+        const answer = res.ok;
         setMessages((prev) => [
           ...prev,
           {
             id: assistantMsgId,
             role: "assistant",
-            text: res.ok,
+            text: answer,
             action: res.action,
           },
         ]);
