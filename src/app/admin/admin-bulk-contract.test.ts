@@ -69,6 +69,11 @@ describe("admin bulk UI contract", () => {
     expect(adminJobs).toContain("confirm(");
   });
 
+  test("does not print a how-to under the selection bar", () => {
+    expect(adminJobs).not.toContain("Tip: tick rows");
+    expect(adminJobs).not.toContain("hit the flame");
+  });
+
   test("the same selection drives a tri-state hot control", () => {
     // Mixed selections read as "partly hot" and go all-hot on the first press,
     // the way a bold button behaves over mixed text.

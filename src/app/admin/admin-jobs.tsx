@@ -853,11 +853,7 @@ export function AdminJobs({
                   Clear
                 </button>
               </>
-            ) : (
-              <span className="text-xs text-text-secondary">
-                Tip: tick rows (shift-click for a range), then hit the flame.
-              </span>
-            )}
+            ) : null}
           </div>
 
           <ul className="mt-2 divide-y divide-black/5 dark:divide-white/10">
