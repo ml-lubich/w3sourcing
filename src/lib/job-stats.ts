@@ -8,6 +8,23 @@ import type { RawJob } from "./jobs";
 
 export type Tally = { label: string; count: number };
 
+/** One line of axis text. Wrapped ticks collide with the next category. */
+export function truncateAxisLabel(label: string, maxChars: number): string {
+  const trimmed = label.trim();
+  if (maxChars < 2) return "…";
+  if (trimmed.length <= maxChars) return trimmed;
+  return `${trimmed.slice(0, maxChars - 1).trimEnd()}…`;
+}
+
+const RANKED_ROW_PX = 32;
+const RANKED_MIN_PX = 256;
+
+/** Chart box height. A fixed 256px box stacks nine wrapped labels on top of each other. */
+export function rankedChartHeight(rows: number): number {
+  if (rows <= 0) return RANKED_MIN_PX;
+  return Math.max(RANKED_MIN_PX, rows * RANKED_ROW_PX);
+}
+
 type StatJob = Pick<RawJob, "roleGroup" | "sector" | "workplace" | "locations" | "postedDate"> & {
   hot?: boolean;
 };

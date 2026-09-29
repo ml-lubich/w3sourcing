@@ -16,7 +16,16 @@ import {
 import { Flame, Globe2, Layers, Sparkles, TrendingUp } from "lucide-react";
 
 import { useTheme } from "@/components/theme-provider";
-import { postedByMonth, summarise, tallyBy, tallyLocations, type Tally } from "@/lib/job-stats";
+import {
+  postedByMonth,
+  rankedChartHeight,
+  summarise,
+  tallyBy,
+  tallyLocations,
+  truncateAxisLabel,
+  type Tally,
+} from "@/lib/job-stats";
+import type { YAxisTickContentProps } from "recharts";
 import type { JobRow } from "@/lib/jobs-store";
 
 /**
@@ -70,17 +79,21 @@ function ChartCard({
   title,
   subtitle,
   children,
+  chartHeight = 256,
 }: {
   title: string;
   subtitle: string;
   children: React.ReactNode;
+  chartHeight?: number;
 }) {
   return (
     <div className="glass-panel rounded-2xl p-5">
       <div className="relative">
         <h3 className="text-sm font-bold text-primary">{title}</h3>
         <p className="mt-0.5 text-xs text-text-secondary">{subtitle}</p>
-        <div className="mt-4 h-64 w-full">{children}</div>
+        <div className="mt-4 w-full" style={{ height: chartHeight }}>
+          {children}
+        </div>
       </div>
     </div>
   );
@@ -102,6 +115,21 @@ function tooltipStyle(ink: ReturnType<typeof useChartInk>) {
   };
 }
 
+/** Fits one 11px line inside the category axis without wrapping into the next row. */
+const AXIS_LABEL_CHARS = 26;
+const AXIS_WIDTH = 168;
+
+function CategoryTick({ x, y, payload, fill }: YAxisTickContentProps & { fill: string }) {
+  const full = String(payload?.value ?? "");
+  const label = truncateAxisLabel(full, AXIS_LABEL_CHARS);
+  return (
+    <text x={x} y={y} dy={4} textAnchor="end" fill={fill} fontSize={11}>
+      {label}
+      {label === full ? null : <title>{full}</title>}
+    </text>
+  );
+}
+
 /** Horizontal bars: category names are long, and reading down a column is easier. */
 function RankedBars({ data, ink }: { data: Tally[]; ink: ReturnType<typeof useChartInk> }) {
   const tooltip = tooltipStyle(ink);
@@ -117,7 +145,9 @@ function RankedBars({ data, ink }: { data: Tally[]; ink: ReturnType<typeof useCh
           fontSize={11}
           tickLine={false}
           axisLine={false}
-          width={128}
+          width={AXIS_WIDTH}
+          interval={0}
+          tick={(props: YAxisTickContentProps) => <CategoryTick {...props} fill={ink.ink} />}
         />
         <Tooltip {...tooltip} />
         <Bar dataKey="count" name="Roles" radius={[0, 4, 4, 0]} maxBarSize={18}>
@@ -193,15 +223,27 @@ export function AdminStats({ jobs }: { jobs: JobRow[] }) {
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Roles by group" subtitle="Largest disciplines on the board">
+        <ChartCard
+          title="Roles by group"
+          subtitle="Largest disciplines on the board"
+          chartHeight={rankedChartHeight(byRoleGroup.length)}
+        >
           <RankedBars data={byRoleGroup} ink={ink} />
         </ChartCard>
 
-        <ChartCard title="Roles by sector" subtitle="Where the mandates sit">
+        <ChartCard
+          title="Roles by sector"
+          subtitle="Where the mandates sit"
+          chartHeight={rankedChartHeight(bySector.length)}
+        >
           <RankedBars data={bySector} ink={ink} />
         </ChartCard>
 
-        <ChartCard title="Top locations" subtitle="A role counts once per city it lists">
+        <ChartCard
+          title="Top locations"
+          subtitle="A role counts once per city it lists"
+          chartHeight={rankedChartHeight(byLocation.length)}
+        >
           <RankedBars data={byLocation} ink={ink} />
         </ChartCard>
       </div>

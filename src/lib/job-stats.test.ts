@@ -1,6 +1,13 @@
 import { describe, expect, test } from "bun:test";
 
-import { postedByMonth, summarise, tallyBy, tallyLocations } from "./job-stats";
+import {
+  postedByMonth,
+  rankedChartHeight,
+  summarise,
+  tallyBy,
+  tallyLocations,
+  truncateAxisLabel,
+} from "./job-stats";
 import { roleIconKey } from "./role-icon";
 
 const jobs = [
@@ -45,6 +52,27 @@ describe("postedByMonth", () => {
 
   test("keeps empty months so the trend does not close a gap", () => {
     expect(points.map((point) => point.count)).toEqual([0, 0, 2]);
+  });
+});
+
+describe("ranked chart labels", () => {
+  test("keeps a short category on one line", () => {
+    expect(truncateAxisLabel("Legal", 26)).toBe("Legal");
+  });
+
+  test("cuts a long category to one line instead of letting it wrap into the next row", () => {
+    expect(truncateAxisLabel("Account Management / Customer Success", 26)).toBe(
+      "Account Management / Cust…",
+    );
+    expect(truncateAxisLabel("Hardware, Autonomous Vehicles, AI, API", 26)).toBe(
+      "Hardware, Autonomous Vehi…",
+    );
+  });
+
+  test("grows the chart with the row count so nine categories are not crushed into a fixed box", () => {
+    expect(rankedChartHeight(2)).toBe(256);
+    expect(rankedChartHeight(9)).toBe(288);
+    expect(rankedChartHeight(12)).toBe(384);
   });
 });
 

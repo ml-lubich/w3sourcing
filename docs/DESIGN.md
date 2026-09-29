@@ -27,6 +27,7 @@
 - [Hero accent light mode contrast](#2026-05-04-hero-accent-light-mode-contrast)
 - [Trusted-by marquee row motion](#2026-05-04-trusted-by-marquee-row-motion)
 - [Footer maker credit icon](#2026-05-04-footer-maker-credit-icon)
+- [Admin dashboard rankings](#2026-09-28-admin-dashboard-rankings)
 
 ## Direction
 
@@ -299,3 +300,9 @@ Inside arbitrary square brackets, **commas are special** (they separate multiple
 - The Company list renders in two sub-columns (`md:grid-rows-5 md:grid-flow-col`), and the London and Singapore addresses sit side by side, so no group leaves a large trailing void. Singapore's UEN/EA sits with the Singapore address, not as a separate block.
 - The "Message us on LinkedIn" and "View current live jobs" CTAs and the LinkedIn social icon belong to the brand column — they are not offices and must not render under the **Offices** heading. Exactly one LinkedIn social icon.
 - The bottom bar (`mt-10 pt-6`) and the centered maker credit (`mt-4 text-center`) below it are unchanged; see [Footer maker credit icon](#2026-05-04-footer-maker-credit-icon).
+
+## 2026-09-28 Admin dashboard rankings
+
+- The group, sector, and location rankings are horizontal bars. Each category is one line. A name that does not fit the axis shortens with an ellipsis; hovering the label or the bar shows the full name.
+- The chart box is at least 256px and grows by 32px per row, so nine categories are not crushed into a fixed height and neighbouring labels do not overlap.
+- The trailing-twelve-months chart stays a fixed 256px. It has no category names to collide.
