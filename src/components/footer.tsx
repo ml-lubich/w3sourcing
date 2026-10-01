@@ -219,15 +219,6 @@ export function Footer({ sectionLinksFromRoot = false }: FooterProps) {
             <Link href="/jobs" className="footer-link">
               Live jobs
             </Link>
-            <a
-              href="https://w3sourcing-candidate-portal.vercel.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-link text-accent font-medium inline-flex items-center gap-1"
-            >
-              <span>Admin Portal</span>
-              <span className="text-xs">↗</span>
-            </a>
           </FooterColumn>
 
           <div className="col-span-2 md:col-span-3 md:border-l md:border-gray-border md:pl-8 dark:md:border-white/[0.06]">

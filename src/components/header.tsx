@@ -183,15 +183,6 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
           >
             Jobs
           </Link>
-          <a
-            href="https://w3sourcing-candidate-portal.vercel.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nav-link-section shrink-0 whitespace-nowrap px-2.5 py-1 text-xs lg:text-[13px] font-semibold rounded-lg duration-200 text-accent hover:text-accent-hover bg-accent/10 border border-accent/20 flex items-center gap-1 shadow-xs"
-          >
-            <span>Admin</span>
-            <span className="text-[10px]">↗</span>
-          </a>
         </nav>
 
         <div className="flex items-center gap-2 shrink-0">
@@ -281,16 +272,6 @@ export function Header({ sectionLinksFromRoot = false }: HeaderProps) {
               >
                 Jobs
               </Link>
-              <a
-                href="https://w3sourcing-candidate-portal.vercel.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMobileOpen(false)}
-                className="nav-link-section transition-colors py-3 font-semibold rounded-row-highlight px-3 -mx-1 text-accent hover:bg-gray-light/70 dark:hover:bg-white/[0.06] flex items-center justify-between"
-              >
-                <span>Admin Portal</span>
-                <span className="text-xs">↗</span>
-              </a>
               <a
                 href={PERRY_LINKEDIN_URL}
                 target="_blank"
