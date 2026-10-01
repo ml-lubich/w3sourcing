@@ -357,7 +357,7 @@ function StepCard({
 
   return (
     <motion.article
-      className="glass-panel relative w-full lg:flex-1 lg:min-w-0 rounded-2xl shadow-[0_22px_56px_rgb(15_23_42_/_0.11)] dark:shadow-[0_24px_60px_rgb(0_0_0_/_0.32)] overflow-hidden"
+      className="glass-panel relative w-full lg:flex-1 lg:min-w-0 rounded-2xl bg-surface/98 dark:bg-slate-900/98 shadow-[0_22px_56px_rgb(15_23_42_/_0.11)] dark:shadow-[0_24px_60px_rgb(0_0_0_/_0.32)] overflow-hidden"
       initial={reduced ? false : { opacity: 0, y: 28 }}
       animate={inView ? { opacity: 1, y: 0 } : reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
       transition={surfaceRevealEnterTransition(liteMotion, reduced, { delay })}
